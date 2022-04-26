@@ -20,6 +20,7 @@ struct R_Q{
 	   void setzero();
 	   void print_unsigned( )const;
 	   void print_signed  ( )const;
+	   uint64_t square_sum() const;
 };
 //-----------------------------------------------------------
 // negative-wrapped convolution
@@ -105,4 +106,14 @@ template <int LOGQ, int N>
 void R_Q<LOGQ, N>::setzero(){
 	for(int i=0;i<N;i++)
 		coeff[i].setzero();
+}
+
+template <int LOGQ, int N>
+uint64_t R_Q<LOGQ, N>::square_sum() const {
+	assert(LOGQ <= 24);
+	uint64_t sum = 0;
+	for(int i = 0; i < N; ++i) {
+		sum += coeff[i][0] * coeff[i][0];
+	}
+	return sum;
 }

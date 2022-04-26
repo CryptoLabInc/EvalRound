@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdio>
+#include <cassert>
+
 
 template<int N>
 void matrix_product(const double Ar[N][N],
