@@ -5,8 +5,6 @@
 
 int main()
 {
-  constexpr int repeat = 100;
-
   double zr[N/2], zi[N/2];
   R_Q<LOGQ, N> pt;
   R_Q<LOGQ_UP, N> pt_up;
