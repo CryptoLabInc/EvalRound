@@ -1,6 +1,8 @@
 include_directories(include)
 
-set(SRCS
-  src/main.cpp)
-
-add_executable(test main.cpp)
+add_executable(example_3_1 src/example_3_1.cpp)
+#add_executable(example_3_2 src/example_3_2.cpp)
+#add_executable(example_3_3 src/example_3_3.cpp)
+#add_executable(example_3_4 src/example_3_4.cpp)
+#add_executable(example_3_5 src/example_3_5.cpp)
+#add_executable(example_3_6 src/example_3_6.cpp)
