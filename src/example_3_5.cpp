@@ -55,31 +55,4 @@ int main()
   print("BAzr", BAzr);
   print("BAzr_tilde", BAzr_tilde);
   print("e_BAzr (sanity check)", e_BAzr);
-
-/*  double Azr_tilde[N/2], Azi_tilde[N/2];
-  decode(pt_Az_tilde, DeltaSq, Azr_tilde, Azi_tilde);
-
-  sub(pt_Az, pt_Az_tilde, e_Az);
-  double er[N/2], ei[N/2];
-  decode(e_Az, DeltaSq, er, ei);
-
-  double measured = norm(er, ei);
-  double expected = sqrt(K * N / 12.0) * norm(zr, zi) / double (Delta);
-  double bound = sqrt(K) * expected;
-  std::cout << "Measured : " << measured << std::endl;
-  std::cout << "Expected : " << expected << std::endl;
-  std::cout << "Bound : " << bound << std::endl;
-  std::cout << "Measured / Expected : " << (measured / expected) << std::endl;  // currently sqrt(2)
-
-  // set input message
-  // encode pt_z -> need encoding!
-
-  // gen matrix with k diagonals
-  // encode matrix into k ptxts
-  // lin transform twice
-
-  // measure matrix norm
-  // compute expected norm
-  // compare
-  */
 }
