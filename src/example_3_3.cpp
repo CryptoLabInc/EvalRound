@@ -48,7 +48,7 @@ int main()
   decode(e_Az, DeltaSq, er, ei);
   print("er (for sanity check)", er);
 
-  double measured = (double) square_sum(e_Az);
+  double measured = square_sum(e_Az);
   double expected = K * N * square_sum(pt) / 12.0;
   double bound = K * expected;
   std::cout << "Measured : " << measured << std::endl;

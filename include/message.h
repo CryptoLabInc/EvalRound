@@ -27,6 +27,18 @@ void matrix_vector_product(
     }
 }
 
+double square_sum(const double zr[N/2], const double zi[N/2]){
+    double sum = 0;
+    for(int i = 0; i < N/2; ++i) {
+        sum += zr[i] * zr[i] + zi[i] * zi[i];
+    }
+    return sum;
+}
+
+double norm(const double zr[N/2], const double zi[N/2]){
+    return sqrt(square_sum(zr, zi));
+}
+
 void print(const std::string name , const double z[N/2]){
 	std::cout << "Message " << name << std::endl;
 	for(int i=0; i <N/2; ++i) {

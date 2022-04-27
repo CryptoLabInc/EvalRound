@@ -52,12 +52,16 @@ void sub(const int64_t pt1[N], const int64_t pt2[N], int64_t pt3[N]){
 	}
 }
 
-int64_t square_sum(const int64_t pt[N]) {
-	int64_t sum = 0;
+double square_sum(const int64_t pt[N]) {
+	double sum = 0;
 	for(int i = 0; i < N; ++i) {
-		sum += pt[i]*pt[i];
+		sum += (double) pt[i]* (double) pt[i];
 	}
 	return sum;
+}
+
+double norm(const int64_t pt[N]){
+    return sqrt(square_sum(pt));
 }
 
 void print(const std::string name, const int64_t pt[N]){
