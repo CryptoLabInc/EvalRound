@@ -33,8 +33,8 @@ int main()
   int64_t pt_rot[N];
   int64_t pt_conv[N];
   for(int k = 0; k < K; ++k) {
-    rotate_message(zr, z_rot_r, k);
-    rotate_message(zi, z_rot_i, k);
+    rotate(zr, z_rot_r, k);
+    rotate(zi, z_rot_i, k);
     encode(z_rot_r, z_rot_i, Delta, pt_rot);
     conv(pt_v[k], pt_rot, pt_conv);
     add(pt_Az_tilde, pt_conv, pt_Az_tilde);

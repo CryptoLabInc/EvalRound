@@ -6,7 +6,7 @@
 #include <string>
 
 
-void rotate_message(const double z[N/2], double z_rot[N/2], int r) {
+void rotate(const double z[N/2], double z_rot[N/2], int r) {
     for(int i = 0; i < N/2; ++i)
         z_rot[i] = z[(i + r) % (N/2)];
 }
@@ -25,6 +25,18 @@ void matrix_vector_product(
         Azr[i] = sumr;
         Azi[i] = sumi;
     }
+}
+
+void add(const double z1[N/2], const double z2[N/2], double z3[N/2]){
+	for(int i=0; i<N; i++){
+		z3[i] = z1[i] + z2[i];
+	}
+}
+
+void sub(const double z1[N/2], const double z2[N/2], double z3[N/2]){
+	for(int i=0; i<N; i++){
+		z3[i] = z1[i] - z2[i];
+	}
 }
 
 double square_sum(const double zr[N/2], const double zi[N/2]){

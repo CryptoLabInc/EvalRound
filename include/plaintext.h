@@ -71,3 +71,39 @@ void print(const std::string name, const int64_t pt[N]){
 	}
 	std::cout << std::endl;
 }
+
+void rotate_once(const int64_t pt[N], int64_t pt_rot[N]){
+	for(int i=0; i<N; i++){
+		int q = (5*i)/N;
+		int r = (5*i)%N;
+		pt_rot[r] = pt[i];
+		if(q%2==1) pt_rot[r] = -pt_rot[r];
+	}
+}
+
+void rotate(const int64_t pt[N], int64_t pt_rot[N], int r){
+	int64_t pt_tmp[N];
+	for(int i = 0; i < N; ++i) {
+		pt_rot[i] = pt[i];
+	}
+	for(int rot = 0; rot < r; ++rot) {
+		for(int i = 0; i < N; ++i) {
+			pt_tmp[i] = pt_rot[i];
+		}
+		rotate_once(pt_tmp, pt_rot);
+	}
+}
+
+void matrix_vector_product(
+    const int64_t pt[N],
+    const double Ar[K][N/2], const double Ai[K][N/2],
+    int64_t pt_Az[N/2]){
+	int64_t pt_v[N], pt_rot[N], pt_conv[N];
+	set_zero(pt_Az);
+	for(int k = 0; k < K; ++k) {
+		encode(Ar[k], Ai[k], Delta, pt_v);
+		rotate(pt, pt_rot, k);
+		conv(pt_v, pt_rot, pt_conv);
+		add(pt_Az, pt_conv, pt_Az);
+	}
+}
