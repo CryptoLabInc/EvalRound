@@ -1,4 +1,5 @@
-#include "common.h"
+#include "define.h"
+
 #include "HEAAN/HEAAN.h"
 
 #include <iostream>
