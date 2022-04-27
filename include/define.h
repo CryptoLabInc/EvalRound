@@ -12,7 +12,7 @@ constexpr int LOGQ = 24;
 constexpr int LOGQ_UP = LOGQ * 2;
 constexpr int N = 1 << 7;
 constexpr int h = 64;
-constexpr int K = 32;
+constexpr int K = 16;
 
 void set_test_message(double zr[N/2], double zi[N/2]) {
     sampleUniform(zr, zr+N/2);

@@ -11,7 +11,7 @@ void encode( const double zr[N/2],
 	double m[N]; idft<N>(zr,zi,m);
 	double Delta_double = (double) Delta;
 	for(int i=0; i<N; i++){
-		pt[i] = (int64_t) (m[i]*Delta_double);
+		pt[i] = (int64_t) round(m[i]*Delta_double);
 	}
 }
 
