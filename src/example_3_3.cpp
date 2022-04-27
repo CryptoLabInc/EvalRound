@@ -54,5 +54,5 @@ int main()
   std::cout << "Measured : " << measured << std::endl;
   std::cout << "Expected : " << expected << std::endl;
   std::cout << "Bound : " << bound << std::endl;
-  std::cout << "Measured / Expected : " << (measured / expected) << std::endl;
+  std::cout << "Measured / Expected : " << (measured / expected) << std::endl; // currently 2
 }
