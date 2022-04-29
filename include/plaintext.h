@@ -109,6 +109,20 @@ void matrix_vector_product(
 	}
 }
 
+void matrix_vector_product_raw(
+    const double pt[N],
+    const double Ar[K][N/2], const double Ai[K][N/2],
+    double pt_Az[N/2]){
+	double pt_v[N], pt_rot[N], pt_conv[N];
+	set_zero(pt_Az);
+	for(int k = 0; k < K; ++k) {
+		encode_raw(Ar[k], Ai[k], Delta, pt_v);
+		rotate_pt(pt, pt_rot, k);
+		conv(pt_v, pt_rot, pt_conv);
+		add_pt(pt_Az, pt_conv, pt_Az);
+	}
+}
+
 void print_pt(const std::string name, const double pt[N]){
 	std::cout << "Plaintext " << name << std::endl;
 	for(int i=0; i <std::min(N, 10); ++i) {

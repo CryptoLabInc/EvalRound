@@ -1,7 +1,5 @@
 
-#include "define.h"
-#include "message.h"
-#include "plaintext.h"
+#include "test.h"
 
 #include <iostream>
 
@@ -12,23 +10,23 @@ int main()
   double Azr[N/2], Azi[N/2];
 
   double pt[N];
-  double pt_v[K][N];
-  double pt_Az[N];
-  double pt_Az_tilde[N];
+  double pt_Az[N], pt_Az_tilde[N];
   double e_Az[N];
 
-  set_test_message(zr, zi);
+  // get pt_Az
+  set_test_rounded_message(zr, zi);
   set_test_matrix(Ar, Ai);
   matrix_vector_product(zr, zi, Ar, Ai, Azr, Azi);
   encode(Azr, Azi, DeltaSq, pt_Az);
 
+  // get pt_Az_tilde
   encode(zr, zi, Delta, pt);
   matrix_vector_product(pt, Ar, Ai, pt_Az_tilde);
 
-  double Azr_tilde[N/2], Azi_tilde[N/2];
-  decode(pt_Az_tilde, DeltaSq, Azr_tilde, Azi_tilde);
-
+  // get e_Az
   sub_pt(pt_Az, pt_Az_tilde, e_Az);
+
+  // sanity check
   double er[N/2], ei[N/2];
   decode(e_Az, DeltaSq, er, ei);
   print_pt("er (for sanity check)", er);
@@ -39,5 +37,5 @@ int main()
   std::cout << "Measured : " << measured << std::endl;
   std::cout << "Expected : " << expected << std::endl;
   std::cout << "Bound : " << bound << std::endl;
-  std::cout << "Measured / Expected : " << (measured / expected) << std::endl; // currently 2
+  std::cout << "Measured / Expected : " << (measured / expected) << std::endl;
 }

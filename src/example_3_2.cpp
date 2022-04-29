@@ -1,4 +1,4 @@
-#include "define.h"
+#include "test.h"
 
 #include "HEAAN/HEAAN.h"
 

@@ -1,7 +1,5 @@
 
-#include "define.h"
-#include "message.h"
-#include "plaintext.h"
+#include "test.h"
 
 #include <iostream>
 
