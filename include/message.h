@@ -53,7 +53,7 @@ double norm(const double zr[N/2], const double zi[N/2]){
 
 void print(const std::string name , const double z[N/2]){
 	std::cout << "Message " << name << std::endl;
-	for(int i=0; i <N/2; ++i) {
+	for(int i=0; i <std::min(N/2, 10); ++i) {
 		std::cout << z[i] << " ";
 	}
 	std::cout << std::endl;

@@ -7,25 +7,24 @@
 #include "define.h"
 
 void encode( const double zr[N/2],
-			 const double zi[N/2], uint64_t Delta, int64_t pt[N]){
+			 const double zi[N/2], uint64_t Delta, double pt[N]){
 	double m[N]; idft<N>(zr,zi,m);
 	double Delta_double = (double) Delta;
 	for(int i=0; i<N; i++){
-		pt[i] = (int64_t) round(m[i]*Delta_double);
+		pt[i] = (double) round(m[i]*Delta_double);
 	}
 }
 
-void encode_error( const double zr[N/2], 
-			 const double zi[N/2], uint64_t Delta, double e[N]){
+void encode_raw( const double zr[N/2], 
+			 const double zi[N/2], uint64_t Delta, double pt[N]){
 	double m[N]; idft<N>(zr,zi,m);
 	double Delta_double = (double) Delta;
 	for(int i=0; i<N; i++){
-		double val = m[i]*Delta_double;
-		e[i] = val - round(val);
+		pt[i] = m[i]*Delta_double;
 	}
 }
 
-void decode( const int64_t pt[N], uint64_t Delta, double zr[N/2], 
+void decode( const double pt[N], uint64_t Delta, double zr[N/2], 
 													double zi[N/2]){
 	double m[N];
 	double Delta_double = (double) Delta;
@@ -35,51 +34,34 @@ void decode( const int64_t pt[N], uint64_t Delta, double zr[N/2],
 	dft<N>(m,zr,zi);
 }
 
-void conv(const int64_t pt1[N], const int64_t pt2[N], int64_t pt3[N]){
+void conv(const double pt1[N], const double pt2[N], double pt3[N]){
 	for(int i=0; i<N; i++){
-		int64_t sum = 0;
+		double sum = 0;
 		for(int k=0;   k<=i; k++) sum += pt1[k]*pt2[i-k];
 		for(int k=i+1; k< N; k++) sum -= pt1[k]*pt2[i+N-k];
 		pt3[i]=sum;
 	}
 }
 
-void conv(const double e[N], const int64_t pt[N], double res[N]){
-	for(int i=0; i<N; i++){
-		double sum = 0;
-		for(int k=0;   k<=i; k++) sum += e[k]*(double)pt[i-k];
-		for(int k=i+1; k< N; k++) sum -= e[k]*(double)pt[i+N-k];
-		res[i]=sum;
-	}
-}
-
-void set_zero(int64_t pt[N]) {
+void set_zero(double pt[N]) {
 	for(int i = 0; i <N; ++i) {
 		pt[i] = 0;
 	}
 }
 
-void add(const int64_t pt1[N], const int64_t pt2[N], int64_t pt3[N]){
+void add_pt(const double pt1[N], const double pt2[N], double pt3[N]){
 	for(int i=0; i<N; i++){
 		pt3[i] = pt1[i] + pt2[i];
 	}
 }
 
-void sub(const int64_t pt1[N], const int64_t pt2[N], int64_t pt3[N]){
+void sub_pt(const double pt1[N], const double pt2[N], double pt3[N]){
 	for(int i=0; i<N; i++){
 		pt3[i] = pt1[i] - pt2[i];
 	}
 }
 
-double square_sum(const int64_t pt[N]) {
-	double sum = 0;
-	for(int i = 0; i < N; ++i) {
-		sum += (double) pt[i]* (double) pt[i];
-	}
-	return sum;
-}
-
-double square_sum(const double pt[N]) {
+double square_sum_pt(const double pt[N]) {
 	double sum = 0;
 	for(int i = 0; i < N; ++i) {
 		sum += pt[i]* pt[i];
@@ -87,19 +69,11 @@ double square_sum(const double pt[N]) {
 	return sum;
 }
 
-double norm(const int64_t pt[N]){
-    return sqrt(square_sum(pt));
+double norm_pt(const double pt[N]){
+    return sqrt(square_sum_pt(pt));
 }
 
-void print(const std::string name, const int64_t pt[N]){
-	std::cout << "Plaintext " << name << std::endl;
-	for(int i=0; i <N; ++i) {
-		std::cout << pt[i] << " ";
-	}
-	std::cout << std::endl;
-}
-
-void rotate_once(const int64_t pt[N], int64_t pt_rot[N]){
+void rotate_once(const double pt[N], double pt_rot[N]){
 	for(int i=0; i<N; i++){
 		int q = (5*i)/N;
 		int r = (5*i)%N;
@@ -108,8 +82,8 @@ void rotate_once(const int64_t pt[N], int64_t pt_rot[N]){
 	}
 }
 
-void rotate(const int64_t pt[N], int64_t pt_rot[N], int r){
-	int64_t pt_tmp[N];
+void rotate_pt(const double pt[N], double pt_rot[N], int r){
+	double pt_tmp[N];
 	for(int i = 0; i < N; ++i) {
 		pt_rot[i] = pt[i];
 	}
@@ -122,15 +96,23 @@ void rotate(const int64_t pt[N], int64_t pt_rot[N], int r){
 }
 
 void matrix_vector_product(
-    const int64_t pt[N],
+    const double pt[N],
     const double Ar[K][N/2], const double Ai[K][N/2],
-    int64_t pt_Az[N/2]){
-	int64_t pt_v[N], pt_rot[N], pt_conv[N];
+    double pt_Az[N/2]){
+	double pt_v[N], pt_rot[N], pt_conv[N];
 	set_zero(pt_Az);
 	for(int k = 0; k < K; ++k) {
 		encode(Ar[k], Ai[k], Delta, pt_v);
-		rotate(pt, pt_rot, k);
+		rotate_pt(pt, pt_rot, k);
 		conv(pt_v, pt_rot, pt_conv);
-		add(pt_Az, pt_conv, pt_Az);
+		add_pt(pt_Az, pt_conv, pt_Az);
 	}
+}
+
+void print_pt(const std::string name, const double pt[N]){
+	std::cout << "Plaintext " << name << std::endl;
+	for(int i=0; i <std::min(N, 10); ++i) {
+		std::cout << pt[i] << " ";
+	}
+	std::cout << std::endl;
 }
