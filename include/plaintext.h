@@ -6,12 +6,22 @@
 #include "HEAAN/DFT.h"
 #include "define.h"
 
-void encode( const double zr[N/2], 
+void encode( const double zr[N/2],
 			 const double zi[N/2], uint64_t Delta, int64_t pt[N]){
 	double m[N]; idft<N>(zr,zi,m);
 	double Delta_double = (double) Delta;
 	for(int i=0; i<N; i++){
 		pt[i] = (int64_t) round(m[i]*Delta_double);
+	}
+}
+
+void encode_error( const double zr[N/2], 
+			 const double zi[N/2], uint64_t Delta, double e[N]){
+	double m[N]; idft<N>(zr,zi,m);
+	double Delta_double = (double) Delta;
+	for(int i=0; i<N; i++){
+		double val = m[i]*Delta_double;
+		e[i] = val - round(val);
 	}
 }
 
@@ -31,6 +41,15 @@ void conv(const int64_t pt1[N], const int64_t pt2[N], int64_t pt3[N]){
 		for(int k=0;   k<=i; k++) sum += pt1[k]*pt2[i-k];
 		for(int k=i+1; k< N; k++) sum -= pt1[k]*pt2[i+N-k];
 		pt3[i]=sum;
+	}
+}
+
+void conv(const double e[N], const int64_t pt[N], double res[N]){
+	for(int i=0; i<N; i++){
+		double sum = 0;
+		for(int k=0;   k<=i; k++) sum += e[k]*(double)pt[i-k];
+		for(int k=i+1; k< N; k++) sum -= e[k]*(double)pt[i+N-k];
+		res[i]=sum;
 	}
 }
 
@@ -56,6 +75,14 @@ double square_sum(const int64_t pt[N]) {
 	double sum = 0;
 	for(int i = 0; i < N; ++i) {
 		sum += (double) pt[i]* (double) pt[i];
+	}
+	return sum;
+}
+
+double square_sum(const double pt[N]) {
+	double sum = 0;
+	for(int i = 0; i < N; ++i) {
+		sum += pt[i]* pt[i];
 	}
 	return sum;
 }
