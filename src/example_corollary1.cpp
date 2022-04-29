@@ -26,7 +26,7 @@ void example2() {
   double er[N/2], ei[N/2];
 
   double pt[N];
-  double pt_Az_tilde[N];
+  double pt_Az[N];
 
   // get Az
   set_test_rounded_message(zr, zi);
@@ -35,8 +35,8 @@ void example2() {
 
   // get Az_tilde
   encode(zr, zi, Delta, pt);
-  matrix_vector_product(pt, Ar, Ai, pt_Az_tilde);
-  decode(pt_Az_tilde, DeltaSq, Azr_tilde, Azi_tilde);
+  matrix_vector_product(pt, Ar, Ai, pt_Az);
+  decode(pt_Az, DeltaSq, Azr_tilde, Azi_tilde);
 
   // get e
   sub(Azr, Azr_tilde, er);

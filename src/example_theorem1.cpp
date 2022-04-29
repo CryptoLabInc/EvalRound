@@ -10,21 +10,21 @@ int main()
   double Azr[N/2], Azi[N/2];
 
   double pt[N];
-  double pt_Az[N], pt_Az_tilde[N];
+  double pt_Az_raw[N], pt_Az[N];
   double e_Az[N];
 
-  // get pt_Az
+  // get pt_Az_raw
   set_test_rounded_message(zr, zi);
   set_test_matrix(Ar, Ai);
   matrix_vector_product(zr, zi, Ar, Ai, Azr, Azi);
-  encode(Azr, Azi, DeltaSq, pt_Az);
+  encode(Azr, Azi, DeltaSq, pt_Az_raw);
 
-  // get pt_Az_tilde
+  // get pt_Az
   encode(zr, zi, Delta, pt);
-  matrix_vector_product(pt, Ar, Ai, pt_Az_tilde);
+  matrix_vector_product(pt, Ar, Ai, pt_Az);
 
   // get e_Az
-  sub_pt(pt_Az, pt_Az_tilde, e_Az);
+  sub_pt(pt_Az_raw, pt_Az, e_Az);
 
   // sanity check
   double er[N/2], ei[N/2];
