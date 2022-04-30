@@ -109,6 +109,22 @@ void matrix_vector_product(
 	}
 }
 
+void matrix_vector_product(
+    const double pt[N],
+    SparseDiagonal<(1<<(LOGN-1)),3> Ar,
+	SparseDiagonal<(1<<(LOGN-1)),3> Ai,
+    double pt_Az[N]) {
+	double pt_v[N], pt_rot[N], pt_conv[N];
+	set_zero(pt_Az);
+	for(int k = 0; k < 3; ++k) {
+		assert(Ar.off[k] == Ai.off[k]);
+		encode(Ar.vec[k], Ai.vec[k], Delta, pt_v);
+		rotate_pt(pt, pt_rot, Ar.off[k]);
+		conv(pt_v, pt_rot, pt_conv);
+		add_pt(pt_Az, pt_conv, pt_Az);
+	}
+}
+
 void print_pt(const std::string name, const double pt[N]){
 	std::cout << "Plaintext " << name << std::endl;
 	for(int i=0; i <std::min(N, 10); ++i) {
