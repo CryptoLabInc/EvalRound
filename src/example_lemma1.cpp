@@ -16,16 +16,16 @@ int main()
   std::cout << std::endl;
 
   for(int r = 0; r < 100; ++r) {
-  set_test_message(Vr, Vi);
-  encode_raw(Vr, Vi, Delta, pt_v_raw);
-  encode(Vr, Vi, Delta, pt_v);
-  sub_pt(pt_v_raw, pt_v, e);
-  conv(e, pt, res);
+    set_random_message(Vr, Vi);
+    encode_raw(Vr, Vi, Delta, pt_v_raw);
+    encode(Vr, Vi, Delta, pt_v);
+    sub_pt(pt_v_raw, pt_v, e);
+    conv(e, pt, res);
 
-  double measured = square_sum_pt(res);
-  std::cout << measured << std::endl;
-  //std::cout << "Measured : " << measured << std::endl;
-  //std::cout << "Expected : " << expected << std::endl;
-  //std::cout << "Measured / Expected : " << (measured / expected) << std::endl;
+    double measured = square_sum_pt(res);
+    std::cout << measured << std::endl;
+    //std::cout << "Measured : " << measured << std::endl;
+    //std::cout << "Expected : " << expected << std::endl;
+    //std::cout << "Measured / Expected : " << (measured / expected) << std::endl;
   }
 }
