@@ -8,7 +8,7 @@
 constexpr int LOGDELTA = 10;
 constexpr std::uint64_t Delta = 1ULL << LOGDELTA;
 constexpr std::uint64_t DeltaSq = 1ULL << (2 * LOGDELTA);
-constexpr int D = 2; // number of matrices multiplying
+constexpr int D = 1; // number of matrices multiplying
 constexpr std::uint64_t DeltaTotal = 1ULL << (LOGDELTA * (D + 1));
 constexpr int LOGQ = 24;
 constexpr int LOGQ_UP = LOGQ * 2;
