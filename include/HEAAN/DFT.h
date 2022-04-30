@@ -19,9 +19,36 @@ void dft( const double m[N], double zr[N/2],
 	}
 }
 
+template<int N>
+void fft( const double m[N], double zr[N/2],
+							 double zi[N/2]){
+	int fivei=1;
+	for(int i=0;i<N/2;i++,fivei=(fivei*5)%(2*N)){
+		int fivei_k=0; zr[i]=0; zi[i]=0;
+		for(int k=0;k<N;k++,fivei_k=(fivei_k+fivei)%(2*N)){
+			zr[i]+=m[k]*cos(PI/N*fivei_k);
+			zi[i]+=m[k]*sin(PI/N*fivei_k);
+		}
+	}
+}
+
 
 template<int N>
 void idft( const double zr[N/2],
+		   const double zi[N/2], double m[N]){
+	for(int k=0;k<N/2;k++){
+		m[k]=m[k+N/2]=0; int fivei_k=k;
+		for(int i=0;i<N/2;i++,fivei_k=(fivei_k*5)%(2*N)){
+			m[k    ]+=cos(PI/N*fivei_k)*zr[i]+sin(PI/N*fivei_k)*zi[i];
+			m[k+N/2]+=cos(PI/N*fivei_k)*zi[i]-sin(PI/N*fivei_k)*zr[i];
+		}
+		m[k    ]*=2./N;
+		m[k+N/2]*=2./N;
+	}
+}
+
+template<int N>
+void ifft( const double zr[N/2],
 		   const double zi[N/2], double m[N]){
 	for(int k=0;k<N/2;k++){
 		m[k]=m[k+N/2]=0; int fivei_k=k;

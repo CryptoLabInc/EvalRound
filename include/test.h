@@ -17,6 +17,16 @@ void set_test_message(double zr[N/2], double zi[N/2]) {
     */
 }
 
+void set_test_message(double m[N]) {
+    sampleUniform(m, m+N);
+/*    for(int i = 0; i < N / 2; ++i) {
+        double x = (double) (i*i) / (N/2) * M_PI;
+        zr[i] = cos(x);
+        zi[i] = sin(x);
+    }
+    */
+}
+
 void set_test_rounded_message(double zr[N/2], double zi[N/2]) {
     set_test_message(zr, zi);
     double pt[N];
