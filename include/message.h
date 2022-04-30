@@ -2,6 +2,8 @@
 
 #include "define.h"
 
+#include "HEAAN/matrix.h"
+
 #include <iostream>
 #include <string>
 
@@ -21,6 +23,24 @@ void matrix_vector_product(
             int j = (i+k) % (N/2);
             sumr += Ar[k][i] * zr[j] - Ai[k][i] * zi[j];
             sumi += Ar[k][i] * zi[j] + Ai[k][i] * zr[j];
+        }
+        Azr[i] = sumr;
+        Azi[i] = sumi;
+    }
+}
+
+void matrix_vector_product(
+    const double zr[N/2], const double zi[N/2],
+    SparseDiagonal<(1<<(LOGN-1)),3> Ar,
+	SparseDiagonal<(1<<(LOGN-1)),3> Ai,
+    double Azr[N/2], double Azi[N/2]) {
+    for(int i = 0; i < N/2; ++i) {
+        double sumr = 0, sumi = 0;
+        for(int k = 0; k < K; ++k) {
+            int jr = (i+Ar.off[k]) % (N/2);
+            int ji = (i+Ai.off[k]) % (N/2);
+            sumr += Ar.vec[k][i] * zr[jr] - Ai.vec[k][i] * zi[ji];
+            sumi += Ar.vec[k][i] * zi[jr] + Ai.vec[k][i] * zr[ji];
         }
         Azr[i] = sumr;
         Azi[i] = sumi;

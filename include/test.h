@@ -4,6 +4,8 @@
 #include "message.h"
 #include "plaintext.h"
 
+#include "HEAAN/DFT.h"
+
 void set_test_message(double zr[N/2], double zi[N/2]) {
     sampleUniform(zr, zr+N/2);
     sampleUniform(zi, zi+N/2);
@@ -47,4 +49,14 @@ void set_test_matrix(double Ar[K][N/2], double Ai[K][N/2]) {
         sampleUniform(Ar[k], Ar[k]+N/2);
         sampleUniform(Ai[k], Ai[k]+N/2);
     }
+}
+
+void set_test_U0_matrix(SparseDiagonal<(1<<(LOGN-1)),3> U0r[LOGN-1],
+	            SparseDiagonal<(1<<(LOGN-1)),3> U0i[LOGN-1]) {
+    splitU0NR<LOGN>(U0r, U0i);
+    for (int n = 0; n < 3; n++) {
+		U0r[n].transpose();
+		U0i[n].transpose();
+		U0i[n].negate();
+	}
 }

@@ -108,7 +108,6 @@ struct SparseDiagonal {
 			if (off[s] > 0) {
 				double temp[N];
 				for (int i = 0; i < N; i++) {
-					printf("%f", vec[s][i]);
 					if (i < N - off[s]) temp[off[s] + i] = vec[s][i];
 					else				temp[i - (N - off[s])] = vec[s][i];
 				}
