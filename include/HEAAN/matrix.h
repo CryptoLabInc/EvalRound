@@ -2,7 +2,7 @@
 
 #include <cstdio>
 #include <cassert>
-
+#include <iostream>
 
 template<int N>
 void matrix_product(const double Ar[N][N],
@@ -171,3 +171,15 @@ void RemoveClutter(const SparseDiagonal<N, S1>& A,
 		assert(A.zero[s] == true);
 }
 
+template <int N, int S>
+void print_max(const SparseDiagonal<N, S>& A) {
+	double max = 0;
+	for (int s = 0; s < S; s++) {
+		for (int i = 0; i < N; i++) {
+			double a = std::abs(A.vec[s][i]);
+			max = max > a ? max : a;
+		}
+	}
+	std::cout << "Max " << max << std::endl;
+
+}

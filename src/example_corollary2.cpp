@@ -44,7 +44,6 @@ void matrix_norm_test() {
 
   set_test_message(zr, zi);
   set_test_U0_matrix(U0r, U0i);
-
   for(int i = 0; i < LOGN-1; ++i) {
     matrix_vector_product(zr, zi, U0r[i], U0i[i], Azr, Azi);
     double Az_sq = square_sum(Azr, Azi);

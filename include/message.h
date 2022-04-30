@@ -36,11 +36,11 @@ void matrix_vector_product(
     double Azr[N/2], double Azi[N/2]) {
     for(int i = 0; i < N/2; ++i) {
         double sumr = 0, sumi = 0;
-        for(int k = 0; k < K; ++k) {
+        for(int k = 0; k < 3; ++k) {
             int jr = (i+Ar.off[k]) % (N/2);
             int ji = (i+Ai.off[k]) % (N/2);
             sumr += Ar.vec[k][i] * zr[jr] - Ai.vec[k][i] * zi[ji];
-            sumi += Ar.vec[k][i] * zi[jr] + Ai.vec[k][i] * zr[ji];
+            sumi += Ar.vec[k][i] * zi[ji] + Ai.vec[k][i] * zr[jr];
         }
         Azr[i] = sumr;
         Azi[i] = sumi;
