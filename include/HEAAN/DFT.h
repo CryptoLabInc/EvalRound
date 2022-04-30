@@ -6,6 +6,53 @@
 
 #define PI 3.1415926535897932384626433
 
+#include <iostream>
+
+template<int N>
+void dft_orig( const double m[N], double zr[N/2],
+							 double zi[N/2]){
+	for(int i=0;i<N/2;i++){
+		double sumr = 0, sumi = 0;
+		int idxi_k=0;
+		for(int k=0;k<N;k++,idxi_k=(idxi_k+2*i+1)%(2*N)){
+			sumr+=m[k]*cos(PI/N*idxi_k);
+			sumi+=m[k]*sin(PI/N*idxi_k);
+		}
+		zr[i] = sumr;
+		zi[i] = sumi;
+	}
+}
+
+template<int N>
+void fft_orig( const double m[N], double zr[N/2],
+							 double zi[N/2]){
+	if(N == 2){
+		zr[0] = m[0];
+		zi[0] = m[1];
+		return;
+	}
+	double e[N/2], o[N/2];
+	double e_zr[N/4], e_zi[N/4], o_zr[N/4], o_zi[N/4];
+	for(int i=0; i < N/2; ++i) {
+		e[i] = m[2*i];
+		o[i] = m[2*i + 1];
+	}
+	fft_orig<N/2>(e, e_zr, e_zi);
+	fft_orig<N/2>(o, o_zr, o_zi);
+	for(int i = 0; i < N/4; ++i){
+		const double rot = PI/N*(2*i+1);
+		zr[i] = e_zr[i] + o_zr[i] * cos(rot) - o_zi[i] * sin(rot);
+		zi[i] = e_zi[i] + o_zr[i] * sin(rot) + o_zi[i] * cos(rot);
+	}
+	for(int i = N/4; i < N/2; ++i){
+		const double rot = PI/N*(2*i+1);
+		int j = N/2 - 1 - i; // conjugate index
+		zr[i] = e_zr[j] + o_zr[j] * cos(rot) + o_zi[j] * sin(rot);
+		zi[i] = -e_zi[j] + o_zr[j] * sin(rot) - o_zi[j] * cos(rot);
+	}
+}
+
+
 template<int N>
 void dft( const double m[N], double zr[N/2],
 							 double zi[N/2]){
@@ -22,12 +69,16 @@ void dft( const double m[N], double zr[N/2],
 template<int N>
 void fft( const double m[N], double zr[N/2],
 							 double zi[N/2]){
-	int fivei=1;
+	double zr_orig[N/2], zi_orig[N/2];
+	fft_orig<N>(m, zr_orig, zi_orig);
+	int fivei = 1;
 	for(int i=0;i<N/2;i++,fivei=(fivei*5)%(2*N)){
-		int fivei_k=0; zr[i]=0; zi[i]=0;
-		for(int k=0;k<N;k++,fivei_k=(fivei_k+fivei)%(2*N)){
-			zr[i]+=m[k]*cos(PI/N*fivei_k);
-			zi[i]+=m[k]*sin(PI/N*fivei_k);
+		if(fivei < N) {
+			zr[i] = zr_orig[fivei / 2];
+			zi[i] = zi_orig[fivei / 2];
+		} else {
+			zr[i] = zr_orig[(2*N - fivei) / 2];
+			zi[i] = -zi_orig[(2*N - fivei) / 2];
 		}
 	}
 }
