@@ -15,4 +15,4 @@ constexpr int LOGQ_UP = LOGQ * 2;
 constexpr int LOGN = 10;
 constexpr int N = 1 << LOGN;
 constexpr int h = 64;
-constexpr int K = 3;
+constexpr int K = 16;
