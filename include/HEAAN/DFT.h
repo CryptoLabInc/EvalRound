@@ -83,6 +83,51 @@ void fft( const double m[N], double zr[N/2],
 	}
 }
 
+template<int N>
+void idft_orig( const double zr[N/2],
+		   const double zi[N/2], double m[N]){
+	for(int k=0;k<N/2;k++){
+		double sum_real = 0, sum_imag = 0;
+		m[k]=m[k+N/2]=0; int idxi_k=k;
+		for(int i=0;i<N/2;i++,idxi_k=(idxi_k+2*k)%(2*N)){
+			sum_real +=cos(PI/N*idxi_k)*zr[i]+sin(PI/N*idxi_k)*zi[i];
+			sum_imag +=cos(PI/N*idxi_k)*zi[i]-sin(PI/N*idxi_k)*zr[i];
+		}
+		m[k    ] = 2./N * sum_real;
+		m[k+N/2] = 2./N * sum_imag;
+	}
+}
+
+template<int N>
+void ifft_orig(const double zr[N/2],
+		const double zi[N/2], double m[N]){
+	if(N == 2){
+		m[0] = zr[0];
+		m[1] = zi[0];
+		return;
+	}
+	double e_zr[N/4], e_zi[N/4], o_zr[N/4], o_zi[N/4];
+	double e[N/2], o[N/2];
+	for(int i=0; i < N/4; ++i) {
+		e_zr[i] = zr[2*i];
+		e_zi[i] = zi[2*i];
+		o_zr[i] = zr[2*i+1];
+		o_zi[i] = zi[2*i+1];
+	}
+	ifft_orig<N/2>(e_zr, e_zi, e);
+	ifft_orig<N/2>(o_zr, o_zi, o);
+	for(int k = 0; k < N/4; ++k){
+		const double rot_even = -PI/N*k;
+		const double rot_odd = PI/N*k;
+		m[k] = e[k] * cos(rot_even) + e[k+N/4] * sin(rot_even);
+		m[k] += o[k] * cos(rot_odd) + o[k+N/4] * sin(rot_odd);
+		m[k+N/2] = - e[k] * sin(rot_even) + e[k+N/4] * cos(rot_even);
+		m[k+N/2] += - o[k] * sin(rot_odd) + o[k+N/4] * cos(rot_odd);
+		m[k    ]*=0.5;
+		m[k+N/2]*=0.5;
+	}
+}
+
 
 template<int N>
 void idft( const double zr[N/2],
