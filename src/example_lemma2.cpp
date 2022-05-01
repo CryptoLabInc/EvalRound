@@ -5,6 +5,7 @@
 
 int main()
 {
+  // || \sigma_k e * pt || ~= sqrt( K N /  12) * || pt||
   double zr[N/2], zi[N/2];
   double Vr[N/2], Vi[N/2];
   double pt[N], pt_v_raw[N], pt_v[N], pt_rot[N], pt_conv[N], e[N], res[N];

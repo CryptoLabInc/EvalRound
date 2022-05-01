@@ -5,6 +5,7 @@
 
 int main()
 {
+  // ||e * pt|| ~= sqrt(N/12) * ||pt||
   double zr[N/2], zi[N/2];
   double Vr[N/2], Vi[N/2];
   double pt[N], pt_v_raw[N], pt_v[N], e[N], res[N];

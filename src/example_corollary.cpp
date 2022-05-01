@@ -2,7 +2,8 @@
 
 #include <cmath>
 
-void example1() {
+void example() {
+  // multi matrix version of theorem1
   double zr[N/2], zi[N/2];
   SparseDiagonal<N/2, 3> U0r[LOGN-1];
   SparseDiagonal<N/2, 3> U0i[LOGN-1];
@@ -69,5 +70,5 @@ void matrix_norm_test() {
 
 int main()
 {
-  example1();
+  example();
 }

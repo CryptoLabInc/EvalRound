@@ -3,15 +3,30 @@
 
 #include <iostream>
 
+void example1() {
+  double zr[N/2], zi[N/2];
+  double pt[N];
+
+  set_test_message(zr, zi);
+  encode(zr, zi, Delta, pt);
+
+  double measured = norm_pt(pt) / norm(zr, zi);
+  double expected = (double) Delta / sqrt(N/2);
+
+  std::cout << "Measured : " << measured << std::endl;
+  std::cout << "Expected : " << expected << std::endl;
+}
+
 int main()
 {
+  // ||Az - \widetilde{Az} || ~= sqrt(KN / 12) * (1 / Delta_A) * ||pt||
   double zr[N/2], zi[N/2];
   double pt[N];
 
   // get pt
   set_test_rounded_message(zr, zi);
   encode(zr, zi, Delta, pt);
-  double expected = sqrt(K * N / 12.0) * norm_pt(pt);
+  double expected = sqrt(K * N / 12.0) * norm_pt(pt) / (double) Delta;
   std::cout << expected << std::endl;
   std::cout << std::endl;
 
@@ -39,7 +54,7 @@ int main()
     decode(e_Az, DeltaSq, er, ei);
     //print_pt("er (for sanity check)", er);
 
-    double measured = norm_pt(e_Az);
+    double measured = norm(er, ei);
     std::cout << measured << std::endl;
     //double bound = K * expected;
     //std::cout << "Measured : " << measured << std::endl;
