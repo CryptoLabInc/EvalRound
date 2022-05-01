@@ -19,14 +19,14 @@ void example1() {
 
 int main()
 {
-  // ||Az - \widetilde{Az} || ~= sqrt(KN / 12) * (1 / Delta_A) * ||pt||
+  // ||Az - \widetilde{Az} || ~= sqrt(KN / 12) * (1 / Delta_A) * ||z||
   double zr[N/2], zi[N/2];
   double pt[N];
 
   // get pt
   set_test_rounded_message(zr, zi);
   encode(zr, zi, Delta, pt);
-  double expected = sqrt(K * N / 12.0) * norm_pt(pt) / (double) Delta;
+  double expected = sqrt(K * N / 12.0) * norm(zr, zi) / (double) Delta;
   std::cout << expected << std::endl;
   std::cout << std::endl;
 
