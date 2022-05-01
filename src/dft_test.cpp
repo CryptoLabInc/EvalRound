@@ -1,4 +1,4 @@
-#include "test.h"
+#include "SIMPLE/test.h"
 
 #include "HEAAN/DFT.h"
 

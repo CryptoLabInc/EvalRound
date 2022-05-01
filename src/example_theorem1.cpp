@@ -1,5 +1,5 @@
 
-#include "test.h"
+#include "SIMPLE/test.h"
 
 #include <iostream>
 
@@ -26,7 +26,7 @@ int main()
   // get pt
   set_test_rounded_message(zr, zi);
   encode(zr, zi, Delta, pt);
-  double expected = sqrt(K * N / 12.0) * norm_pt(pt) / (double) Delta;
+  double expected = sqrt(K * N / 12.0)  / (double) Delta * norm_pt(pt);
   std::cout << expected << std::endl;
   std::cout << std::endl;
 
@@ -35,8 +35,6 @@ int main()
     double Azr[N/2], Azi[N/2];
     double pt_Az_raw[N], pt_Az[N];
     double e_Az[N];
-    
-    encode(zr, zi, Delta, pt);
     
     // get pt_Az_raw
     set_random_matrix(Ar, Ai);
