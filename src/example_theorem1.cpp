@@ -1,14 +1,15 @@
 
-#include "SIMPLE/test.h"
+#include "BIG/test.h"
 
 #include <iostream>
 
-void example1() {
+void norm_relationship_test() {
   double zr[N/2], zi[N/2];
-  double pt[N];
+
+  R_Q<LOGQ, N> pt;
 
   set_test_message(zr, zi);
-  encode(zr, zi, Delta, pt);
+  encode<LOGQ, N>(zr, zi, Delta, pt);
 
   double measured = norm_pt(pt) / norm(zr, zi);
   double expected = (double) Delta / sqrt(N/2);
@@ -17,9 +18,8 @@ void example1() {
   std::cout << "Expected : " << expected << std::endl;
 }
 
-int main()
-{
-  // ||Az - \widetilde{Az} || ~= sqrt(KN / 12) * (1 / Delta_A) * ||z||
+void example(){
+/*  // ||Az - \widetilde{Az} || ~= sqrt(KN / 12) * (1 / Delta_A) * ||z||
   double zr[N/2], zi[N/2];
   double pt[N];
 
@@ -60,4 +60,10 @@ int main()
     //std::cout << "Bound : " << bound << std::endl;
     //std::cout << "Measured / Expected : " << (measured / expected) << std::endl;
   } 
+  */
+}
+
+int main()
+{
+  norm_relationship_test();
 }

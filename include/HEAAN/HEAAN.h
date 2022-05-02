@@ -143,7 +143,7 @@ void encode( const double zr[N/2],
 	double m[N]; idft<N>(zr,zi,m);
 	for(int i=0; i<N; i++){
 		pt[i].setzero();
-		pt[i][0]=(uint64_t)(fabs(m[i])*Delta);
+		pt[i][0]= std::round(fabs(m[i])*Delta);
 		if(m[i]<0)
 			pt[i].negate();
 	}

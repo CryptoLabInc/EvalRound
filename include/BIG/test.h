@@ -1,7 +1,6 @@
 #pragma once
 
 #include "define.h"
-
 #include "message.h"
 #include "plaintext.h"
 #include "util.h"
@@ -34,9 +33,9 @@ void set_test_message(double m[N]) {
 
 void set_test_rounded_message(double zr[N/2], double zi[N/2]) {
     set_test_message(zr, zi);
-    double pt[N];
-    encode(zr, zi, Delta, pt);
-    decode(pt, Delta, zr, zi);
+    R_Q<LOGQ, N> pt;
+    encode<LOGQ, N>(zr, zi, Delta, pt);
+    decode<LOGQ, N>(pt, Delta, zr, zi);
 }
 
 void set_test_matrix(double Ar[K][N/2], double Ai[K][N/2]) {
