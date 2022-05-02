@@ -10,7 +10,7 @@ void fft_test(){
 
     set_test_message(m);
     dft<N>(m, zr_dft, zi_dft);
-    fft<N>(m, zr_fft, zi_fft);
+    fft<LOGN>(m, zr_fft, zi_fft);
     sub(zr_dft, zr_fft, er);
     sub(zi_dft, zi_fft, ei);
     print("er", er);
@@ -19,11 +19,14 @@ void fft_test(){
 
 void fft_run_test(){
     double m[N];
-    double zr_fft[N/2], zi_fft[N/2];
+    double zr[N/2], zi[N/2];
+    double zr_res[N/2], zi_res[N/2];
 
-    set_test_message(m);
-    fft<N>(m, zr_fft, zi_fft);
-    print("zr", zr_fft);
+    set_random_message(zr, zi);
+    ifft<LOGN>(zr, zi, m);
+    fft<LOGN>(m, zr_res, zi_res);
+    print("zr", zr);
+    print("zr_res", zr_res);
 }
 
 void idft_test(){
@@ -38,5 +41,5 @@ void idft_test(){
 }
 int main()
 {
-    idft_test();
+    fft_run_test();
 }
