@@ -100,20 +100,6 @@ void idft( const double zr[N/2],
 }
 
 template<int N>
-void ifft( const double zr[N/2],
-		   const double zi[N/2], double m[N]){
-	for(int k=0;k<N/2;k++){
-		m[k]=m[k+N/2]=0; int fivei_k=k;
-		for(int i=0;i<N/2;i++,fivei_k=(fivei_k*5)%(2*N)){
-			m[k    ]+=cos(PI/N*fivei_k)*zr[i]+sin(PI/N*fivei_k)*zi[i];
-			m[k+N/2]+=cos(PI/N*fivei_k)*zi[i]-sin(PI/N*fivei_k)*zr[i];
-		}
-		m[k    ]*=2./N;
-		m[k+N/2]*=2./N;
-	}
-}
-
-template<int N>
 void get_U0( double U0r[N/2][N/2],
 			 double U0i[N/2][N/2]){
 	int fivei=1;
@@ -154,3 +140,45 @@ void splitU0NR( SparseDiagonal<(1<<(LOGN-1)),3> Ar[LOGN-1],
 	}
 }
 
+template<int LOGN>
+void matrix_vector_product_fft(
+    const double zr[1 << (LOGN - 1)], const double zi[1 << (LOGN - 1)],
+    SparseDiagonal<(1<<(LOGN-1)),3> Ar,
+	SparseDiagonal<(1<<(LOGN-1)),3> Ai,
+    double Azr[1 << (LOGN - 1)], double Azi[1 << (LOGN - 1)]) {
+	const int N = 1 << LOGN;
+    for(int i = 0; i < N/2; ++i) {
+        double sumr = 0, sumi = 0;
+        for(int k = 0; k < 3; ++k) {
+            int jr = (i+Ar.off[k]) % (N/2);
+            int ji = (i+Ai.off[k]) % (N/2);
+            sumr += Ar.vec[k][i] * zr[jr] - Ai.vec[k][i] * zi[ji];
+            sumi += Ar.vec[k][i] * zi[ji] + Ai.vec[k][i] * zr[jr];
+        }
+        Azr[i] = sumr;
+        Azi[i] = sumi;
+    }
+}
+
+template<int LOGN>
+void ifft( const double zr[(uint64_t) 1 << (LOGN - 1)],
+		   const double zi[(uint64_t) 1 << (LOGN - 1)], double m[(uint64_t) (1) << LOGN]){
+	constexpr uint64_t N = (uint64_t) 1 << LOGN;
+	SparseDiagonal<N/2,3> U0r[LOGN-1];
+    SparseDiagonal<N/2,3> U0i[LOGN-1];
+
+	splitU0NR<LOGN>(U0r, U0i);
+    for (int n = 0; n < 3; n++) {
+		U0r[n].transpose();
+		U0i[n].transpose();
+		U0i[n].negate();
+	}
+	double Uzr[LOGN-1][N/2], Uzi[LOGN-1][N/2];
+	matrix_vector_product_fft<LOGN>(zr, zi, U0r[0], U0i[0], Uzr[0], Uzi[0]);
+	for(int i = 1; i < LOGN - 1; ++i)
+		matrix_vector_product_fft<LOGN>(Uzr[i-1], Uzi[i-1], U0r[i], U0i[i], Uzr[i], Uzi[i]);
+	for(int i = 0; i < N/2; ++i) {
+		m[i] = Uzr[LOGN - 2][i] * 2 / (double) N;
+		m[i + N/2] = Uzi[LOGN - 2][i] * 2 / (double) N;
+	}
+}

@@ -32,11 +32,11 @@ void idft_test(){
     
     set_test_message(zr, zi);
     idft<N>(zr, zi, m_idft);
-    ifft<N>(zr, zi, m_ifft);
+    ifft<LOGN>(zr, zi, m_ifft);
     print_pt("m_idft", m_idft);
     print_pt("m_ifft", m_ifft);
 }
 int main()
 {
-    fft_run_test();
+    idft_test();
 }
