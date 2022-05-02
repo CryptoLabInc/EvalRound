@@ -61,7 +61,7 @@ void set_test_U0_matrix(SparseDiagonal<(1<<(LOGN-1)),3> U0r[LOGN-1],
 	            SparseDiagonal<(1<<(LOGN-1)),3> U0i[LOGN-1]) {
     splitU0NR<LOGN>(U0r, U0i);
     
-    for (int n = 0; n < 3; n++) {
+    for (int n = 0; n < LOGN -1; n++) {
 		U0r[n].transpose();
 		U0i[n].transpose();
 		U0i[n].negate();
