@@ -1,4 +1,4 @@
-#include "SIMPLE/test.h"
+#include "BIG/test.h"
 
 #include <cmath>
 
@@ -18,38 +18,42 @@ void example() {
   }
 
   double matrix_norm_except_one = std::pow(sqrt(2), D-1);
-  double expected = sqrt(3 * N / 12.0) * norm(zr, zi) / double (Delta) * D * matrix_norm_except_one;
+  double expected = sqrt(3 * N / 12.0) * norm(zr, zi) / double (Delta) * sqrt(D) * matrix_norm_except_one;
+  double bound = sqrt(D) * expected;
   std::cout << expected << std::endl;
+  std::cout << bound << std::endl;
   std::cout << std::endl;
 
-  for(int r = 0; r < 1; ++r) {
-    double Uzr_tilde[N/2], Uzi_tilde[N/2];
-    double er[N/2], ei[N/2];
-    double pt[N], pt_Uz[D][N];
-    encode(zr, zi, Delta, pt);
+  double Uzr_tilde[N/2], Uzi_tilde[N/2];
+  double er[N/2], ei[N/2];
+  R_Q<LOGQ, N> pt, pt_Uz[D];
 
-    // get Uz_tilde
-    matrix_vector_product(pt, U0r[0], U0i[0], pt_Uz[0]);
-    for(int i = 1; i < D; ++i) {
-      matrix_vector_product(pt_Uz[i-1], U0r[i], U0i[i], pt_Uz[i]);
-    }
-    decode(pt_Uz[D-1], DeltaTotal, Uzr_tilde, Uzi_tilde);
+  // somehow pt is changed ... reset pt
+  encode<LOGQ, N>(zr, zi, Delta, pt);
 
-    // get e
-    sub(Uzr[D-1], Uzr_tilde, er);
-    sub(Uzi[D-1], Uzi_tilde, ei);
-
-    // sanity check
-    //print("er (for sanity check)", er);
-
-    double measured = norm(er, ei);
-    std::cout << measured << std::endl;
-    //double bound = sqrt(3) * expected;
-    //std::cout << "Measured : " << measured << std::endl;
-    //std::cout << "Expected : " << expected << std::endl;
-    //std::cout << "Bound : " << bound << std::endl;
-    //std::cout << "Measured / Expected : " << (measured / expected) << std::endl;
+  // get Uz_tilde
+  matrix_vector_product(pt, U0r[0], U0i[0], pt_Uz[0]);
+  for(int i = 1; i < D; ++i) {
+    matrix_vector_product(pt_Uz[i-1], U0r[i], U0i[i], pt_Uz[i]);
   }
+
+  // decode
+  const int LOGQto = LOGQ - LOGDELTA * D;
+  R_Q<LOGQto, N> pt_RS;
+  for(int i = 0; i < N; ++i) {
+    shift_right<LOGQ, LOGQto>(pt_Uz[D-1][i], pt_RS[i]);
+  }
+  decode(pt_RS, Delta, Uzr_tilde, Uzi_tilde);
+
+  // get e
+  sub(Uzr[D-1], Uzr_tilde, er);
+  sub(Uzi[D-1], Uzi_tilde, ei);
+
+  // sanity check
+  //print("er (for sanity check)", er);
+
+  double measured = norm(er, ei);
+  std::cout << measured << std::endl;
 }
 
 void matrix_norm_test() {

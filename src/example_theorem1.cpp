@@ -45,7 +45,6 @@ void example(){
 
   // get pt
   set_test_rounded_message(zr, zi);
-  encode<LOGQ, N>(zr, zi, Delta, pt);
 
   double expected = sqrt(K * N / 12.0) * norm(zr, zi) / (double) Delta;
   std::cout << expected << std::endl;
