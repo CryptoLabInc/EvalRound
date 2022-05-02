@@ -98,7 +98,7 @@ void rotate_pt(const double pt[N], double pt_rot[N], int r){
 void matrix_vector_product(
     const double pt[N],
     const double Ar[K][N/2], const double Ai[K][N/2],
-    double pt_Az[N/2]){
+    double pt_Az[N]){
 	double pt_v[N], pt_rot[N], pt_conv[N];
 	set_zero(pt_Az);
 	for(int k = 0; k < K; ++k) {
