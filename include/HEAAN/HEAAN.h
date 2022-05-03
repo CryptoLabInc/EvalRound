@@ -190,7 +190,7 @@ void decode_log( const R_Q<LOGQ, 1<<LOGN >& pt, int LOGDELTA, double zr[1 << (LO
 		if(pt[i].is_bigger_than_halfQ())
 			m[i]=-m[i];
 	}
-	dft<LOGN>(m,zr,zi);
+	fft<LOGN>(m,zr,zi);
 }
 
 template<int N>
