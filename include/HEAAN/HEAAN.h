@@ -169,6 +169,27 @@ void decode( const R_Q<LOGQ,N>& pt, uint64_t Delta, double zr[N/2],
 	dft<N>(m,zr,zi);
 }
 
+template< int LOGQ, int N >
+void decode_log( const R_Q<LOGQ,N>& pt, int LOGDELTA, double zr[N/2], 
+													double zi[N/2]){
+	double m[N];
+	uint64_t alpha=1; alpha<<=32;
+	double beta = (double)alpha; beta=beta*beta;
+	int scale_diff = 64 * ((LOGQ+63)/64 - 1) - LOGDELTA;
+	for(int i=0; i<N; i++){
+		Z_Q<LOGQ> abs_pti(pt[i]);
+		if(pt[i].is_bigger_than_halfQ())
+			abs_pti.negate();
+		m[i]=0;
+		for(int j=0; j<(LOGQ+63)/64; j++)
+			m[i] = m[i] / beta + abs_pti[j];
+		m[i] = ldexp(m[i], scale_diff);
+		if(pt[i].is_bigger_than_halfQ())
+			m[i]=-m[i];
+	}
+	dft<N>(m,zr,zi);
+}
+
 template<int N>
 void conv( const int s1[N],
 		   const int s2[N], int s3[N]){

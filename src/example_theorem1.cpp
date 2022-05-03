@@ -67,28 +67,15 @@ void example(){
 
     // decode
     double Azr_tilde[N/2], Azi_tilde[N/2];
-    const int LOGQto = LOGQ - LOGDELTA;
-    R_Q<LOGQto, N> pt_RS;
-    for(int i = 0; i < N; ++i) {
-		  shift_right<LOGQ, LOGQto>(pt_Az[i], pt_RS[i]);
-	  }
-    decode(pt_RS, Delta, Azr_tilde, Azi_tilde);
-    //decode(pt_Az, Delta*Delta, Azr_tilde, Azi_tilde);
-    /*R_Q<LOGQ, N> pt_Az_raw;
-    encode(Azr, Azi, Delta*Delta, pt_Az_raw);
-    decode(pt_Az_raw, Delta*Delta, Azr_tilde, Azi_tilde);*/
-
-    //print("Azr", Azr);
-    //print("Azr_tilde", Azr_tilde);
-
+    decode_log(pt_Az, 2*LOGDELTA, Azr_tilde, Azi_tilde);
     // sub
     double er[N/2], ei[N/2];
     sub(Azr, Azr_tilde, er);
     sub(Azi, Azi_tilde, ei);
+    //print("er", er);
 
     double measured = norm(er, ei);
-    std::cout << measured << " " << (measured / expected) << std::endl;
-
+    std::cout << measured << std::endl;
   }
 }
 
