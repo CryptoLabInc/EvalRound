@@ -44,7 +44,7 @@ void matrix_vector_product(
 	R_Q<LOGQ, N> pt_v, pt_rot, pt_conv;
 	pt_Az.setzero();
 	for(int k = 0; k < K; ++k) {
-		encode<LOGQ, N>(Ar[k], Ai[k], Delta, pt_v);
+		encode<LOGQ, LOGN>(Ar[k], Ai[k], Delta, pt_v);
 		rotate_pt(pt, pt_rot, k);
 		conv<LOGQ, N>(pt_v, pt_rot, pt_conv);
 		pt_Az += pt_conv;
@@ -60,7 +60,7 @@ void matrix_vector_product(
 	pt_Az.setzero();
 	for(int k = 0; k < 3; ++k) {
 		assert(Ar.off[k] == Ai.off[k]);
-		encode<LOGQ, N>(Ar.vec[k], Ai.vec[k], Delta, pt_v);
+		encode<LOGQ, LOGN>(Ar.vec[k], Ai.vec[k], Delta, pt_v);
 		rotate_pt(pt, pt_rot, Ar.off[k]);
 		conv<LOGQ, N>(pt_v, pt_rot, pt_conv);
 		pt_Az += pt_conv;

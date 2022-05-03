@@ -29,7 +29,7 @@ void example() {
   R_Q<LOGQ, N> pt, pt_Uz[D];
 
   // somehow pt is changed ... reset pt
-  encode<LOGQ, N>(zr, zi, Delta, pt);
+  encode<LOGQ, LOGN>(zr, zi, Delta, pt);
 
   // get Uz_tilde
   matrix_vector_product(pt, U0r[0], U0i[0], pt_Uz[0]);
@@ -38,7 +38,7 @@ void example() {
   }
 
   // decode
-  decode_log(pt_Uz[D-1], LOGDELTA * (D + 1), Uzr_tilde, Uzi_tilde);
+  decode_log<LOGQ, LOGN>(pt_Uz[D-1], LOGDELTA * (D + 1), Uzr_tilde, Uzi_tilde);
 
   // get e
   sub(Uzr[D-1], Uzr_tilde, er);

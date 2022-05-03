@@ -93,7 +93,7 @@ void linear_transform( const double Ar[N/2][N/2],
 	Act.setzero(); R_Q_square<LOGQ,N> ct_rot = ct;
 	for(int i=0; i<N/2; i++){
 		R_Q<LOGQ,N> pt;
-		encode<LOGQ,N>(vr[i],vi[i], 1ULL<<LOGDELTA, pt);
+		encode<LOGQ, LOGN>(vr[i],vi[i], 1ULL<<LOGDELTA, pt);
 
 		
 
@@ -125,7 +125,7 @@ void linear_transform( const SparseDiagonal<N/2,S>& Ar,
 	for (int s = 0; s < S; s++) {
 		if (Ar.zero[s] == false || Ai.zero[s] == false) {
 			R_Q<LOGQ, N> pt;
-			encode<LOGQ, N>(Ar.vec[s],
+			encode<LOGQ, LOGN>(Ar.vec[s],
 							Ai.vec[s], 1ULL << LOGDELTA, pt);
 			R_Q_square<LOGQ, N> ct_rot;
 			if (Ar.off[s] != 0)

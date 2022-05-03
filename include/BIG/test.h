@@ -34,8 +34,8 @@ void set_test_message(double m[N]) {
 void set_test_rounded_message(double zr[N/2], double zi[N/2]) {
     set_test_message(zr, zi);
     R_Q<LOGQ, N> pt;
-    encode<LOGQ, N>(zr, zi, Delta, pt);
-    decode<LOGQ, N>(pt, Delta, zr, zi);
+    encode<LOGQ, LOGN>(zr, zi, Delta, pt);
+    decode<LOGQ, LOGN>(pt, Delta, zr, zi);
 }
 
 void set_test_matrix(double Ar[K][N/2], double Ai[K][N/2]) {

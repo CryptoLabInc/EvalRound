@@ -8,7 +8,7 @@
 
 void encode( const double zr[N/2],
 			 const double zi[N/2], uint64_t Delta, double pt[N]){
-	double m[N]; idft<N>(zr,zi,m);
+	double m[N]; ifft<LOGN>(zr,zi,m);
 	double Delta_double = (double) Delta;
 	for(int i=0; i<N; i++){
 		pt[i] = (double) round(m[i]*Delta_double);
@@ -17,7 +17,7 @@ void encode( const double zr[N/2],
 
 void encode_raw( const double zr[N/2], 
 			 const double zi[N/2], uint64_t Delta, double pt[N]){
-	double m[N]; idft<N>(zr,zi,m);
+	double m[N]; ifft<LOGN>(zr,zi,m);
 	double Delta_double = (double) Delta;
 	for(int i=0; i<N; i++){
 		pt[i] = m[i]*Delta_double;
@@ -31,7 +31,7 @@ void decode( const double pt[N], uint64_t Delta, double zr[N/2],
     for(int i = 0; i < N; ++i) {
         m[i] = pt[i] / Delta_double;
     }
-	dft<N>(m,zr,zi);
+	fft<LOGN>(m,zr,zi);
 }
 
 void conv(const double pt1[N], const double pt2[N], double pt3[N]){

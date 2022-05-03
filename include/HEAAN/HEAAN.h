@@ -137,10 +137,11 @@ void HEAAN<LOGQ,N>::ks(const R_Q_square <2*LOGQ,N>& swk,
 	ct+=ct1_swk_rs;
 }
 
-template< int LOGQ, int N >
+template< int LOGQ, int LOGN >
 void encode( const double zr[N/2], 
-			 const double zi[N/2], uint64_t Delta, R_Q<LOGQ,N>& pt){
-	double m[N]; idft<N>(zr,zi,m);
+			 const double zi[N/2], uint64_t Delta, R_Q<LOGQ, 1<< LOGN >& pt){
+	const int N = 1 << LOGN;
+	double m[N]; ifft<LOGN>(zr,zi,m);
 	for(int i=0; i<N; i++){
 		pt[i].setzero();
 		pt[i][0]= (uint64_t) std::round(abs(m[i])*Delta);
@@ -149,9 +150,10 @@ void encode( const double zr[N/2],
 	}
 }
 
-template< int LOGQ, int N >
-void decode( const R_Q<LOGQ,N>& pt, uint64_t Delta, double zr[N/2], 
-													double zi[N/2]){
+template< int LOGQ, int LOGN >
+void decode( const R_Q<LOGQ,N>& pt, uint64_t Delta, double zr[1 << (LOGN - 1)], 
+													double zi[1 << (LOGN - 1)]){
+	const int N = 1 << LOGN;
 	double m[N];
 	uint64_t alpha=1; alpha<<=32;
 	double beta = (double)alpha; beta=beta*beta;
@@ -166,12 +168,13 @@ void decode( const R_Q<LOGQ,N>& pt, uint64_t Delta, double zr[N/2],
 		if(pt[i].is_bigger_than_halfQ())
 			m[i]=-m[i];
 	}
-	dft<N>(m,zr,zi);
+	fft<LOGN>(m,zr,zi);
 }
 
-template< int LOGQ, int N >
-void decode_log( const R_Q<LOGQ,N>& pt, int LOGDELTA, double zr[N/2], 
-													double zi[N/2]){
+template< int LOGQ, int LOGN >
+void decode_log( const R_Q<LOGQ, 1<<LOGN >& pt, int LOGDELTA, double zr[1 << (LOGN - 1)], 
+													double zi[1 << (LOGN - 1)]){
+	const int N = 1 << LOGN;
 	double m[N];
 	uint64_t alpha=1; alpha<<=32;
 	double beta = (double)alpha; beta=beta*beta;
@@ -187,7 +190,7 @@ void decode_log( const R_Q<LOGQ,N>& pt, int LOGDELTA, double zr[N/2],
 		if(pt[i].is_bigger_than_halfQ())
 			m[i]=-m[i];
 	}
-	dft<N>(m,zr,zi);
+	dft<LOGN>(m,zr,zi);
 }
 
 template<int N>
