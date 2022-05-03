@@ -144,45 +144,67 @@ void matrix_vector_product_fft(
 
 template<int LOGN>
 void fft(
-  const double m[(uint64_t) (1) << LOGN],
-  double zr[(uint64_t) 1 << (LOGN - 1)],
-  double zi[(uint64_t) 1 << (LOGN - 1)]){
-	  const int N = 1 << LOGN;
-	SparseDiagonal<N/2,3> U0r[LOGN-1];
-  SparseDiagonal<N/2,3> U0i[LOGN-1];
-
-  splitU0NR<LOGN>(U0r, U0i);
-	double Um[LOGN-1][N];
-	matrix_vector_product_fft<LOGN>(m, m + N/2, U0r[LOGN-2], U0i[LOGN-2], Um[LOGN-2], Um[LOGN-2] + N/2);
-	for(int i = LOGN-3; i >= 0; --i)
-		matrix_vector_product_fft<LOGN>(Um[i+1], Um[i+1] + N/2, U0r[i], U0i[i], Um[i], Um[i] + N/2);
-	for(int i = 0; i < N/2; ++i) {
-		zr[i] = Um[0][i];
-		zi[i] = Um[0][i + N/2];
+  const double m[1 << LOGN],
+  double zr[1 << (LOGN - 1)],
+  double zi[1 << (LOGN - 1)]){
+	const int N = 1 << LOGN;
+	static bool is_init = false;
+	static SparseDiagonal<N/2,3> U0r[LOGN-1];
+    static SparseDiagonal<N/2,3> U0i[LOGN-1];
+	if(!is_init) {
+  		splitU0NR<LOGN>(U0r, U0i);
+		is_init = true;
 	}
 
+	for(int i = 0; i < N/2; ++i) {
+		zr[i] = m[i];
+		zi[i] = m[i + N/2];
+	}
+
+	double Umr[N/2], Umi[N/2];
+	for(int d = LOGN - 2; d >= 0; --d) {
+		for(int i = 0; i < N/2; ++i) {
+			Umr[i] = zr[i];
+			Umi[i] = zi[i];
+		}
+		matrix_vector_product_fft<LOGN>(Umr, Umi, U0r[d], U0i[d], zr, zi);
+	}
 }
 
 
 template<int LOGN>
-void ifft( const double zr[(uint64_t) 1 << (LOGN - 1)],
-		   const double zi[(uint64_t) 1 << (LOGN - 1)], double m[(uint64_t) (1) << LOGN]){
-	constexpr uint64_t N = (uint64_t) 1 << LOGN;
-	SparseDiagonal<N/2,3> U0r[LOGN-1];
-    SparseDiagonal<N/2,3> U0i[LOGN-1];
+void ifft( const double zr[1 << (LOGN - 1)],
+		   const double zi[1 << (LOGN - 1)], double m[1 << LOGN]){
+	constexpr int N = 1 << LOGN;
+	static bool is_init = false;
+	static SparseDiagonal<N/2,3> U0r[LOGN-1];
+    static SparseDiagonal<N/2,3> U0i[LOGN-1];
 
-	splitU0NR<LOGN>(U0r, U0i);
-    for (int n = 0; n < LOGN - 1; n++) {
-		U0r[n].transpose();
-		U0i[n].transpose();
-		U0i[n].negate();
+	if(!is_init) {
+		splitU0NR<LOGN>(U0r, U0i);
+    	for (int n = 0; n < LOGN - 1; n++) {
+			U0r[n].transpose();
+			U0i[n].transpose();
+			U0i[n].negate();
+		}
+		is_init = true;
 	}
-	double Uzr[LOGN-1][N/2], Uzi[LOGN-1][N/2];
-	matrix_vector_product_fft<LOGN>(zr, zi, U0r[0], U0i[0], Uzr[0], Uzi[0]);
-	for(int i = 1; i < LOGN - 1; ++i)
-		matrix_vector_product_fft<LOGN>(Uzr[i-1], Uzi[i-1], U0r[i], U0i[i], Uzr[i], Uzi[i]);
+
 	for(int i = 0; i < N/2; ++i) {
-		m[i] = Uzr[LOGN - 2][i] * 2 / (double) N;
-		m[i + N/2] = Uzi[LOGN - 2][i] * 2 / (double) N;
+		m[i] = zr[i];
+		m[i + N/2] = zi[i];
+	}
+
+	double Uzr[N/2], Uzi[N/2];
+	for(int d = 0; d < LOGN - 1; ++d) {
+		for(int i = 0; i < N/2; ++i) {
+			Uzr[i] = m[i];
+			Uzi[i] = m[i + N/2];
+		}
+		matrix_vector_product_fft<LOGN>(Uzr, Uzi, U0r[d], U0i[d], m, m + N/2);
+	}
+
+	for(int i = 0; i < N; ++i) {
+		m[i] = m[i] * 2 / (double) N;
 	}
 }
