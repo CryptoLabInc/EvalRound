@@ -38,12 +38,7 @@ void example() {
   }
 
   // decode
-  const int LOGQto = LOGQ - LOGDELTA * D;
-  R_Q<LOGQto, N> pt_RS;
-  for(int i = 0; i < N; ++i) {
-    shift_right<LOGQ, LOGQto>(pt_Uz[D-1][i], pt_RS[i]);
-  }
-  decode(pt_RS, Delta, Uzr_tilde, Uzi_tilde);
+  decode_log(pt_Uz[D-1], LOGDELTA * (D + 1), Uzr_tilde, Uzi_tilde);
 
   // get e
   sub(Uzr[D-1], Uzr_tilde, er);
