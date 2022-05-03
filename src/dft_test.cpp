@@ -32,7 +32,7 @@ void fft_run_test(){
 void idft_test(){
     double zr[N/2], zi[N/2];
     double m_idft[N], m_ifft[N];
-    
+    std::cout << N << std::endl;
     set_test_message(zr, zi);
     idft<N>(zr, zi, m_idft);
     ifft<LOGN>(zr, zi, m_ifft);
@@ -41,5 +41,5 @@ void idft_test(){
 }
 int main()
 {
-    fft_run_test();
+  fft_run_test();
 }

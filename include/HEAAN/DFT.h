@@ -147,17 +147,18 @@ void fft(
   const double m[(uint64_t) (1) << LOGN],
   double zr[(uint64_t) 1 << (LOGN - 1)],
   double zi[(uint64_t) 1 << (LOGN - 1)]){
+	  const int N = 1 << LOGN;
 	SparseDiagonal<N/2,3> U0r[LOGN-1];
   SparseDiagonal<N/2,3> U0i[LOGN-1];
 
   splitU0NR<LOGN>(U0r, U0i);
 	double Um[LOGN-1][N];
-	matrix_vector_product_fft<LOGN>(m, m + N/2, U0r[0], U0i[0], Um[0], Um[0] + N/2);
-	for(int i = 1; i < LOGN - 1; ++i)
-		matrix_vector_product_fft<LOGN>(Um[i-1], Um[i-1] + N/2, U0r[i], U0i[i], Um[i], Um[i] + N/2);
+	matrix_vector_product_fft<LOGN>(m, m + N/2, U0r[LOGN-2], U0i[LOGN-2], Um[LOGN-2], Um[LOGN-2] + N/2);
+	for(int i = LOGN-3; i >= 0; --i)
+		matrix_vector_product_fft<LOGN>(Um[i+1], Um[i+1] + N/2, U0r[i], U0i[i], Um[i], Um[i] + N/2);
 	for(int i = 0; i < N/2; ++i) {
-		zr[i] = Um[LOGN - 2][i];
-		zi[i] = Um[LOGN - 2][i + N/2];
+		zr[i] = Um[0][i];
+		zi[i] = Um[0][i + N/2];
 	}
 
 }
