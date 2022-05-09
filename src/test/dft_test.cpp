@@ -1,43 +1,32 @@
-#include "SIMPLE/test.h"
+#include "experiment/simple.h"
 
 #include "HEAAN/DFT.h"
 
-void fft_test(){
-    double m[N];
-    double zr_dft[N/2], zi_dft[N/2];
-    double zr_fft[N/2], zi_fft[N/2];
-    double er[N/2], ei[N/2];
-
-    set_random_message(m, m+N/2);
-    dft<N>(m, zr_dft, zi_dft);
-    fft<LOGN>(m, zr_fft, zi_fft);
-    print("zr_dft", zr_dft);
-    print("zr_fft", zr_fft);
-}
-
-void fft_run_test(){
-    double m[N];
-    double zr[N/2], zi[N/2];
-    double zr_res[N/2], zi_res[N/2];
-
-    set_random_message(zr, zi);
-    ifft<LOGN>(zr, zi, m);
-    fft<LOGN>(m, zr_res, zi_res);
-    print("zr", zr);
-    print("zr_res", zr_res);
-}
-
-void idft_test(){
-    double zr[N/2], zi[N/2];
+void ifft_test(){
+    Message<LOGN> z;
     double m_idft[N], m_ifft[N];
-    set_test_rounded_message(zr, zi);
-    idft<N>(zr, zi, m_idft);
-    ifft<LOGN>(zr, zi, m_ifft);
-    print_pt("m_idft", m_idft);
-    print_pt("m_ifft", m_ifft);
+    set_test_rounded_message(z, Delta);
+    idft<N>(z.r, z.i, m_idft);
+    ifft<LOGN>(z.r, z.i, m_ifft);
+    for(int i = 0; i < std::min(N, 10); ++i) {
+        std::cout << i << " " << m_idft[i] << " " << m_ifft[i] << std::endl;
+    }
 }
+
+void run_test(){
+    Message<LOGN> z, z_res;
+    double m[N];
+
+    set_random_message(z);
+    ifft<LOGN>(z.r, z.i, m);
+    fft<LOGN>(m, z_res.r, z_res.i);
+    print("zr", z);
+    print("zr_res", z_res);
+}
+
+
 int main()
 {
-  fft_test();
-  idft_test();
+  ifft_test();
+  run_test();
 }
