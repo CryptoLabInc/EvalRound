@@ -29,7 +29,7 @@ uint64_t add_mod(uint64_t a, uint64_t b, uint64_t q) {
 
 // compute (a - b) % q
 uint64_t sub_mod(uint64_t a, uint64_t b, uint64_t q) {
-  return add_mod(a, q - b, q);
+  return add_mod(a, q - (b%q), q);
 }
 
 // compute (a * b) % q
