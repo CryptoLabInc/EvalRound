@@ -4,6 +4,7 @@
 #include "mod.h"
 
 #include <cstdint>
+#include <iostream>
 
 namespace {
 inline int log(int N) {
@@ -74,4 +75,43 @@ NTT<N>::NTT(uint64_t q, uint64_t psi) {
     }
 
     this->inv_N = inv_mod(N, q);
+}
+
+template<int N>
+void NTT<N>::ntt(uint64_t a[N]) {
+    for(int m = 1, t = N/2; m < N; m*=2, t/=2) {
+        for(int i =0; i <m; i++) {
+            int j1 = 2*i*t;
+            int j2 = j1 + t - 1;
+            uint64_t S = psi_rev[m+i];
+            for(int j = j1; j <= j2; j++) {
+                uint64_t U = a[j];
+                uint64_t V = mul_mod(a[j+t], S, q);
+                a[j] = add_mod(U, V, q);
+                a[j+t] = sub_mod(U, V, q);
+            }
+        }
+    }
+}
+
+template<int N>
+void NTT<N>::intt(uint64_t a[N]) {
+    for(int t = 1, m = N; m > 1; m /=2, t *= 2) {
+        int j1 = 0;
+        int h = m/2;
+        for(int i = 0; i < h; ++i) {
+            int j2 = j1 + t - 1;
+            uint64_t S = inv_psi_rev[h+i];
+            for(int j = j1; j <= j2; ++j) {
+                uint64_t U = a[j];
+                uint64_t V = a[j+t];
+                a[j] = add_mod(U, V, q);
+                a[j+t] = mul_mod(sub_mod(U, V, q), S, q);
+            }
+            j1 += 2*t;
+        }
+    }
+    for(int j =0; j < N; ++j) {
+        a[j] = mul_mod(a[j], inv_N, q);
+    }
 }

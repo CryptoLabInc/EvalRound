@@ -19,6 +19,19 @@ uint64_t mod(uint64_t al, uint64_t ah, uint64_t q){
 }
 #endif
 
+// compute (a + b) % q
+uint64_t add_mod(uint64_t a, uint64_t b, uint64_t q) {
+  uint64_t tempL, tempH;
+  tempL = a + b;
+  tempH = tempL < a;
+  return mod(tempL, tempH, q);
+}
+
+// compute (a - b) % q
+uint64_t sub_mod(uint64_t a, uint64_t b, uint64_t q) {
+  return add_mod(a, q - b, q);
+}
+
 // compute (a * b) % q
 uint64_t mul_mod(uint64_t a, uint64_t b, uint64_t q) {
   uint64_t tempL, tempH;
