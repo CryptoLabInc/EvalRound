@@ -8,8 +8,22 @@
 
 template <int LOGN>
 struct Message {
-    double r[1 << (LOGN - 1)] = {0};
-    double i[1 << (LOGN - 1)] = {0};
+    double r[1 << (LOGN - 1)];
+    double i[1 << (LOGN - 1)];
+
+    Message<LOGN>() {
+        for(int i = 0; i < 1 << (LOGN - 1); ++i){
+            this->r[i] = 0;
+            this->i[i] = 0;
+        }
+    }
+
+    Message<LOGN>(const Message<LOGN> &other) {
+        for(int i = 0; i < 1 << (LOGN - 1); ++i){
+            this->r[i] = other.r[i];
+            this->i[i] = other.i[i];
+        }
+    }
 };
 
 template <int LOGN, int K>

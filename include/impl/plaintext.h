@@ -56,8 +56,8 @@ void matrix_vector_product(
 template <int LOGQ, int LOGN>
 void matrix_vector_product(
     const R_Q<LOGQ, 1 << LOGN> &pt,
-    SparseDiagonal<1<<(LOGN-1),3> Ar,
-	SparseDiagonal<1<<(LOGN-1),3> Ai, uint64_t Delta,
+    SparseDiagonal<1<<(LOGN-1),3> &Ar,
+	SparseDiagonal<1<<(LOGN-1),3> &Ai, uint64_t Delta,
     R_Q<LOGQ, 1 << LOGN> &pt_Az) {
 	R_Q<LOGQ, 1 << LOGN> pt_v, pt_rot, pt_conv;
 	pt_Az.setzero();
