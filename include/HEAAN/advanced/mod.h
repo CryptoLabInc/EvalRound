@@ -52,5 +52,5 @@ uint64_t power_mod(uint64_t a, uint64_t n, uint64_t q) {
 
 // compute a^-1 (mod q) where q is prime
 uint64_t inv_mod(uint64_t a, uint64_t q) {
-  return power_mod(a, q-1, q);
+  return power_mod(a, q-2, q);
 }
