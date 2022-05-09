@@ -1,5 +1,10 @@
 #pragma once
 
+#include "impl/message.h"
+#include "impl/simple_plaintext.h"
+
+#include "util.h"
+
 #include <cstdint>
 
 constexpr int LOGDELTA = 20;
