@@ -12,7 +12,7 @@ struct SimplePlaintext {
 
     double operator[]( int i ) const{ return data[i]; }
     double& operator[]( int i ) { return data[i]; } 
-}
+};
 
 template <int LOGN>
 void encode(const Message<LOGN> &z, uint64_t Delta, SimplePlaintext<LOGN> &pt){
@@ -47,7 +47,8 @@ void decode(const SimplePlaintext<LOGN> &pt, uint64_t Delta, Message<LOGN> &z){
 
 template <int LOGN>
 void conv(const SimplePlaintext<LOGN> &pt1, const SimplePlaintext<LOGN> &pt2, SimplePlaintext<LOGN> &pt3){
-	for(int i=0; i<(1 << LOGN); i++){
+	    const int N = 1 << LOGN;
+	for(int i=0; i<N; i++){
 		double sum = 0;
 		for(int k=0;   k<=i; k++) sum += pt1[k]*pt2[i-k];
 		for(int k=i+1; k< N; k++) sum -= pt1[k]*pt2[i+N-k];
@@ -79,8 +80,8 @@ double square_sum(const SimplePlaintext<LOGN> &pt) {
 }
 
 template <int LOGN>
-double norm_pt(const SimplePlaintext<LOGN> &pt){
-    return sqrt(square_sum_pt(pt));
+double norm(const SimplePlaintext<LOGN> &pt){
+    return sqrt(square_sum(pt));
 }
 
 template <int LOGN>
@@ -113,7 +114,7 @@ void rotate(const SimplePlaintext<LOGN> &pt, SimplePlaintext<LOGN> &pt_rot, int 
 template <int LOGN>
 void print(const std::string name, const SimplePlaintext<LOGN> &pt){
 	std::cout << "SimplePlaintext " << name << std::endl;
-	for(int i=0; i <std::min(N, 10); ++i) {
+	for(int i=0; i <std::min(1 << LOGN, 10); ++i) {
 		std::cout << pt[i] << " ";
 	}
 	std::cout << std::endl;

@@ -1,6 +1,9 @@
-#include <random>
+#include "impl/message.h"
+#include "impl/simple_plaintext.h"
 
-#include "experiment/util.h"
+#include "HEAAN/DFT.h"
+
+#include <random>
 
 namespace {
     static std::random_device rd;
@@ -17,6 +20,7 @@ void sampleUniform(Iter begin, Iter end) {
 
 template <int LOGN>
 void set_test_message(Message<LOGN> &z) {
+    const int N = 1 << LOGN;
     for(int i = 0; i < N/2; ++i) {
         double x = (double) (i) / (N/2) * M_PI;
         z.r[i] = cos(x) / sqrt(2);
@@ -26,12 +30,13 @@ void set_test_message(Message<LOGN> &z) {
 
 template <int LOGN>
 void set_random_message(Message<LOGN> &z) {
+    const int N = 1 << LOGN;
     sampleUniform(z.r, z.r+N/2);
     sampleUniform(z.i, z.i+N/2);
 }
 
 template <int LOGN>
-void set_test_rounded_message(Message<LOGN> &z) {
+void set_test_rounded_message(Message<LOGN> &z, uint64_t Delta) {
     set_test_message(z);
     SimplePlaintext<LOGN> pt;
     encode(z, Delta, pt);
@@ -39,7 +44,8 @@ void set_test_rounded_message(Message<LOGN> &z) {
 }
 
 template <int LOGN, int K>
-void set_test_matrix(Message<LOGN> &A[K]) {
+void set_test_matrix(Message<LOGN> A[K]) {
+    const int N = 1 << LOGN;
     for(int k = 0; k < K; ++k) {
         for(int i = 0; i < N / 2; ++i) {
             double x = (double) (k*i) / (N/2) * M_PI;
@@ -50,7 +56,7 @@ void set_test_matrix(Message<LOGN> &A[K]) {
 }
 
 template <int LOGN, int K>
-void set_random_matrix(Message<LOGN> &A[K]) {
+void set_random_matrix(Message<LOGN> A[K]) {
     for(int k = 0; k < K; ++k) {
         sampleUniform(A[k]);
     }

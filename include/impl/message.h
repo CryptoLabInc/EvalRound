@@ -9,12 +9,12 @@ template <int LOGN>
 struct Message {
     double r[1 << (LOGN - 1)] = {0};
     double i[1 << (LOGN - 1)] = {0};
-}
+};
 
-template <int LOGN, K>
+template <int LOGN, int K>
 void matrix_vector_product(
-    const Message<LOGN> &zr,
-    const Message<LOGN> &A[K],
+    const Message<LOGN> &z,
+    const Message<LOGN> A[K],
     Message<LOGN> &Az) {
     const int N = 1 << LOGN;
     for(int i = 0; i < N/2; ++i) {
@@ -83,7 +83,7 @@ template <int LOGN>
 void print(const std::string name, const Message<LOGN> &z){
 	std::cout << "Message " << name << std::endl;
 	for(int i=0; i <std::min((1 << (LOGN - 1)), 10); ++i) {
-		std::cout << "(" << zr[i] << ", " << zi[i] << ") ";
+		std::cout << "(" << z.r[i] << ", " << z.i[i] << ") ";
 	}
 	std::cout << std::endl;
 }
