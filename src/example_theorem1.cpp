@@ -3,21 +3,6 @@
 
 #include <iostream>
 
-void norm_relationship_test() {
-  double zr[N/2], zi[N/2];
-
-  R_Q<LOGQ, N> pt;
-
-  set_test_message(zr, zi);
-  encode<LOGQ, LOGN>(zr, zi, Delta, pt);
-
-  double measured = norm_pt(pt) / norm(zr, zi);
-  double expected = (double) Delta / sqrt(N/2);
-
-  std::cout << "Measured : " << measured << std::endl;
-  std::cout << "Expected : " << expected << std::endl;
-}
-
 void error_test(){
   double zr[N/2], zi[N/2];
   double zr_tilde[N/2], zi_tilde[N/2];
