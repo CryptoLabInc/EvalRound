@@ -138,8 +138,8 @@ void HEAAN<LOGQ,N>::ks(const R_Q_square <2*LOGQ,N>& swk,
 }
 
 template< int LOGQ, int LOGN >
-void encode( const double zr[N/2], 
-			 const double zi[N/2], uint64_t Delta, R_Q<LOGQ, 1<< LOGN >& pt){
+void encode( const double zr[1 << (LOGN - 1)], 
+			 const double zi[1 << (LOGN - 1)], uint64_t Delta, R_Q<LOGQ, 1<< LOGN >& pt){
 	const int N = 1 << LOGN;
 	double m[N]; ifft<LOGN>(zr,zi,m);
 	for(int i=0; i<N; i++){
@@ -151,7 +151,7 @@ void encode( const double zr[N/2],
 }
 
 template< int LOGQ, int LOGN >
-void decode( const R_Q<LOGQ,N>& pt, uint64_t Delta, double zr[1 << (LOGN - 1)], 
+void decode( const R_Q<LOGQ,1 << LOGN>& pt, uint64_t Delta, double zr[1 << (LOGN - 1)], 
 													double zi[1 << (LOGN - 1)]){
 	const int N = 1 << LOGN;
 	double m[N];

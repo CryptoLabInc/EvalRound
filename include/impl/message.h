@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 
 template <int LOGN>
 struct Message {

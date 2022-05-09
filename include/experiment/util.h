@@ -58,7 +58,7 @@ void set_test_matrix(Message<LOGN> A[K]) {
 template <int LOGN, int K>
 void set_random_matrix(Message<LOGN> A[K]) {
     for(int k = 0; k < K; ++k) {
-        sampleUniform(A[k]);
+        set_random_message(A[k]);
     }
 }
 

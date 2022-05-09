@@ -81,13 +81,14 @@ void mat_to_vecs( const double A[N][N],
 		V[i][j] = A[j][(i+j)%N];
 }
 
-template<int LOGQ, int N, int LOGDELTA>
-void linear_transform( const double Ar[N/2][N/2],
-					   const double Ai[N/2][N/2],
-					   const R_Q_square<  LOGQ,N>& ct,
-					   const R_Q_square<2*LOGQ,N>& rkey,
-							 R_Q_square<  LOGQ,N>& Act ){
-	
+template<int LOGQ, int LOGN, int LOGDELTA>
+void linear_transform( const double Ar[1 << (LOGN - 1)][1 << (LOGN - 1)],
+					   const double Ai[1 << (LOGN - 1)][1 << (LOGN - 1)],
+					   const R_Q_square<  LOGQ, 1 << LOGN>& ct,
+					   const R_Q_square<2*LOGQ, 1 << LOGN>& rkey,
+							 R_Q_square<  LOGQ, 1 << LOGN>& Act ){
+	const int N = 1 << LOGN;
+
 	double vr[N/2][N/2]; mat_to_vecs<N/2>(Ar,vr);
 	double vi[N/2][N/2]; mat_to_vecs<N/2>(Ai,vi);
 	Act.setzero(); R_Q_square<LOGQ,N> ct_rot = ct;
@@ -115,12 +116,13 @@ void linear_transform( const double Ar[N/2][N/2],
 // Act: lineartransform(A,ct) such that
 // decode(dec(Act,s,Q),Delta^2) = A. decode(dec(ct,s,Q),Delta)
 //-----------------------------------------------------------------------------------
-template< int LOGQ, int N, int LOGDELTA, int S >
-void linear_transform( const SparseDiagonal<N/2,S>& Ar,
-					   const SparseDiagonal<N/2,S>& Ai,
-					   const R_Q_square<  LOGQ,N>& ct,
-					   const R_Q_square<2*LOGQ,N>* rkey[S],
-							 R_Q_square<  LOGQ,N>& Act ){
+template< int LOGQ, int LOGN, int LOGDELTA, int S >
+void linear_transform( const SparseDiagonal<1 << (LOGN - 1),S>& Ar,
+					   const SparseDiagonal<1 << (LOGN - 1),S>& Ai,
+					   const R_Q_square<  LOGQ, 1 << LOGN>& ct,
+					   const R_Q_square<2*LOGQ, 1 << LOGN>* rkey[S],
+							 R_Q_square<  LOGQ, 1 << LOGN>& Act ){
+	const int N = 1 << LOGN;
 	Act.setzero();
 	for (int s = 0; s < S; s++) {
 		if (Ar.zero[s] == false || Ai.zero[s] == false) {
