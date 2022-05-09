@@ -8,50 +8,35 @@
 
 #include <iostream>
 
-template<int N>
-void dft_orig( const double m[N], double zr[N/2],
-							 double zi[N/2]){
-	for(int i=0;i<N/2;i++){
-		double sumr = 0, sumi = 0;
-		int idxi_k=0;
-		for(int k=0;k<N;k++,idxi_k=(idxi_k+2*i+1)%(2*N)){
-			sumr+=m[k]*cos(PI/N*idxi_k);
-			sumi+=m[k]*sin(PI/N*idxi_k);
-		}
-		zr[i] = sumr;
-		zi[i] = sumi;
-	}
+namespace {
+	inline uint32_t bitReverse32(uint32_t x) {
+    x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
+    x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
+    x = (((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4));
+    x = (((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8));
+    return ((x >> 16) | (x << 16));
 }
 
-template<int N>
-void fft_orig( const double m[N], double zr[N/2],
-							 double zi[N/2]){
-	if(N == 2){
-		zr[0] = m[0];
-		zi[0] = m[1];
-		return;
-	}
-	double e[N/2], o[N/2];
-	double e_zr[N/4], e_zi[N/4], o_zr[N/4], o_zi[N/4];
-	for(int i=0; i < N/2; ++i) {
-		e[i] = m[2*i];
-		o[i] = m[2*i + 1];
-	}
-	fft_orig<N/2>(e, e_zr, e_zi);
-	fft_orig<N/2>(o, o_zr, o_zi);
-	for(int i = 0; i < N/4; ++i){
-		const double rot = PI/N*(2*i+1);
-		zr[i] = e_zr[i] + o_zr[i] * cos(rot) - o_zi[i] * sin(rot);
-		zi[i] = e_zi[i] + o_zr[i] * sin(rot) + o_zi[i] * cos(rot);
-	}
-	for(int i = N/4; i < N/2; ++i){
-		const double rot = PI/N*(2*i+1);
-		int j = N/2 - 1 - i; // conjugate index
-		zr[i] = e_zr[j] + o_zr[j] * cos(rot) + o_zi[j] * sin(rot);
-		zi[i] = -e_zi[j] + o_zr[j] * sin(rot) - o_zi[j] * cos(rot);
-	}
+template<int LOGN>
+void matrix_vector_product_fft(
+    const double zr[1 << (LOGN - 1)], const double zi[1 << (LOGN - 1)],
+    SparseDiagonal<(1<<(LOGN-1)),3> Ar,
+	SparseDiagonal<(1<<(LOGN-1)),3> Ai,
+    double Azr[1 << (LOGN - 1)], double Azi[1 << (LOGN - 1)]) {
+	const int N = 1 << LOGN;
+    for(int i = 0; i < N/2; ++i) {
+        double sumr = 0, sumi = 0;
+        for(int k = 0; k < 3; ++k) {
+            int jr = (i+Ar.off[k]) % (N/2);
+            int ji = (i+Ai.off[k]) % (N/2);
+            sumr += Ar.vec[k][i] * zr[jr] - Ai.vec[k][i] * zi[ji];
+            sumi += Ar.vec[k][i] * zi[ji] + Ai.vec[k][i] * zr[jr];
+        }
+        Azr[i] = sumr;
+        Azi[i] = sumi;
+    }
 }
-
+}
 
 template<int N>
 void dft( const double m[N], double zr[N/2],
@@ -123,26 +108,6 @@ void splitU0NR( SparseDiagonal<(1<<(LOGN-1)),3> Ar[LOGN-1],
 }
 
 template<int LOGN>
-void matrix_vector_product_fft(
-    const double zr[1 << (LOGN - 1)], const double zi[1 << (LOGN - 1)],
-    SparseDiagonal<(1<<(LOGN-1)),3> Ar,
-	SparseDiagonal<(1<<(LOGN-1)),3> Ai,
-    double Azr[1 << (LOGN - 1)], double Azi[1 << (LOGN - 1)]) {
-	const int N = 1 << LOGN;
-    for(int i = 0; i < N/2; ++i) {
-        double sumr = 0, sumi = 0;
-        for(int k = 0; k < 3; ++k) {
-            int jr = (i+Ar.off[k]) % (N/2);
-            int ji = (i+Ai.off[k]) % (N/2);
-            sumr += Ar.vec[k][i] * zr[jr] - Ai.vec[k][i] * zi[ji];
-            sumi += Ar.vec[k][i] * zi[ji] + Ai.vec[k][i] * zr[jr];
-        }
-        Azr[i] = sumr;
-        Azi[i] = sumi;
-    }
-}
-
-template<int LOGN>
 void fftNR(
   const double m[1 << LOGN],
   double zr[1 << (LOGN - 1)],
@@ -207,15 +172,6 @@ void ifftNR( const double zr[1 << (LOGN - 1)],
 	for(int i = 0; i < N; ++i) {
 		m[i] = m[i] * 2 / (double) N;
 	}
-}
-
-
-inline uint32_t bitReverse32(uint32_t x) {
-    x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
-    x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
-    x = (((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4));
-    x = (((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8));
-    return ((x >> 16) | (x << 16));
 }
 
 template<int LOGN>

@@ -1,22 +1,11 @@
+#pragma once
+
+#include "HEAAN/Z_Q.h"
+#include "mod.h"
+
 #include <cstdint>
 
-template <int N>
-class NTT {
-    uint64_t q;
-    uint64_t psi_rev[N];
-    uint64_t inv_psi_rev[N];
-    uint64_t inv_N;
-
-    NTT(uint64_t q, uint64_t psi);
-
-    void ntt(uint64_t a[N]);
-    void intt(uint64_t a[N]);
-
-    private:
-        uint64_t power_mod(uint64_t a, int n);
-        uint64_t inv_mod(uint64_t a);
-};
-
+namespace {
 inline int log(int N) {
     int i = 0, n = 1;
     while(n < N) {
@@ -34,36 +23,55 @@ inline uint32_t bitReverse32(uint32_t x) {
     return ((x >> 16) | (x << 16));
 }
 
-inline uint32_t bitReverseN(uint32_t x, int LOGN) {
-    return bitReverse32(x) >> (LOGN - 1);
+inline uint32_t bitReverse(uint32_t x, int LOGN) {
+    return bitReverse32(x) >> (32 - LOGN);
 }
+}
+
+template <int N>
+struct NTT {
+    uint64_t q; // Object modulus, mod(q, 2N) = 1
+    uint64_t psi_rev[N]; // psi be 2N-th root of q, psi^(reverse (0)) ~ psi^(reverse (N-1))
+    uint64_t inv_psi_rev[N]; // psi_inv^(reverse (0)) ` psi_inv^(reverse(N-1))
+    uint64_t inv_N; // N^-1 mod q
+
+    NTT(uint64_t q, uint64_t psi);
+
+    void ntt(uint64_t a[N]);
+    void intt(uint64_t a[N]);
+};
 
 template<int N>
 NTT<N>::NTT(uint64_t q, uint64_t psi) {
+    int LOGN = log(N);
+    uint64_t psi_orig[N], inv_psi_orig[N]; // power of psis in original order
+
     this->q = q;
-    uint64_t psi[N];
-    psi[0] = 1;
+
+    // compute psi^0 ~ psi^(N-1)
+    psi_orig[0] = 1;
     for(int i = 1; i < N; ++i) {
-        psi[i] = psi
+        // psi_orig[i] = (psi * psi_orig[i-1]) % q
+        psi_orig[i] = mul_mod(psi, psi_orig[i-1], q);
     }
+
+    // set in reverse order
     for(int i = 0; i < N; ++i) {
-        this->psi_rev[i] = 
+        this->psi_rev[i] = psi_orig[bitReverse(i, LOGN)];
     }
-    this->psi_rev
-}
 
-template<int N>
-uint64_t NTT<N>::power_mod(uint64_t a, uint64_t n) {
-    assert(pow >= 0);
-    Z_P<P> temp(1);
-    for(int i = 63; i >= 0; --i){
-        int digit = (pow >> i) & 1;
-        temp = temp * temp;
-        if(digit == 1)
-            temp = temp * (*this);
+    uint64_t inv_psi= inv_mod(psi, q);
+
+    // compute inv_psi^0 ~ inv_psi^(N-1)
+    inv_psi_orig[0] = 1;
+    for(int i = 1; i < N; ++i) {
+        inv_psi_orig[i] = mul_mod(inv_psi, inv_psi_orig[i-1], q);
     }
-    return temp;
-}
 
-template<int N>
-uint64_t NTT<N>::inv_mod(uint64_t q, uint64_t psi);
+    // set in reverse order
+    for(int i = 0; i < N; ++i) {
+        this->inv_psi_rev[i] = inv_psi_orig[bitReverse(i, LOGN)];
+    }
+
+    this->inv_N = inv_mod(N, q);
+}

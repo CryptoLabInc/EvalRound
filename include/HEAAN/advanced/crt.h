@@ -1,3 +1,5 @@
+#pragma once
+
 #include "HEAAN/Z_Q.h"
 #include "mod.h"
 
@@ -45,12 +47,8 @@ void CRT<L>::crt(const uint64_t a_rns[L], uint64_t a[L]) {
     sum.setzero();
     Z_Q<64*(L+1)> temp;
     for(int i =0; i < L; ++i) {
-      // tempH:tempL = a_rns[i] * (Q/q[i])^-1 (128bit)
-      uint64_t tempL, tempH;
-      mul(a_rns[i], inv_mod_Q_over_q[i], tempL, tempH);
-
-      // coeff = tempH:tempL % q[i] (64bit)
-      uint64_t coeff = mod(tempH, tempL, q[i]);
+      // coeff = (a_rns[i] * (Q/q[i])^-1) % q[i]
+      uint64_t coeff = mul_mod(a_rns[i], inv_mod_Q_over_q[i], q[i]);
 
       // sum = \Sigma coeff * Q_over_q[i];
       temp = Q_over_q[i];
@@ -73,7 +71,7 @@ void CRT<L>::icrt(const uint64_t a[L], uint64_t a_rns[L]){
     // compute a % q[i] where a = \Sigma a[i]*beta^i
     uint64_t ah = a[L-1];
     for(int j = L-2; j>=0; --j) {
-      ah  = mod(ah, a[j], q[i]);
+      ah  = mod(a[j], ah, q[i]);
     }
     a_rns[i] = ah;
   }
