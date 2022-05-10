@@ -40,9 +40,7 @@ void CONV<L, LOGQ, N>::conv( const R_Q<LOGQ,N>& A,
         ntt[i]->ntt(A_rns[i]);
         ntt[i]->ntt(B_rns[i]);
         for(int j = 0; j < N; ++j) {
-            //C_rns[i][j] = A_rns[i][j];
-            C_rns[i][j] = sub_mod(0, A_rns[i][j], ntt[i]->q); 
-            //C_rns[i][j] = mul_mod(A_rns[i][j], B_rns[i][j] , ntt[i]->q);
+            C_rns[i][j] = mul_mod(A_rns[i][j], B_rns[i][j] , ntt[i]->q);
         }
         ntt[i]->intt(C_rns[i]);
     }

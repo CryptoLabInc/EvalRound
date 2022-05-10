@@ -19,13 +19,6 @@ int main(){
     print("c_orig", c_orig);
 
     Convolution.conv(pt_a, pt_b, pt_c);
-    decode_log(pt_c, LOGDELTA, c);
-    print("a", a);
+    decode_log(pt_c, LOGDELTA*2, c);
     print("c", c);
-
- /*   for(int i = 0; i < 10; ++i) {
-        std::cout << i << std::endl;
-        pt_c[i].print_unsigned();
-        pt_c_orig[i].print_unsigned();  
-    }*/
 }

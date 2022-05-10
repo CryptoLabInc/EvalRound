@@ -6,7 +6,7 @@
 namespace {
   template<int LOGQ>
   bool cmpge(const Z_Q <LOGQ> &A, const Z_Q <LOGQ> &B){
-    for (int i = (63 + LOGQ) / 64; i >= 0; --i) {
+    for (int i = (63 + LOGQ) / 64 - 1; i >= 0; --i) {
       if(A[i] > B[i]) return true;
       else if(A[i] < B[i]) return false;
     }
@@ -66,18 +66,15 @@ template<int L, int LOGQ>
 void CRT<L, LOGQ>::crt(const uint64_t a_rns[L], Z_Q<LOGQ> &A) {
     Z_Q<64*(L+1)> sum, neg_sum;
     sum.setzero();
-    Z_Q<64*(L+1)> temp;
     for(int i =0; i < L; ++i) {
       // coeff = (a_rns[i] * (Q/q[i])^-1) % q[i]
       uint64_t coeff = mul_mod(a_rns[i], inv_mod_Q_over_q[i], q[i]);
-
       // sum = \Sigma coeff * Q_over_q[i];
-      temp = Q_over_q[i];
+      Z_Q<64*(L+1)> temp(Q_over_q[i]);
       temp *= coeff;
       sum += temp;
     }
     // sum = sum % Q
-     
     while(cmpge(sum, Q)) {
       sum -= Q;
     }
