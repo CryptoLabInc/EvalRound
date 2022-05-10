@@ -14,43 +14,45 @@ struct CRT {
   Z_Q<64*(L+1)> Q_over_q[L]; // Q/q[i]
   uint64_t inv_mod_Q_over_q[L]; // (Q/q[i])^-1 (mod q[i])
 
-  CRT(const uint64_t q[L]) {
-    for(int i = 0; i < L; ++i)
-      this->q[i] = q[i];
-    
-    // compute Q
-    Q.setzero();
-    Q[0] = 1;
-    for(int i = 0; i < L; ++i)
-      Q *= q[i];
-
-    // compute Q_over_q
-    for(int i = 0; i < L; ++i){
-      Q_over_q[i].setzero();
-      Q_over_q[i][0] = 1;
-      for(int j = 0; j < L; ++j){
-        if(i != j)
-          Q_over_q[i] *= q[j];
-      }
-    }
-    
-    // compute inv_mod_Q
-    for(int i = 0; i < L; ++i) {
-      uint64_t temp = 1;
-      for(int j = 0; j < L; ++j) {
-        if(i != j)
-          temp = mul_mod(temp, q[j], q[i]);
-      }
-      inv_mod_Q_over_q[i] = inv_mod(temp, q[i]);
-    }
-  }
-
+  CRT(const uint64_t q[L]);
   void crt(const uint64_t a_rns[L], uint64_t a[L]);
   void icrt(const uint64_t a[L], uint64_t a_rns[L]);
 
   private:
     bool cmpge(const Z_Q <64*(L+1)> &A, const Z_Q <64*(L+1)> &B);
 };
+
+template<int L>
+CRT<L>::CRT(const uint64_t q[L]) {
+  for(int i = 0; i < L; ++i)
+    this->q[i] = q[i];
+  
+  // compute Q
+  Q.setzero();
+  Q[0] = 1;
+  for(int i = 0; i < L; ++i)
+    Q *= q[i];
+
+  // compute Q_over_q
+  for(int i = 0; i < L; ++i){
+    Q_over_q[i].setzero();
+    Q_over_q[i][0] = 1;
+    for(int j = 0; j < L; ++j){
+      if(i != j)
+        Q_over_q[i] *= q[j];
+    }
+  }
+  
+  // compute inv_mod_Q
+  for(int i = 0; i < L; ++i) {
+    uint64_t temp = 1;
+    for(int j = 0; j < L; ++j) {
+      if(i != j)
+        temp = mul_mod(temp, q[j], q[i]);
+    }
+    inv_mod_Q_over_q[i] = inv_mod(temp, q[i]);
+  }
+}
 
 
 template<int L>
