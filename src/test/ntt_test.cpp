@@ -4,7 +4,7 @@
 
 int main(){
     const int N = 1 << 10;
-    NTT<N> ntt(1152921504606877697ULL, 418639631973566421ULL);
+    NTT<N> ntt(1152921504606877697ULL);
 
     uint64_t a[N];
     for(int i = 0; i < N; ++i) {

@@ -40,10 +40,10 @@ uint64_t mul_mod(uint64_t a, uint64_t b, uint64_t q) {
 }
 
 // compute (a^n) % q
-uint64_t power_mod(uint64_t a, uint64_t n, uint64_t q) {
+uint64_t pow_mod(uint64_t a, uint64_t n, uint64_t q) {
   if(n == 0)
     return 1;
-  uint64_t res = power_mod(a, n/2, q); // a^([n/2])
+  uint64_t res = pow_mod(a, n/2, q); // a^([n/2])
   res = mul_mod(res, res, q); // a^(2 * [n/2])
   if(n % 2== 1)
     res = mul_mod(a, res, q);
@@ -52,5 +52,5 @@ uint64_t power_mod(uint64_t a, uint64_t n, uint64_t q) {
 
 // compute a^-1 (mod q) where q is prime
 uint64_t inv_mod(uint64_t a, uint64_t q) {
-  return power_mod(a, q-2, q);
+  return pow_mod(a, q-2, q);
 }

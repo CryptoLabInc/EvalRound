@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <iostream>
+#include <set>
 
 namespace {
 inline int log(int N) {
@@ -27,6 +28,47 @@ inline uint32_t bitReverse32(uint32_t x) {
 inline uint32_t bitReverse(uint32_t x, int LOGN) {
     return bitReverse32(x) >> (32 - LOGN);
 }
+
+void findPrimeFactors(std::set<uint64_t> &s, uint64_t n) {
+    s.clear();
+
+    while (n % 2 == 0) {
+        s.insert(2);
+        n /= 2;
+    }
+
+    for (uint64_t i = 3; i * i <= n; i += 2) {
+        while (n % i == 0) {
+            s.insert(i);
+            n /= i;
+        }
+    }
+
+    if (n > 2)
+        s.insert(n);
+}
+
+// find primitive root for q
+uint64_t findPrimitiveRoot(uint64_t prime) {
+    std::set<uint64_t> s;
+    uint64_t phi = prime - 1;
+    findPrimeFactors(s, phi);
+    for (uint64_t r = 2; r <= phi; r++) {
+        bool passed = true;
+        for (uint64_t it : s) {
+            if (pow_mod(r, phi / it, prime) == 1) {
+                passed = false;
+                break;
+            }
+        }
+
+        if (passed)
+            return r;
+    }
+
+    return 0; // failed to find
+}
+
 }
 
 template <int N>
@@ -36,18 +78,22 @@ struct NTT {
     uint64_t inv_psi_rev[N]; // psi_inv^(reverse (0)) ` psi_inv^(reverse(N-1))
     uint64_t inv_N; // N^-1 mod q
 
-    NTT(uint64_t q, uint64_t psi);
+    NTT(uint64_t q);
 
     void ntt(uint64_t a[N]);
     void intt(uint64_t a[N]);
 };
 
 template<int N>
-NTT<N>::NTT(uint64_t q, uint64_t psi) {
+NTT<N>::NTT(uint64_t q) {
     int LOGN = log(N);
     uint64_t psi_orig[N], inv_psi_orig[N]; // power of psis in original order
 
     this->q = q;
+
+    // compute psi
+    uint64_t psi = findPrimitiveRoot(q);
+    psi = pow_mod(psi, (q-1) / (2*N), q);
 
     // compute psi^0 ~ psi^(N-1)
     psi_orig[0] = 1;
