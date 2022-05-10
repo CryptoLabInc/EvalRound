@@ -3,7 +3,6 @@
 #include "HEAAN/Z_Q.h"
 #include "mod.h"
 
-#include <iostream>
 
 template<int L>
 struct CRT {

@@ -4,7 +4,6 @@
 #include "mod.h"
 
 #include <cstdint>
-#include <iostream>
 #include <set>
 
 namespace {
