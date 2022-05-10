@@ -3,40 +3,9 @@
 #include <stdio.h>
 #include <assert.h>
 #include "matrix.h"
+#include "util.h"
 
 #define PI 3.1415926535897932384626433
-
-#include <iostream>
-
-namespace {
-	inline uint32_t bitReverse32(uint32_t x) {
-    x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
-    x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
-    x = (((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4));
-    x = (((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8));
-    return ((x >> 16) | (x << 16));
-}
-
-template<int LOGN>
-void matrix_vector_product_fft(
-    const double zr[1 << (LOGN - 1)], const double zi[1 << (LOGN - 1)],
-    SparseDiagonal<(1<<(LOGN-1)),3> Ar,
-	SparseDiagonal<(1<<(LOGN-1)),3> Ai,
-    double Azr[1 << (LOGN - 1)], double Azi[1 << (LOGN - 1)]) {
-	const int N = 1 << LOGN;
-    for(int i = 0; i < N/2; ++i) {
-        double sumr = 0, sumi = 0;
-        for(int k = 0; k < 3; ++k) {
-            int jr = (i+Ar.off[k]) % (N/2);
-            int ji = (i+Ai.off[k]) % (N/2);
-            sumr += Ar.vec[k][i] * zr[jr] - Ai.vec[k][i] * zi[ji];
-            sumi += Ar.vec[k][i] * zi[ji] + Ai.vec[k][i] * zr[jr];
-        }
-        Azr[i] = sumr;
-        Azi[i] = sumi;
-    }
-}
-}
 
 template<int N>
 void dft( const double m[N], double zr[N/2],
@@ -132,7 +101,7 @@ void fftNR(
 			Umr[i] = zr[i];
 			Umi[i] = zi[i];
 		}
-		matrix_vector_product_fft<LOGN>(Umr, Umi, U0r[d], U0i[d], zr, zi);
+		matrix_vector_product<LOGN>(Umr, Umi, U0r[d], U0i[d], zr, zi);
 	}
 }
 
@@ -166,7 +135,7 @@ void ifftNR( const double zr[1 << (LOGN - 1)],
 			Uzr[i] = m[i];
 			Uzi[i] = m[i + N/2];
 		}
-		matrix_vector_product_fft<LOGN>(Uzr, Uzi, U0r[d], U0i[d], m, m + N/2);
+		matrix_vector_product<LOGN>(Uzr, Uzi, U0r[d], U0i[d], m, m + N/2);
 	}
 
 	for(int i = 0; i < N; ++i) {

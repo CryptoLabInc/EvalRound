@@ -124,6 +124,29 @@ struct SparseDiagonal {
 	}
 };
 
+//------------------------------------------------------------------------------------------
+// Matrix vector product of complex SparseDiagonal matrix and a complex vector
+//------------------------------------------------------------------------------------------
+template<int LOGN>
+void matrix_vector_product(
+    const double zr[1 << (LOGN - 1)], const double zi[1 << (LOGN - 1)],
+    SparseDiagonal<(1<<(LOGN-1)),3> Ar,
+	SparseDiagonal<(1<<(LOGN-1)),3> Ai,
+    double Azr[1 << (LOGN - 1)], double Azi[1 << (LOGN - 1)]) {
+	const int N = 1 << LOGN;
+    for(int i = 0; i < N/2; ++i) {
+        double sumr = 0, sumi = 0;
+        for(int k = 0; k < 3; ++k) {
+            int jr = (i+Ar.off[k]) % (N/2);
+            int ji = (i+Ai.off[k]) % (N/2);
+            sumr += Ar.vec[k][i] * zr[jr] - Ai.vec[k][i] * zi[ji];
+            sumi += Ar.vec[k][i] * zi[ji] + Ai.vec[k][i] * zr[jr];
+        }
+        Azr[i] = sumr;
+        Azi[i] = sumi;
+    }
+}
+
 
 //------------------------------------------------------------------------------------------
 // Matrix multiplication of two SparseDiagonal matrices
