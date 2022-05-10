@@ -1,6 +1,7 @@
 #include "impl/message.h"
 #include "impl/simple_plaintext.h"
 
+#include "HEAAN/R_Q.h"
 #include "HEAAN/DFT.h"
 
 #include <random>
@@ -72,4 +73,12 @@ void set_test_U0_matrix(SparseDiagonal<(1<<(LOGN-1)),3> U0r[LOGN-1],
 		U0i[n].transpose();
 		U0i[n].negate();
 	}
+}
+
+template <int LOGQ, int N>
+void set_test_plaintext(R_Q<LOGQ, N> &A){
+    for(int i = 0; i < N; ++i) {
+        A[i].setzero();
+        A[i][0] = i;
+    }
 }

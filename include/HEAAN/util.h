@@ -23,3 +23,10 @@ inline uint32_t bitReverse32(uint32_t x) {
 inline uint32_t bitReverse(uint32_t x, int digits) {
     return bitReverse32(x) >> (32 - digits);
 }
+
+template<int N>
+void print_array(const uint64_t A[N]) {
+    for(int i = 0; i < std::min(N, 10); ++i)
+        std::cout << A[i] << " ";
+    std::cout << std::endl;
+}
