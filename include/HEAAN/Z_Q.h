@@ -24,6 +24,7 @@ struct Z_Q {
 	Z_Q(){}
 	Z_Q           ( const Z_Q<LOGQ>& ); // copy constructor
 	void operator=( const Z_Q<LOGQ>& ); // copy operator
+
 	uint64_t  operator[]( int i ) const{ return data[i]; }
 	uint64_t& operator[]( int i )      { return data[i]; }
 	int get_length() const{ return (LOGQ+63)/64; }
@@ -152,7 +153,7 @@ void Z_Q<LOGQ>::to_str( char* str ) const { // string of decimal digits
 
 
 //-----------------------------------------------------------
-// ÇÁ¸°ÆÃ µîµî
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 //-----------------------------------------------------------
 template<int LOGQ>
 void Z_Q<LOGQ>::print_unsigned()const {
@@ -161,7 +162,7 @@ void Z_Q<LOGQ>::print_unsigned()const {
 }
 
 //-----------------------------------------------------------
-// ±âº» operations
+// ï¿½âº» operations
 //-----------------------------------------------------------
 template<int LOGQ>
 void Z_Q<LOGQ>::operator+=(const Z_Q<LOGQ>& A) {
@@ -262,4 +263,24 @@ bool Z_Q<LOGQ>::is_bigger_than_halfQ()const{
 	int length = (LOGQ+63)/64;
 	int r = LOGQ -(length-1)*64;
 	return (data[length-1]>>(r-1))==1;
+}
+
+
+// convert to big integer of different size
+// assume the value of Afrom fit in Ato
+template<int LOGQfrom, int LOGQto>
+void resize(const Z_Q<LOGQfrom> &Afrom, Z_Q<LOGQto> &Ato) {
+	bool is_negative = Afrom.is_bigger_than_halfQ();
+	if(is_negative) {
+		Z_Q<LOGQfrom> Afrom_abs(Afrom);
+		Afrom_abs.negate();
+		Ato.setzero();
+		for(int i = 0; i < std::min(Afrom.get_length(), Ato.get_length()); ++i)
+			Ato.data[i] = Afrom_abs.data[i];
+		Ato.negate();
+	} else {
+		Ato.setzero();
+		for(int i = 0; i < std::min(Afrom.get_length(), Ato.get_length()); ++i)
+			Ato.data[i] = Afrom.data[i];
+	}
 }

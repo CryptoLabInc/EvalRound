@@ -4,7 +4,7 @@
 #include <iostream>
 
 int main(){
-    CONV<L, N> Convolution(Q_primes);
+    CONV<L, LOGQ, N> Convolution(Q_primes);
     
     Message<LOGN> a, b, c_orig, c;
     R_Q<LOGQ, N> pt_a, pt_b, pt_c_orig, pt_c;
@@ -20,5 +20,12 @@ int main(){
 
     Convolution.conv(pt_a, pt_b, pt_c);
     decode_log(pt_c, LOGDELTA, c);
+    print("a", a);
     print("c", c);
+
+ /*   for(int i = 0; i < 10; ++i) {
+        std::cout << i << std::endl;
+        pt_c[i].print_unsigned();
+        pt_c_orig[i].print_unsigned();  
+    }*/
 }
