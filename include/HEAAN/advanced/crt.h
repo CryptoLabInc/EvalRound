@@ -6,7 +6,7 @@
 namespace {
   template<int LOGQ>
   bool cmpge(const Z_Q <LOGQ> &A, const Z_Q <LOGQ> &B){
-    for (int i = (63 + LOGQ / 64); i >= 0; --i) {
+    for (int i = (63 + LOGQ) / 64; i >= 0; --i) {
       if(A[i] > B[i]) return true;
       else if(A[i] < B[i]) return false;
     }
@@ -76,17 +76,11 @@ void CRT<L, LOGQ>::crt(const uint64_t a_rns[L], Z_Q<LOGQ> &A) {
       temp *= coeff;
       sum += temp;
     }
-    std::cout << "here" << std::endl;
     // sum = sum % Q
      
     while(cmpge(sum, Q)) {
       sum -= Q;
-      std::cout << "whY " << std::endl;
-      sum.print_unsigned();
-      Q.print_unsigned();
     }
-
-    std::cout << "there" << std::endl;
 
     // handling sign
     neg_sum = Q;
@@ -108,7 +102,7 @@ void CRT<L, LOGQ>::icrt(const Z_Q<LOGQ> &A, uint64_t a_rns[L]){
     A_abs.negate();
 
     int len = A_abs.get_length();
-    for(int i = 0; i< len; ++i){
+    for(int i = 0; i< L; ++i){
       // compute a % q[i] where a = \Sigma a[i]*beta^i
       uint64_t ah = A_abs[len-1];
       for(int j = len-2; j>=0; --j) {
@@ -118,7 +112,7 @@ void CRT<L, LOGQ>::icrt(const Z_Q<LOGQ> &A, uint64_t a_rns[L]){
     }
   } else {
     int len = A.get_length();
-    for(int i = 0; i< len; ++i){
+    for(int i = 0; i< L; ++i){
       // compute a % q[i] where a = \Sigma a[i]*beta^i
       uint64_t ah = A[len-1];
       for(int j = len-2; j>=0; --j) {

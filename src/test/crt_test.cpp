@@ -27,13 +27,9 @@ int main(){
         std::cout << a_rns[i] - a_rns_measured[i] << " ";
     std::cout << std::endl;
 
-    for(int i = 0; i < L; ++i)
-        std::cout << a_rns[i] << " ";
-    std::cout << std::endl;
-
-    /*Z_Q<LOGQ> a_measured;
+    Z_Q<LOGQ> a_measured;
     crt.crt(a_rns, a_measured);
     for(int i = 0; i < L; ++i)
         std::cout << a[i] - a_measured[i] << " ";
-    std::cout << std::endl;*/
+    std::cout << std::endl;
 }
