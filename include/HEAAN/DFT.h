@@ -5,8 +5,6 @@
 #include "matrix.h"
 #include "util.h"
 
-#define PI 3.1415926535897932384626433
-
 template<int N>
 void dft( const double m[N], double zr[N/2],
 							 double zi[N/2]){

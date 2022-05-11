@@ -5,7 +5,10 @@
 #include <cstdint>
 
 
-#ifdef _CONSOLE
+#ifdef _WINDOWS
+uint64_t mod(uint64_t al, uint64_t ah, uint64_t q) {
+    return al;
+}
 #else
 
 // compute (ah * beta + al) % q
