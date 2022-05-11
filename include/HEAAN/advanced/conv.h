@@ -14,11 +14,11 @@ struct CONV{
     CONV(const uint64_t q[L]);
 
     void conv( const R_Q<LOGQ,N>& A,
-	       const R_Q<LOGQ,N>& B, R_Q<LOGQ,N>& C );
+	       const R_Q<LOGQ,N>& B, R_Q<LOGQ,N>& C ) const;
 
     private:
-        void icrt_polynomial(const R_Q<LOGQ, N>& A, uint64_t A_rns[L][N]);
-        void crt_polynomial(const uint64_t A_rns[L][N], R_Q<LOGQ, N> &A);
+        void icrt_polynomial(const R_Q<LOGQ, N>& A, uint64_t A_rns[L][N]) const;
+        void crt_polynomial(const uint64_t A_rns[L][N], R_Q<LOGQ, N> &A) const;
 };
 
 template<int L, int LOGQ, int N>
@@ -30,7 +30,7 @@ CONV<L, LOGQ, N>::CONV(const uint64_t q[L]) : crt{q} {
 
 template<int L, int LOGQ, int N>
 void CONV<L, LOGQ, N>::conv( const R_Q<LOGQ,N>& A,
-	       const R_Q<LOGQ,N>& B, R_Q<LOGQ,N>& C ){
+	       const R_Q<LOGQ,N>& B, R_Q<LOGQ,N>& C ) const {
     uint64_t A_rns[L][N], B_rns[L][N], C_rns[L][N];
 
     icrt_polynomial(A, A_rns);
@@ -49,7 +49,7 @@ void CONV<L, LOGQ, N>::conv( const R_Q<LOGQ,N>& A,
 }
 
 template<int L, int LOGQ, int N>
-void CONV<L, LOGQ, N>::icrt_polynomial(const R_Q<LOGQ, N>& A, uint64_t A_rns[L][N]) {
+void CONV<L, LOGQ, N>::icrt_polynomial(const R_Q<LOGQ, N>& A, uint64_t A_rns[L][N]) const {
     for(int i = 0; i < N; ++i) {
         uint64_t Ai_rns[L];
         crt.icrt(A[i], Ai_rns);
@@ -60,7 +60,7 @@ void CONV<L, LOGQ, N>::icrt_polynomial(const R_Q<LOGQ, N>& A, uint64_t A_rns[L][
 }
 
 template<int L, int LOGQ, int N>
-void CONV<L, LOGQ, N>::crt_polynomial(const uint64_t A_rns[L][N], R_Q<LOGQ, N> &A) {
+void CONV<L, LOGQ, N>::crt_polynomial(const uint64_t A_rns[L][N], R_Q<LOGQ, N> &A) const {
     for(int i = 0; i < N; ++i) {
         uint64_t Ai_rns[L];
         for(int j = 0; j < L; ++j) {

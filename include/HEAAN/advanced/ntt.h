@@ -55,8 +55,8 @@ struct NTT {
 
     NTT(uint64_t q);
 
-    void ntt(uint64_t a[N]);
-    void intt(uint64_t a[N]);
+    void ntt(uint64_t a[N]) const;
+    void intt(uint64_t a[N]) const;
 };
 
 template<int N>
@@ -99,7 +99,7 @@ NTT<N>::NTT(uint64_t q) {
 }
 
 template<int N>
-void NTT<N>::ntt(uint64_t a[N]) {
+void NTT<N>::ntt(uint64_t a[N]) const {
     for(int m = 1, t = N/2; m < N; m*=2, t/=2) {
         for(int i =0; i <m; i++) {
             int j1 = 2*i*t;
@@ -116,7 +116,7 @@ void NTT<N>::ntt(uint64_t a[N]) {
 }
 
 template<int N>
-void NTT<N>::intt(uint64_t a[N]) {
+void NTT<N>::intt(uint64_t a[N]) const {
     for(int t = 1, m = N; m > 1; m /=2, t *= 2) {
         int j1 = 0;
         int h = m/2;

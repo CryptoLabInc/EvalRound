@@ -2,6 +2,7 @@
 
 #include "HEAAN/HEAAN.h"
 #include "HEAAN/HEAAN_matrix.h"
+#include "HEAAN/advanced/conv.h"
 
 #include <iostream>
 #include <string>
@@ -38,8 +39,9 @@ void rotate(const R_Q<LOGQ,N>& pt,
 	}
 }
 
-template <int LOGQ, int LOGN, int K>
+template <int L, int LOGQ, int LOGN, int K>
 void matrix_vector_product(
+	const CONV<L, LOGQ, 1 << LOGN> &conv,
     const R_Q<LOGQ, 1 << LOGN> &pt,
     const Message<LOGN> A[K], uint64_t Delta,
     R_Q<LOGQ, 1 << LOGN> &pt_Az){
@@ -48,13 +50,14 @@ void matrix_vector_product(
 	for(int k = 0; k < K; ++k) {
 		encode<LOGQ, LOGN>(A[k].r, A[k].i, Delta, pt_v);
 		rotate<LOGQ, 1 << LOGN>(pt, pt_rot, k);
-		conv<LOGQ, 1 << LOGN>(pt_v, pt_rot, pt_conv);
+		conv.conv(pt_v, pt_rot, pt_conv);
 		pt_Az += pt_conv;
 	}
 }
 
-template <int LOGQ, int LOGN>
+template <int L, int LOGQ, int LOGN>
 void matrix_vector_product(
+	const CONV<L, LOGQ, 1 << LOGN> &conv,
     const R_Q<LOGQ, 1 << LOGN> &pt,
     SparseDiagonal<1<<(LOGN-1),3> &Ar,
 	SparseDiagonal<1<<(LOGN-1),3> &Ai, uint64_t Delta,
@@ -65,7 +68,7 @@ void matrix_vector_product(
 		assert(Ar.off[k] == Ai.off[k]);
 		encode<LOGQ, LOGN>(Ar.vec[k], Ai.vec[k], Delta, pt_v);
 		rotate(pt, pt_rot, Ar.off[k]);
-		conv<LOGQ, 1 << LOGN>(pt_v, pt_rot, pt_conv);
+		conv.conv(pt_v, pt_rot, pt_conv);
 		pt_Az += pt_conv;
 	}
 }

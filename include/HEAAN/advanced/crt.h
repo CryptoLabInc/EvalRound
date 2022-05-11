@@ -25,8 +25,8 @@ struct CRT {
   uint64_t inv_mod_Q_over_q[L]; // (Q/q[i])^-1 (mod q[i])
 
   CRT(const uint64_t q[L]);
-  void crt(const uint64_t a_rns[L], Z_Q<LOGQ> &A);
-  void icrt(const Z_Q<LOGQ> &A, uint64_t a_rns[L]);
+  void crt(const uint64_t a_rns[L], Z_Q<LOGQ> &A) const;
+  void icrt(const Z_Q<LOGQ> &A, uint64_t a_rns[L]) const;
 };
 
 template<int L, int LOGQ>
@@ -63,7 +63,7 @@ CRT<L, LOGQ>::CRT(const uint64_t q[L]) {
 
 
 template<int L, int LOGQ>
-void CRT<L, LOGQ>::crt(const uint64_t a_rns[L], Z_Q<LOGQ> &A) {
+void CRT<L, LOGQ>::crt(const uint64_t a_rns[L], Z_Q<LOGQ> &A) const {
     Z_Q<64*(L+1)> sum, neg_sum;
     sum.setzero();
     for(int i =0; i < L; ++i) {
@@ -92,7 +92,7 @@ void CRT<L, LOGQ>::crt(const uint64_t a_rns[L], Z_Q<LOGQ> &A) {
   }
 
 template<int L, int LOGQ>
-void CRT<L, LOGQ>::icrt(const Z_Q<LOGQ> &A, uint64_t a_rns[L]){
+void CRT<L, LOGQ>::icrt(const Z_Q<LOGQ> &A, uint64_t a_rns[L]) const {
   bool is_negative = A.is_bigger_than_halfQ();
   if(is_negative) {
     Z_Q<LOGQ> A_abs(A);
