@@ -1,15 +1,28 @@
 #pragma once
 
-#include "HEAAN/Z_Q.h"
-
 #include <cstdint>
 
 
-#ifdef _WINDOWS
+#ifdef _CONSOLE
+extern "C"
+{
+    uint64_t mod_asm(uint64_t al, uint64_t ah, uint64_t q);
+    uint64_t mul_lo_asm(uint64_t a, uint64_t b);
+    uint64_t mul_hi_asm(uint64_t a, uint64_t b);
+};
+
 uint64_t mod(uint64_t al, uint64_t ah, uint64_t q) {
-    return al;
+    return mod_asm(al, ah, q);
 }
+
+void mul(uint64_t a, uint64_t b, uint64_t &lo, uint64_t &hi) {
+    lo = mul_lo_asm(a, b);
+    hi = mul_hi_asm(a, b);
+}
+
 #else
+
+#include "../../HEAAN/Z_Q.h"
 
 // compute (ah * beta + al) % q
 uint64_t mod(uint64_t al, uint64_t ah, uint64_t q){
