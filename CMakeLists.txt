@@ -1,6 +1,8 @@
 include_directories(include)
 
 add_executable(dft_test src/test/dft_test.cpp)
+add_executable(mod_test src/test/mod_test.cpp)
+add_executable(mul_test src/test/mul_test.cpp)
 add_executable(crt_test src/test/crt_test.cpp)
 add_executable(ntt_test src/test/ntt_test.cpp)
 add_executable(conv_test src/test/conv_test.cpp)

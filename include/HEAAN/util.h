@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <set>
 
+#define PI 3.1415926535897932384626433
+
 inline int log(int N) {
     int i = 0, n = 1;
     while(n < N) {

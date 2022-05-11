@@ -23,7 +23,7 @@ template <int LOGN>
 void set_test_message(Message<LOGN> &z) {
     const int N = 1 << LOGN;
     for(int i = 0; i < N/2; ++i) {
-        double x = (double) (i) / (N/2) * M_PI;
+        double x = (double) (i) / (N/2) * PI;
         z.r[i] = cos(x) / sqrt(2);
         z.i[i] = sin(x) / sqrt(2);
     }
@@ -49,7 +49,7 @@ void set_test_matrix(Message<LOGN> A[K]) {
     const int N = 1 << LOGN;
     for(int k = 0; k < K; ++k) {
         for(int i = 0; i < N / 2; ++i) {
-            double x = (double) (k*i) / (N/2) * M_PI;
+            double x = (double) (k*i) / (N/2) * PI;
             A[k].r[i] = cos(x) / sqrt(2);
             A[k].r[i] = sin(x) / sqrt(2);
         }
