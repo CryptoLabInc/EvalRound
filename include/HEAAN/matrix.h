@@ -174,7 +174,41 @@ void MatMul(const SparseDiagonal<N, S1   >& A,
 		for (int i = 0; i < N; i++)
 			C.vec[s3][i] += A.vec[s1][i] * B.vec[s2][(i + off1) % N];
 	}
-} 
+}
+
+template< int N, int S1, int S2 >
+void MatMul(const SparseDiagonal<N, S1   >&Ar,const SparseDiagonal<N, S1   >&Ai,
+			const SparseDiagonal<N,    S2>&Br,const SparseDiagonal<N,    S2>&Bi,
+				  SparseDiagonal<N, S1*S2>&Cr,      SparseDiagonal<N, S1*S2>&Ci){
+	int count = 0;
+	Cr.setzero(); Ci.setzero();
+	for (int s1 = 0; s1 < S1; s1++)
+	for (int s2 = 0; s2 < S2; s2++) {
+		assert(Ar.off[s1] == Ai.off[s1]);
+		assert(Br.off[s2] == Bi.off[s2]);
+		int off1 = Ar.off[s1];
+		int off2 = Br.off[s2];
+		int off3 = (off1 + off2) % N;
+		int s3 = -1;
+		for (int k = 0; (k < count) && (s3 == -1); k++) {
+			assert(Cr.off[k] == Ci.off[k]);
+			if (Cr.off[k] == off3)
+				s3 = k;
+		}
+		if (s3 == -1) {
+			s3 = count;
+			Cr.zero[s3] = false; Ci.zero[s3] = false;
+			Cr.off [s3] =  off3; Ci.off[s3] = off3;
+			count++;
+		}
+		for (int i = 0; i < N; i++) {
+			Cr.vec[s3][i] += Ar.vec[s1][i] * Br.vec[s2][(i + off1) % N];
+			Cr.vec[s3][i] -= Ai.vec[s1][i] * Bi.vec[s2][(i + off1) % N];
+			Ci.vec[s3][i] += Ar.vec[s1][i] * Bi.vec[s2][(i + off1) % N];
+			Ci.vec[s3][i] += Ai.vec[s1][i] * Br.vec[s2][(i + off1) % N];
+		}
+	}
+}
 
 //------------------------------------------------------------------------------------------
 // Remove unnecessary zero vectors
