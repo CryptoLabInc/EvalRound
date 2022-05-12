@@ -1,9 +1,11 @@
 #pragma once
+
+#include "matrix.h"
+#include "util/util.h"
+
 #include <math.h>
 #include <stdio.h>
 #include <assert.h>
-#include "matrix.h"
-#include "util.h"
 
 template<int N>
 void dft( const double m[N], double zr[N/2],

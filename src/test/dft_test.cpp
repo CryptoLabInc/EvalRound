@@ -8,9 +8,8 @@ void ifft_test(){
     set_test_rounded_message(z, Delta);
     idft<N>(z.r, z.i, m_idft);
     ifft<LOGN>(z.r, z.i, m_ifft);
-    for(int i = 0; i < std::min(N, 10); ++i) {
-        std::cout << i << " " << m_idft[i] << " " << m_ifft[i] << std::endl;
-    }
+    print_array<N>(m_idft);
+    print_array<N>(m_ifft);
 }
 
 void run_test(){

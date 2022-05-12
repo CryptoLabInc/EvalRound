@@ -3,7 +3,7 @@
 #include "impl/message.h"
 #include "impl/plaintext.h"
 
-#include "util.h"
+#include "setup.h"
 
 constexpr int LOGDELTA = 50;
 constexpr uint64_t Delta = 1ULL << LOGDELTA;
@@ -12,3 +12,5 @@ constexpr int LOGN = 16;
 constexpr int N = 1 << LOGN;
 constexpr int K = 16;
 constexpr int D = LOGN -1; // number of matrices multiplying
+
+constexpr int H = 16; // hamming weight of secret key

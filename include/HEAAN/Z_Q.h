@@ -6,6 +6,8 @@
 #include <string.h>
 #include <assert.h>
 
+#include "util/util.h"
+
 //--------------------------------------------------------------------
 //
 // A simple implemenation of the ring Z_Q
@@ -275,12 +277,12 @@ void resize(const Z_Q<LOGQfrom> &Afrom, Z_Q<LOGQto> &Ato) {
 		Z_Q<LOGQfrom> Afrom_abs(Afrom);
 		Afrom_abs.negate();
 		Ato.setzero();
-		for(int i = 0; i < std::min(Afrom.get_length(), Ato.get_length()); ++i)
+		for(int i = 0; i < min(Afrom.get_length(), Ato.get_length()); ++i)
 			Ato.data[i] = Afrom_abs.data[i];
 		Ato.negate();
 	} else {
 		Ato.setzero();
-		for(int i = 0; i < std::min(Afrom.get_length(), Ato.get_length()); ++i)
+		for(int i = 0; i < min(Afrom.get_length(), Ato.get_length()); ++i)
 			Ato.data[i] = Afrom.data[i];
 	}
 }

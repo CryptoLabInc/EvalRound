@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <cstdint>
 #include <set>
 
@@ -26,9 +27,21 @@ inline uint32_t bitReverse(uint32_t x, int digits) {
     return bitReverse32(x) >> (32 - digits);
 }
 
+template<class T>
+T min(T a, T b){
+    return a < b ? a : b;
+}
+
 template<int N>
 void print_array(const uint64_t A[N]) {
-    for(int i = 0; i < std::min(N, 10); ++i)
+    for(int i = 0; i < min(N, 10); ++i)
+        std::cout << A[i] << " ";
+    std::cout << std::endl;
+}
+
+template<int N>
+void print_array(const double A[N]) {
+    for(int i = 0; i < min(N, 10); ++i)
         std::cout << A[i] << " ";
     std::cout << std::endl;
 }

@@ -2,6 +2,7 @@
 
 #include "message.h"
 #include "HEAAN/DFT.h"
+#include "util/util.h"
 
 #include <iostream>
 #include <string>
@@ -114,7 +115,7 @@ void rotate(const SimplePlaintext<LOGN> &pt, SimplePlaintext<LOGN> &pt_rot, int 
 template <int LOGN>
 void print(const std::string name, const SimplePlaintext<LOGN> &pt){
 	std::cout << "SimplePlaintext " << name << std::endl;
-	for(int i=0; i <std::min(1 << LOGN, 10); ++i) {
+	for(int i=0; i <min(1 << LOGN, 10); ++i) {
 		std::cout << pt[i] << " ";
 	}
 	std::cout << std::endl;

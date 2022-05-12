@@ -6,6 +6,7 @@ add_executable(mul_test src/test/mul_test.cpp)
 add_executable(crt_test src/test/crt_test.cpp)
 add_executable(ntt_test src/test/ntt_test.cpp)
 add_executable(conv_test src/test/conv_test.cpp)
+add_executable(ctxt_conv_test src/test/ctxt_conv_test.cpp)
 
 add_executable(lemma1 src/experiment/lemma1.cpp)
 add_executable(lemma2 src/experiment/lemma2.cpp)

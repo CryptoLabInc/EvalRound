@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HEAAN/matrix.h"
+#include "util/util.h"
 
 #include <iostream>
 #include <string>
@@ -105,7 +106,7 @@ double norm(const Message<LOGN> &z){
 template <int LOGN>
 void print(const std::string name, const Message<LOGN> &z){
 	std::cout << "Message " << name << std::endl;
-	for(int i=0; i <std::min((1 << (LOGN - 1)), 10); ++i) {
+	for(int i=0; i <min((1 << (LOGN - 1)), 10); ++i) {
 		std::cout << "(" << z.r[i] << ", " << z.i[i] << ") ";
 	}
 	std::cout << std::endl;

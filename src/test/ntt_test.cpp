@@ -11,12 +11,7 @@ int main(){
         a[i] = i;
     }
     ntt.ntt(a);
-    for(int i = 0; i < std::min(N, 10); ++i) {
-        std::cout << a[i] << " ";
-    }
-    std::cout << std::endl;
+    print_array<N>(a);
     ntt.intt(a);
-    for(int i = 0; i < std::min(N, 10); ++i) {
-        std::cout << a[i] << " ";
-    }
+    print_array<N>(a);
 }

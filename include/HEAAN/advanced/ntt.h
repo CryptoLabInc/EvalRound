@@ -1,7 +1,7 @@
 #pragma once
 
 #include "HEAAN/Z_Q.h"
-#include "HEAAN/util.h"
+#include "util/util.h"
 #include "mod.h"
 
 namespace {
