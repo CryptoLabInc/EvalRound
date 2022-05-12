@@ -15,23 +15,30 @@ uint64_t mod(uint64_t al, uint64_t ah, uint64_t q) {
     return mod_asm(al, ah, q);
 }
 
-void mul(uint64_t a, uint64_t b, uint64_t &lo, uint64_t &hi) {
+void mul_(uint64_t a, uint64_t b, uint64_t &lo, uint64_t &hi) {
     lo = mul_lo_asm(a, b);
     hi = mul_hi_asm(a, b);
 }
 
 #else
 
-#include "../../HEAAN/Z_Q.h"
+using u128 = unsigned __int128;
 
 // compute (ah * beta + al) % q
 uint64_t mod(uint64_t al, uint64_t ah, uint64_t q){
-  using u128 = unsigned __int128;
   u128 a = ah;
   u128 b = a << 64;
   u128 c = b + (u128) al;
   u128 d = c % (u128) q;
   return (uint64_t) d;
+}
+
+void mul_(uint64_t a, uint64_t b, uint64_t &lo, uint64_t &hi) {
+  u128 a128 = a;
+  u128 b128 = b;
+  u128 c = a128 * b128;
+  lo = c;
+  hi = c >> 64;
 }
 #endif
 
@@ -51,7 +58,7 @@ uint64_t sub_mod(uint64_t a, uint64_t b, uint64_t q) {
 // compute (a * b) % q
 uint64_t mul_mod(uint64_t a, uint64_t b, uint64_t q) {
   uint64_t tempL, tempH;
-  mul(a, b, tempL, tempH);
+  mul_(a, b, tempL, tempH);
   return mod(tempL, tempH, q);
 }
 

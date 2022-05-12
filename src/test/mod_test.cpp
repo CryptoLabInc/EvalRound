@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "include/HEAAN/advanced/mod.h"
+#include "HEAAN/advanced/mod.h"
 
 int main()
 {

@@ -69,3 +69,42 @@ void CONV<L, LOGQ, N>::crt_polynomial(const uint64_t A_rns[L][N], R_Q<LOGQ, N> &
         crt.crt(Ai_rns, A[i]);
     }
 }
+
+
+
+template< int LOGQ, int N >
+void conv( const R_Q<LOGQ,N>& A,
+	       const R_Q<LOGQ,N>& B, R_Q<LOGQ,N>& C ){
+    // we fix params for primes since this will be used only for conv.
+    // 20 61bit primes, mod(q[i], 2^17) = 1
+    static constexpr uint64_t Q_primes[] = {
+	    0x1fffffffffe00001ULL,
+	    0x1fffffffffc80001ULL,
+	    0x2000000000460001ULL,
+	    0x1fffffffffb40001ULL,
+	    0x2000000000500001ULL,
+        0x2000000000620001ULL,
+        0x20000000007c0001ULL,
+        0x2000000000a00001ULL,
+        0x2000000000b00001ULL,
+        0x1fffffffff500001ULL,
+        0x1fffffffff420001ULL,
+        0x1fffffffff380001ULL,
+        0x2000000000da0001ULL,
+        0x2000000000ec0001ULL,
+        0x2000000000f80001ULL,
+        0x1fffffffff000001ULL,
+        0x1ffffffffef00001ULL,
+        0x2000000001120001ULL,
+        0x1ffffffffee80001ULL,
+        0x2000000001480001ULL
+    };
+    const int L = (2*LOGQ + 17 + 59) / 60;
+	static CONV<L, LOGQ, N> *theConv = nullptr;
+    static bool theConv_initialized = false;
+    if(theConv_initialized == false) {
+        theConv = new CONV<L, LOGQ, N>(Q_primes);
+        theConv_initialized = true;
+    }
+    theConv->conv(A, B, C);
+}

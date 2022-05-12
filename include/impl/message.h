@@ -81,6 +81,14 @@ void sub(const Message<LOGN> &z1, const Message<LOGN> &z2, Message<LOGN> &z3){
 }
 
 template <int LOGN>
+void mul(const Message<LOGN> &z1, const Message<LOGN> &z2, Message<LOGN> &z3){
+	for(int i=0; i< (1 << (LOGN - 1)); i++){
+   		z3.r[i] = z1.r[i] * z2.r[i] - z1.i[i] * z2.i[i];
+        z3.i[i] = z1.r[i] * z2.i[i] + z1.i[i] * z2.r[i];
+	}
+}
+
+template <int LOGN>
 double square_sum(const Message<LOGN> &z){
     double sum = 0;
     for(int i = 0; i < (1 << (LOGN - 1)); ++i) {

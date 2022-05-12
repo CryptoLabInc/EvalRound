@@ -6,7 +6,6 @@
 int main()
 {
   // ||Az - \widetilde{Az} || ~= sqrt(KN / 12) * (1 / Delta_A) * ||z||
-  CONV<L, LOGQ, N> Convolution(Q_primes);
   Message<LOGN> z;
   R_Q<LOGQ, N> pt;
 
@@ -27,7 +26,7 @@ int main()
     matrix_vector_product<LOGN, K>(z, A, Az);
 
     // get Az_tilde
-    matrix_vector_product<L, LOGQ, LOGN, K>(Convolution, pt, A, Delta, pt_Az);
+    matrix_vector_product<LOGQ, LOGN, K>(pt, A, Delta, pt_Az);
     decode_log(pt_Az, 2*LOGDELTA, Az_tilde);
 
     // measure e

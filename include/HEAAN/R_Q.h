@@ -24,18 +24,6 @@ struct R_Q{
 //-----------------------------------------------------------
 // negative-wrapped convolution
 //-----------------------------------------------------------
-template< int LOGQ, int N >
-void conv( const R_Q<LOGQ,N>& A,
-	       const R_Q<LOGQ,N>& B, R_Q<LOGQ,N>& C ){
-	for(int i=0;i<N;i++){
-		C[i].setzero(); Z_Q<LOGQ> temp;
-		for(int k=0;k<N;k++){
-			temp=A[k];
-			if(k<=i){ temp*=B[  i-k]; C[i]+=temp;}
-			else    { temp*=B[N+i-k]; C[i]-=temp;}
-		}
-	}
-}
 
 template< int LOGQ, int N >
 void conv( const int s[N],

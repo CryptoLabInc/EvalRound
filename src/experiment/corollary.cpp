@@ -3,7 +3,6 @@
 int main()
 {
   // ||Uz - \widetilde{Uz} || ~= sqrt(KN / 12) * (1 / Delta_A) * ||z|| * sqrt(D) * ||U_i||^{D-1}
-  CONV<L, LOGQ, N> Convolution(Q_primes);
   Message<LOGN> z, Uz, Uz_tilde, e;
   SparseDiagonal<N/2, 3> U0r[LOGN-1];
   SparseDiagonal<N/2, 3> U0i[LOGN-1];
@@ -28,10 +27,10 @@ int main()
 
   // get Uz_tilde
   encode(z, Delta, pt);
-  matrix_vector_product<L, LOGQ, LOGN>(Convolution, pt, U0r[0], U0i[0], Delta, pt_Uz);
+  matrix_vector_product<LOGQ, LOGN>(pt, U0r[0], U0i[0], Delta, pt_Uz);
   for(int i = 1; i < D; ++i) {
     R_Q<LOGQ, N> temp(pt_Uz);
-    matrix_vector_product<L, LOGQ, LOGN>(Convolution, temp, U0r[i], U0i[i], Delta, pt_Uz);
+    matrix_vector_product<LOGQ, LOGN>(temp, U0r[i], U0i[i], Delta, pt_Uz);
   }
   decode_log<LOGQ, LOGN>(pt_Uz, LOGDELTA * (D + 1), Uz_tilde);
 
