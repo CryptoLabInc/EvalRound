@@ -8,7 +8,12 @@
 int main()
 {
     int s[N], s_rot[N], s_conj[N];
+    R_Q_square<2*LOGQ,1<<LOGN> rkey, ckey;
     HEAAN<LOGQ,N>::keygen(H,s);
+    rot<N>(s, s_rot);
+    conj<N>(s, s_conj);
+    HEAAN<LOGQ,N>::swkgen(s_rot, s, rkey);
+    HEAAN<LOGQ,N>::swkgen(s_conj, s, ckey);
 
     Message<LOGN> z, z_measured;
 	set_random_message(z);
@@ -18,10 +23,11 @@ int main()
     encode(z,Delta,pt);
 	HEAAN<LOGQ,N>::enc(pt,s,ct);
 	
-	CoeffToSlot<LOGQ,LOGN, LOGDELTA>(ct,s,ct_);
-	//SlotToCoeff<LOGQ,LOGN>(ct_[0], ct_[1],rkey,ct);
-
-	HEAAN<LOGQ,N>::dec(ct,s,pt);
+	//CoeffToSlot<LOGQ,LOGN, LOGDELTA>(ct,s,ct_);
+    CoeffToSlot<LOGQ, LOGN>(ct, rkey, ckey, ct_);
+	//SlotToCoeff<LOGQ,LOGN, LOGDELTA>(ct_[0], ct_[1],s,ct);
+    SlotToCoeff<LOGQ, LOGN>(ct_[0], ct_[1], rkey, ct);
+	HEAAN<LOGQ,N>::dec(ct ,s,pt);
 	decode_log(pt,LOGDELTA,z_measured);
     print("z", z);
     print("z_measured", z_measured);

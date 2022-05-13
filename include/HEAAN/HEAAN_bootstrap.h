@@ -35,7 +35,7 @@ void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
 					const int s[1 << LOGN],
 					R_Q_square<  LOGQ,1<<LOGN> ct_[2]){
 	const int N = 1 << LOGN;
-		static bool is_init = false;
+	static bool is_init = false;
 	static SparseDiagonal<N/2,3> U0r[LOGN-1];
     static SparseDiagonal<N/2,3> U0i[LOGN-1];
 
@@ -141,6 +141,54 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
 	R_Q_square<LOGQ,N> temp;
 	linear_transform<LOGQ,LOGN,50>(iU0r,iU0i,ct1,rkey,temp);
 	ct_+=temp;
+}
+
+template<int LOGQ, int LOGN, int LOGDELTA>
+void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
+				  const R_Q_square<  LOGQ,1<<LOGN>&  ct1,
+				  const int skey[1<<LOGN],
+					    R_Q_square<  LOGQ,1<<LOGN>& ct_ ){
+	const int N = 1 << LOGN;
+	static bool is_init = false;
+	static SparseDiagonal<N/2,3> U0r[LOGN-1];
+    static SparseDiagonal<N/2,3> U0i[LOGN-1];
+	static SparseDiagonal<N/2,3> Uir;
+    static SparseDiagonal<N/2,3> Uii;
+
+
+	if(!is_init) {
+		splitU0NR<LOGN>(U0r, U0i);
+		for(int s = 0; s < 3; ++s) {
+			for(int i = 0; i < N; ++i) {
+				Uir.vec[s][i] = -U0i[0].vec[s][i];
+				Uii.vec[s][i] = U0r[0].vec[s][i];
+			}
+			Uir.off[s] = U0i[0].off[s];
+			Uii.off[s] = U0r[0].off[s];
+			Uir.zero[s] = false;
+			Uii.zero[s] = false;
+		}
+		is_init = true;
+	}
+
+	R_Q_square<LOGQ, N> ct_temp;
+	ct_ = ct0;
+	for(int d = LOGN-2; d >= 0; --d) {
+		ct_temp = ct_;
+		linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, skey, ct_);
+	}
+
+	R_Q_square<LOGQ,N> ct2(ct1);
+	for(int d = LOGN-2; d >= 0; --d) {
+		ct_temp = ct2;
+		if(d != 0) {
+			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, skey, ct2);
+		} else {
+			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(Uir, Uii, ct_temp, skey, ct2);
+		}
+	}
+
+	//ct_ += ct2;
 }
 
 
