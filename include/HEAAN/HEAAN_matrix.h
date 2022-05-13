@@ -12,6 +12,23 @@ void rot( const int s[N], int s_rot[N] ){
 	}
 }
 
+template<int N>
+void rot( const int s[N], int s_rot[N], const int r){
+	if(r == 0) {
+		for(int i = 0; i < N; ++i)
+			s_rot[i] = s[i];
+			return;
+	}
+
+	int s_tmp[N];
+	rot<N>(s, s_rot);
+	for(int i = 1; i < r; ++i) {
+		for(int j = 0; j < N; ++j) {
+			s_tmp[j] = s_rot[j];
+		}
+		rot<N>(s_tmp, s_rot);
+	}
+}
 
 template<int LOGQ, int N>
 void rot( const R_Q<LOGQ,N>& pt, 
@@ -103,10 +120,7 @@ void linear_transform( const double Ar[1 << (LOGN - 1)][1 << (LOGN - 1)],
 
 		Act += ct_rot_pt; R_Q_square<LOGQ,N> temp; 
 		rot_ct<LOGQ,N>(ct_rot, rkey, temp); // BUG
-		ct_rot = temp;
-		
-
-		Act.print(); // 
+		ct_rot = temp; 
 	}
 }
 
@@ -132,6 +146,37 @@ void linear_transform( const SparseDiagonal<1 << (LOGN - 1),S>& Ar,
 			R_Q_square<LOGQ, N> ct_rot;
 			if (Ar.off[s] != 0)
 				rot_ct<LOGQ, N>(ct, Ar.off[s],*(rkey[s]), ct_rot);
+			ct_rot *= pt;
+			Act += ct_rot;
+		}
+	}
+}
+
+
+template< int LOGQ, int LOGN, int LOGDELTA, int S >
+void linear_transform( const SparseDiagonal<1 << (LOGN - 1),S>& Ar,
+					   const SparseDiagonal<1 << (LOGN - 1),S>& Ai,
+					   const R_Q_square<  LOGQ, 1 << LOGN>& ct,
+						const int skey[1 << LOGN],
+							 R_Q_square<  LOGQ, 1 << LOGN>& Act ){
+	const int N = 1 << LOGN;
+	R_Q_square<2*LOGQ, 1 << LOGN>* rkey[S];
+	Act.setzero();
+	for (int s = 0; s < S; s++) {
+		if (Ar.zero[s] == false || Ai.zero[s] == false) {
+			R_Q<LOGQ, N> pt;
+			encode<LOGQ, LOGN>(Ar.vec[s],
+							Ai.vec[s], 1ULL << LOGDELTA, pt);
+			R_Q_square<LOGQ, N> ct_rot;
+			if (Ar.off[s] != 0) {
+				if(rkey[s] == nullptr) {
+					rkey[s] = new R_Q_square<2*LOGQ, 1 << LOGN>;
+					int skey_rot[N];
+					rot<N>(skey, skey_rot, Ar.off[s]);
+					HEAAN<LOGQ,N>::swkgen(skey_rot ,skey, *(rkey[s]));
+				}
+				rot_ct<LOGQ, N>(ct, Ar.off[s],*(rkey[s]), ct_rot);
+			}
 			ct_rot *= pt;
 			Act += ct_rot;
 		}

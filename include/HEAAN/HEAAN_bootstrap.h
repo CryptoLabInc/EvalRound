@@ -2,13 +2,15 @@
 
 #include <math.h>
 #include "HEAAN_matrix.h"
+#include "HEAAN_poly.h"
 
 
-template<int LOGQ, int N>
-void CoeffToSlot( const R_Q_square<  LOGQ,N>& ct,
-				  const R_Q_square<2*LOGQ,N>& rkey,
-				  const R_Q_square<2*LOGQ,N>& ckey,
-						R_Q_square<  LOGQ,N> ct_[2]){
+template<int LOGQ, int LOGN>
+void CoeffToSlot( const R_Q_square<  LOGQ,1<<LOGN>& ct,
+				  const R_Q_square<2*LOGQ,1<<LOGN>& rkey,
+				  const R_Q_square<2*LOGQ,1<<LOGN>& ckey,
+						R_Q_square<  LOGQ,1<<LOGN> ct_[2]){
+	const int N = 1 << LOGN;
 	double U0r[N/2][N/2];
 	double U0i[N/2][N/2]; get_U0<N>(U0r, U0i);
 	double Ar[N/2][N/2];
@@ -19,13 +21,51 @@ void CoeffToSlot( const R_Q_square<  LOGQ,N>& ct,
 		Ar[i][j] =  U0r[j][i]/N;
 		Ai[i][j] = -U0i[j][i]/N;
 	}
-	R_Q_square<LOGQ,N> ct1; linear_transform<LOGQ,N,50>(Ar,Ai,ct,rkey,ct1);
+	R_Q_square<LOGQ,N> ct1; linear_transform<LOGQ,LOGN,50>(Ar,Ai,ct,rkey,ct1);
 	R_Q_square<LOGQ,N> ct2; conj(ct1,ckey,ct2);
 
 	R_Q<LOGQ,N> pti; pti.setzero();
 	pti[N/2][0] = 1; pti[N/2].negate();
 	ct_[1] = ct1; ct_[1] -=ct2; ct_[1]*=pti;
 	ct_[0] = ct1; ct_[0] +=ct2;
+}
+
+template<int LOGQ, int LOGN, int LOGDELTA>
+void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
+					const int s[1 << LOGN],
+					R_Q_square<  LOGQ,1<<LOGN> ct_[2]){
+	const int N = 1 << LOGN;
+		static bool is_init = false;
+	static SparseDiagonal<N/2,3> U0r[LOGN-1];
+    static SparseDiagonal<N/2,3> U0i[LOGN-1];
+
+	if(!is_init) {
+		splitU0NR<LOGN>(U0r, U0i);
+    	for (int n = 0; n < LOGN - 1; n++) {
+			U0r[n].transpose();
+			U0i[n].transpose();
+			U0i[n].negate();
+		}
+		is_init = true;
+	}
+
+	R_Q_square<LOGQ, 1<<LOGN> ct_temp, ct1(ct);
+	for(int d = 0; d < LOGN - 1; ++d) {
+		ct_temp = ct1;
+		linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct, s, ct1);
+	}
+
+	int s_conj[N];
+	R_Q_square<2*LOGQ, 1 << LOGN> ckey;
+	conj<N>(s, s_conj);
+	HEAAN<LOGQ,N>::swkgen(s_conj, s, ckey);
+
+	R_Q_square<LOGQ, N> ct2;
+	conj(ct1, ckey, ct2);
+	R_Q<LOGQ,N> pti; pti.setzero();
+	pti[N/2][0] = 1; pti[N/2].negate();
+	ct_[1] = ct1; ct_[1] -=ct2; ct_[1]*=pti;
+	ct_[0] = ct1; ct_[0] +=ct2;	
 }
 
 //---------------------------------------------
@@ -78,14 +118,15 @@ void CoeffToSlot(const R_Q_square<  LOGQ, 16>& ct,
 }
 
 
-template<int LOGQ, int N>
-void SlotToCoeff( const R_Q_square<  LOGQ,N>&  ct0,
-				  const R_Q_square<  LOGQ,N>&  ct1,
-				  const R_Q_square<2*LOGQ,N>& rkey,
-					    R_Q_square<  LOGQ,N>& ct_ ){
+template<int LOGQ, int LOGN>
+void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
+				  const R_Q_square<  LOGQ,1<<LOGN>&  ct1,
+				  const R_Q_square<2*LOGQ,1<<LOGN>& rkey,
+					    R_Q_square<  LOGQ,1<<LOGN>& ct_ ){
+	const int N = 1 << LOGN;
 	double U0r[N/2][N/2];
 	double U0i[N/2][N/2]; get_U0<N>(U0r,U0i);
-	linear_transform<LOGQ,N,50>(U0r,U0i,ct0,rkey,ct_);
+	linear_transform<LOGQ,LOGN,50>(U0r,U0i,ct0,rkey,ct_);
 
 	ct_.print(); // garbage
 
@@ -98,9 +139,10 @@ void SlotToCoeff( const R_Q_square<  LOGQ,N>&  ct0,
 		iU0i[i][j] = U0r[i][j];
 	}
 	R_Q_square<LOGQ,N> temp;
-	linear_transform<LOGQ,N,50>(iU0r,iU0i,ct1,rkey,temp);
+	linear_transform<LOGQ,LOGN,50>(iU0r,iU0i,ct1,rkey,temp);
 	ct_+=temp;
 }
+
 
 template<int LOGN>
 void split_U0( double Ar[LOGN][1<<(LOGN-1)][1<<(LOGN-1)],
@@ -198,23 +240,3 @@ void EvalSine_K3( const R_Q_square<  LOGQ,N>& ct,
 	p.print();
 	p *= 1ULL<<(LOGq);
 }
-
-/*
-template< int LOGQ >
-void CoeffToSlot( const R_Q_square<   LOGQ,16 >& ct,	
-				  const R_Q_square< 2*LOGQ,16 >& rkey[3],
-				  const R_Q_square< 2*LOGQ,16 >& ckey,
-					    R_Q_square<   LOGQ,16 > ct_[2] ){
-	SparseDiagonal<8,3> U0r[3];
-	SparseDiagonal<8,3> U0i[3];
-	splitU0NR<4>(U0r,U0i);
-	R_Q_square<LOGQ,4> ct1,ct2,temp;
-	linear_transform<LOGQ,16,50>( U0r[0], U0i[0], ct  , rkey[0], ct1  );
-	linear_transform<LOGQ,16,50>( U0r[1], U0i[1], ct1 , rkey[1], temp );
-	linear_transform<LOGQ,16,50>( U0r[0], U0i[0], temp, rkey[0], ct1  );
-	conj< LOG, 16 >( ct1, ckey, ct2 );
-	R_Q< LOGQ,16 > pti; pti.setzero();
-	pti[8][0] = 1; pti[8].negate();
-	ct_[1] = ct1; ct_[1] -= ct2; ct_[1] *= pti;
-	ct_[0] = ct1; ct_[0] -= ct2;
-}*/
