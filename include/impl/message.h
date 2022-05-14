@@ -55,10 +55,12 @@ void matrix_vector_product(
     for(int i = 0; i < N/2; ++i) {
         double sumr = 0, sumi = 0;
         for(int k = 0; k < 3; ++k) {
-            int jr = (i+Ar.off[k]) % (N/2);
-            int ji = (i+Ai.off[k]) % (N/2);
-            sumr += Ar.vec[k][i] * z.r[jr] - Ai.vec[k][i] * z.i[ji];
-            sumi += Ar.vec[k][i] * z.i[ji] + Ai.vec[k][i] * z.r[jr];
+            if( Ar.zero[k]==false){
+                int jr = (i+Ar.off[k]) % (N/2);
+                int ji = (i+Ai.off[k]) % (N/2);
+                sumr += Ar.vec[k][i] * z.r[jr] - Ai.vec[k][i] * z.i[ji];
+                sumi += Ar.vec[k][i] * z.i[ji] + Ai.vec[k][i] * z.r[jr];
+            }
         }
         Az.r[i] = sumr;
         Az.i[i] = sumi;

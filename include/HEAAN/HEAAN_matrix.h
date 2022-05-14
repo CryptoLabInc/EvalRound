@@ -160,24 +160,19 @@ void linear_transform( const SparseDiagonal<1 << (LOGN - 1),S>& Ar,
 						const int skey[1 << LOGN],
 							 R_Q_square<  LOGQ, 1 << LOGN>& Act ){
 	const int N = 1 << LOGN;
-	R_Q_square<2*LOGQ, 1 << LOGN>* rkey[S];
-	bool is_rkey_set[S] = {false};
 	Act.setzero();
 	for (int s = 0; s < S; s++) {
 		if (Ar.zero[s] == false || Ai.zero[s] == false) {
 			R_Q<LOGQ, N> pt;
 			encode<LOGQ, LOGN>(Ar.vec[s],
 							Ai.vec[s], 1ULL << LOGDELTA, pt);
-			R_Q_square<LOGQ, N> ct_rot;
+			R_Q_square<LOGQ, N> ct_rot(ct);
 			if (Ar.off[s] != 0) {
-				if(!is_rkey_set[s]) {
-					rkey[s] = new R_Q_square<2*LOGQ, 1 << LOGN>;
-					int skey_rot[N];
-					rot<N>(skey, skey_rot, Ar.off[s]);
-					HEAAN<LOGQ,N>::swkgen(skey_rot ,skey, *(rkey[s]));
-					is_rkey_set[s] = true;
-				}
-				rot_ct<LOGQ, N>(ct, Ar.off[s],*(rkey[s]), ct_rot);
+				R_Q_square<2*LOGQ, 1 << LOGN> rkey;
+				int skey_rot[N];
+				rot<N>(skey, skey_rot, Ar.off[s]);
+				HEAAN<LOGQ,N>::swkgen(skey_rot ,skey, rkey);
+				rot_ct<LOGQ, N>(ct, Ar.off[s], rkey, ct_rot);
 			}
 			ct_rot *= pt;
 			Act += ct_rot;

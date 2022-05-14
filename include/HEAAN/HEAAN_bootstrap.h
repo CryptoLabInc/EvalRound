@@ -45,27 +45,34 @@ void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
 			U0r[n].transpose();
 			U0i[n].transpose();
 			U0i[n].negate();
+			U0r[n] *= (n == 0) ? 0.25 : 0.5;
+			U0i[n] *= (n == 0) ? 0.25 : 0.5;
 		}
 		is_init = true;
 	}
 
-	R_Q_square<LOGQ, 1<<LOGN> ct_temp, ct1(ct);
+	R_Q_square<LOGQ, N> ct_res;	
+	ct_res = ct;
+	R_Q_square<LOGQ, 1<<LOGN> ct_temp;
+	
 	for(int d = 0; d < LOGN - 1; ++d) {
-		ct_temp = ct1;
-		linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct, s, ct1);
+		ct_temp = ct_res;
+		linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, s, ct_res);
 	}
 
-	int s_conj[N];
+	ct_[0] = ct_res;
+
+	/*int s_conj[N];
 	R_Q_square<2*LOGQ, 1 << LOGN> ckey;
 	conj<N>(s, s_conj);
 	HEAAN<LOGQ,N>::swkgen(s_conj, s, ckey);
+	R_Q_square<LOGQ, N> ct_conj;
+	conj(ct_res, ckey, ct_conj);
 
-	R_Q_square<LOGQ, N> ct2;
-	conj(ct1, ckey, ct2);
 	R_Q<LOGQ,N> pti; pti.setzero();
 	pti[N/2][0] = 1; pti[N/2].negate();
-	ct_[1] = ct1; ct_[1] -=ct2; ct_[1]*=pti;
-	ct_[0] = ct1; ct_[0] +=ct2;	
+	ct_[0] = ct_res; ct_[0] +=ct_conj;
+	ct_[1] = ct_res; ct_[1] -=ct_conj; ct_[1]*=pti;*/
 }
 
 //---------------------------------------------

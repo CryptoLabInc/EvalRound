@@ -1,5 +1,6 @@
 #include "HEAAN/HEAAN.h"
 #include "HEAAN/HEAAN_bootstrap.h"
+#include "util/util.h"
 
 #include "experiment/big.h"
 
@@ -7,28 +8,34 @@
 
 int main()
 {
-    int s[N], s_rot[N], s_conj[N];
-    R_Q_square<2*LOGQ,1<<LOGN> rkey, ckey;
+    int s[N];
     HEAAN<LOGQ,N>::keygen(H,s);
-    rot<N>(s, s_rot);
-    conj<N>(s, s_conj);
-    HEAAN<LOGQ,N>::swkgen(s_rot, s, rkey);
-    HEAAN<LOGQ,N>::swkgen(s_conj, s, ckey);
-
-    Message<LOGN> z, z_measured;
+    
+    Message<LOGN> z, z_cts;
 	set_random_message(z);
 
-    R_Q<LOGQ, N> pt;
-    R_Q_square<LOGQ,N> ct, ct_[2];
+    R_Q<LOGQ, N> pt, pt_cts;
+    R_Q_square<LOGQ,N> ct, ct_cts[2];
     encode(z,Delta,pt);
 	HEAAN<LOGQ,N>::enc(pt,s,ct);
 	
-	//CoeffToSlot<LOGQ,LOGN, LOGDELTA>(ct,s,ct_);
-    CoeffToSlot<LOGQ, LOGN>(ct, rkey, ckey, ct_);
-	//SlotToCoeff<LOGQ,LOGN, LOGDELTA>(ct_[0], ct_[1],s,ct);
-    SlotToCoeff<LOGQ, LOGN>(ct_[0], ct_[1], rkey, ct);
-	HEAAN<LOGQ,N>::dec(ct ,s,pt);
-	decode_log(pt,LOGDELTA,z_measured);
-    print("z", z);
-    print("z_measured", z_measured);
+	CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE>(ct,s,ct_cts);
+    HEAAN<LOGQ,N>::dec(ct_cts[0],s,pt_cts);
+    //SlotToCoeff<LOGQ,LOGN, LOGDELTA>(ct_cts[0], ct_[1],s,ct);
+    decode_log(pt_cts,LOGDELTA +9*LOGDELTA_TILDE,z_cts);
+
+    for(int i = 0; i < 10; ++i) {
+        Z_Q<LOGQ> val(pt[bitReverse(i, LOGN - 1)]);
+        bool is_negative =  val.is_bigger_than_halfQ();
+        if(is_negative)
+            val.negate();
+        double val_double = (double) val[0];
+        if(is_negative)
+            val_double *= -1;   
+        val_double /= 2 * Delta;
+        //for(int j = 0; j < 3; ++j)
+        //std::cout << pt[bitReverse(i, LOGN - 1)][j] << std::endl;
+        std::cout << z_cts.r[i] << " " << val_double << std::endl;
+    }
+
 }
