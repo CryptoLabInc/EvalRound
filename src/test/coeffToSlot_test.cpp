@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-int main()
+void CoeffToSlot_test()
 {
     int s[N];
     HEAAN<LOGQ,N>::keygen(H,s);
@@ -22,7 +22,7 @@ int main()
 	CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE>(ct,s,ct_cts);
     HEAAN<LOGQ,N>::dec(ct_cts[0],s,pt_cts);
     //SlotToCoeff<LOGQ,LOGN, LOGDELTA>(ct_cts[0], ct_[1],s,ct);
-    decode_log(pt_cts,LOGDELTA +9*LOGDELTA_TILDE,z_cts);
+    decode_log(pt_cts,LOGDELTA +(LOGN-1)*LOGDELTA_TILDE,z_cts);
 
     for(int i = 0; i < 10; ++i) {
         Z_Q<LOGQ> val(pt[bitReverse(i, LOGN - 1)]);
@@ -33,9 +33,32 @@ int main()
         if(is_negative)
             val_double *= -1;   
         val_double /= 2 * Delta;
-        //for(int j = 0; j < 3; ++j)
-        //std::cout << pt[bitReverse(i, LOGN - 1)][j] << std::endl;
         std::cout << z_cts.r[i] << " " << val_double << std::endl;
     }
+}
 
+void CoeffToSlot_SlotToCoeff_test()
+{
+    int s[N];
+    HEAAN<LOGQ,N>::keygen(H,s);
+    
+    Message<LOGN> z, z_out;
+	set_random_message(z);
+
+    R_Q<LOGQ, N> pt, pt_out;
+    R_Q_square<LOGQ,N> ct, ct_cts[2], ct_out;
+    encode(z,Delta,pt);
+	HEAAN<LOGQ,N>::enc(pt,s,ct);
+	
+	CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE>(ct,s,ct_cts);
+    SlotToCoeff<LOGQ,LOGN, LOGDELTA_TILDE>(ct_cts[0], ct_cts[1],s,ct_out);
+    HEAAN<LOGQ,N>::dec(ct_out,s,pt_out);
+    decode_log(pt_out,LOGDELTA +2*(LOGN-1)*LOGDELTA_TILDE,z_out);
+    print("z", z);
+    print("z_out", z_out);
+}
+
+int main()
+{
+    CoeffToSlot_SlotToCoeff_test();
 }

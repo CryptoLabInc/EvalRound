@@ -51,18 +51,13 @@ void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
 		is_init = true;
 	}
 
-	R_Q_square<LOGQ, N> ct_res;	
-	ct_res = ct;
-	R_Q_square<LOGQ, 1<<LOGN> ct_temp;
-	
+	R_Q_square<LOGQ, N> ct_res(ct), ct_temp;
 	for(int d = 0; d < LOGN - 1; ++d) {
 		ct_temp = ct_res;
 		linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, s, ct_res);
 	}
 
-	ct_[0] = ct_res;
-
-	/*int s_conj[N];
+	int s_conj[N];
 	R_Q_square<2*LOGQ, 1 << LOGN> ckey;
 	conj<N>(s, s_conj);
 	HEAAN<LOGQ,N>::swkgen(s_conj, s, ckey);
@@ -72,7 +67,7 @@ void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
 	R_Q<LOGQ,N> pti; pti.setzero();
 	pti[N/2][0] = 1; pti[N/2].negate();
 	ct_[0] = ct_res; ct_[0] +=ct_conj;
-	ct_[1] = ct_res; ct_[1] -=ct_conj; ct_[1]*=pti;*/
+	ct_[1] = ct_res; ct_[1] -=ct_conj; ct_[1]*=pti;
 }
 
 //---------------------------------------------
@@ -135,8 +130,6 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
 	double U0i[N/2][N/2]; get_U0<N>(U0r,U0i);
 	linear_transform<LOGQ,LOGN,50>(U0r,U0i,ct0,rkey,ct_);
 
-	ct_.print(); // garbage
-
 	double iU0r[N/2][N/2];
 	double iU0i[N/2][N/2];
 
@@ -162,24 +155,24 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
 	static SparseDiagonal<N/2,3> Uir;
     static SparseDiagonal<N/2,3> Uii;
 
-
 	if(!is_init) {
 		splitU0NR<LOGN>(U0r, U0i);
 		for(int s = 0; s < 3; ++s) {
-			for(int i = 0; i < N; ++i) {
+			for(int i = 0; i < N/2; ++i) {
 				Uir.vec[s][i] = -U0i[0].vec[s][i];
 				Uii.vec[s][i] = U0r[0].vec[s][i];
 			}
 			Uir.off[s] = U0i[0].off[s];
 			Uii.off[s] = U0r[0].off[s];
-			Uir.zero[s] = false;
-			Uii.zero[s] = false;
+			Uir.zero[s] = U0i[0].zero[s];
+			Uii.zero[s] = U0r[0].zero[s];
 		}
 		is_init = true;
 	}
 
+    ct_ = ct0;
+
 	R_Q_square<LOGQ, N> ct_temp;
-	ct_ = ct0;
 	for(int d = LOGN-2; d >= 0; --d) {
 		ct_temp = ct_;
 		linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, skey, ct_);
@@ -194,8 +187,7 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
 			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(Uir, Uii, ct_temp, skey, ct2);
 		}
 	}
-
-	//ct_ += ct2;
+	ct_ += ct2;
 }
 
 
