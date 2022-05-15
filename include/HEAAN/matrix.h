@@ -184,6 +184,8 @@ void MatMul(const SparseDiagonal<N, S1   >&Ar,const SparseDiagonal<N, S1   >&Ai,
 	Cr.setzero(); Ci.setzero();
 	for (int s1 = 0; s1 < S1; s1++)
 	for (int s2 = 0; s2 < S2; s2++) {
+		if(Ar.zero[s1] && Ai.zero[s1] || Br.zero[s2] && Bi.zero[s2])
+			continue;
 		assert(Ar.off[s1] == Ai.off[s1]);
 		assert(Br.off[s2] == Bi.off[s2]);
 		int off1 = Ar.off[s1];

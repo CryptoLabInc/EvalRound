@@ -52,9 +52,29 @@ void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
 	}
 
 	R_Q_square<LOGQ, N> ct_res(ct), ct_temp;
-	for(int d = 0; d < LOGN - 1; ++d) {
+	if(LOGN != 10) {
+		for(int d = 0; d < LOGN - 1; ++d) {
+			ct_temp = ct_res;
+			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, s, ct_res);
+		} 
+	} else {
+		SparseDiagonal<(1<<9), 9> Ar[3];
+		SparseDiagonal<(1<<9), 9> Ai[3];
+		SparseDiagonal<(1<<9), 27> Br;
+		SparseDiagonal<(1<<9), 27> Bi;
+		MatMul(U0r[0], U0i[0], U0r[1], U0i[1], Ar[0], Ai[0]);
+		MatMul(U0r[2], U0i[2], U0r[3], U0i[3], Ar[1], Ai[1]);
+		MatMul(U0r[4], U0i[4], U0r[5], U0i[5], Ar[2], Ai[2]);
+		SparseDiagonal<(1<<9), 9> tempr, tempi;
+		MatMul(U0r[6], U0i[6], U0r[7], U0i[7], tempr, tempi);
+		MatMul(tempr, tempi, U0r[8], U0i[8], Br, Bi);
+		
+		for(int d = 0; d < 3; ++d) {
+			ct_temp = ct_res;
+			linear_transform<LOGQ, LOGN, LOGDELTA, 9>(Ar[d], Ai[d], ct_temp, s, ct_res);
+		} 
 		ct_temp = ct_res;
-		linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, s, ct_res);
+		linear_transform<LOGQ, LOGN, LOGDELTA, 27>(Br, Bi, ct_temp, s, ct_res);
 	}
 
 	int s_conj[N];
@@ -173,18 +193,60 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
     ct_ = ct0;
 
 	R_Q_square<LOGQ, N> ct_temp;
-	for(int d = LOGN-2; d >= 0; --d) {
+	if(LOGN != 10) {
+		for(int d = LOGN-2; d >= 0; --d) {
+			ct_temp = ct_;
+			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, skey, ct_);
+		}
+	} else {
+		SparseDiagonal<(1<<9), 9> Ar[3];
+		SparseDiagonal<(1<<9), 9> Ai[3];
+		SparseDiagonal<(1<<9), 27> Br;
+		SparseDiagonal<(1<<9), 27> Bi;
+		SparseDiagonal<(1<<9), 9> tempr, tempi;
+		std::cout << "mult temp" << std::endl;
+		MatMul(U0r[8], U0i[8], U0r[7], U0i[7], tempr, tempi);
+		std::cout << "mult B" << std::endl;
+		MatMul(tempr, tempi, U0r[6], U0i[6], Br, Bi);
+		MatMul(U0r[5], U0i[5], U0r[4], U0i[4], Ar[2], Ai[2]);
+		MatMul(U0r[3], U0i[3], U0r[2], U0i[2], Ar[1], Ai[1]);
+		MatMul(U0r[1], U0i[1], U0r[0], U0i[0], Ar[0], Ai[0]);
+
 		ct_temp = ct_;
-		linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, skey, ct_);
+		linear_transform<LOGQ, LOGN, LOGDELTA, 27>(Br, Bi, ct_temp, skey, ct_);
+		for(int d = 2; d >= 0; --d) {
+			ct_temp = ct_;
+			linear_transform<LOGQ, LOGN, LOGDELTA, 9>(Ar[d], Ai[d], ct_temp, skey, ct_);
+		}
 	}
 
 	R_Q_square<LOGQ,N> ct2(ct1);
-	for(int d = LOGN-2; d >= 0; --d) {
+	if(LOGN != 10) {
+		for(int d = LOGN-2; d >= 0; --d) {
+			ct_temp = ct2;
+			if(d != 0) {
+				linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, skey, ct2);
+			} else {
+				linear_transform<LOGQ, LOGN, LOGDELTA, 3>(Uir, Uii, ct_temp, skey, ct2);
+			}
+		}
+	} else {
+		SparseDiagonal<(1<<9), 9> Ar[3];
+		SparseDiagonal<(1<<9), 9> Ai[3];
+		SparseDiagonal<(1<<9), 27> Br;
+		SparseDiagonal<(1<<9), 27> Bi;
+		SparseDiagonal<(1<<9), 9> tempr, tempi;
+		MatMul(U0r[8], U0i[8], U0r[7], U0i[7], tempr, tempi);
+		MatMul(tempr, tempi, U0r[6], U0i[6], Br, Bi);
+		MatMul(U0r[5], U0i[5], U0r[4], U0i[4], Ar[2], Ai[2]);
+		MatMul(U0r[3], U0i[3], U0r[2], U0i[2], Ar[1], Ai[1]);
+		MatMul(U0r[1], U0i[1], Uir, Uii, Ar[0], Ai[0]);
+
 		ct_temp = ct2;
-		if(d != 0) {
-			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, skey, ct2);
-		} else {
-			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(Uir, Uii, ct_temp, skey, ct2);
+		linear_transform<LOGQ, LOGN, LOGDELTA, 27>(Br, Bi, ct_temp, skey, ct2);
+		for(int d = 2; d >= 0; --d) {
+			ct_temp = ct2;
+			linear_transform<LOGQ, LOGN, LOGDELTA, 9>(Ar[d], Ai[d], ct_temp, skey, ct2);
 		}
 	}
 	ct_ += ct2;

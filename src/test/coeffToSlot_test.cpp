@@ -21,8 +21,8 @@ void CoeffToSlot_test()
 	
 	CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE>(ct,s,ct_cts);
     HEAAN<LOGQ,N>::dec(ct_cts[0],s,pt_cts);
-    //SlotToCoeff<LOGQ,LOGN, LOGDELTA>(ct_cts[0], ct_[1],s,ct);
-    decode_log(pt_cts,LOGDELTA +(LOGN-1)*LOGDELTA_TILDE,z_cts);
+    const int D = LOGN == 10? 4 : LOGN-1;
+    decode_log(pt_cts,LOGDELTA +D*LOGDELTA_TILDE,z_cts);
 
     for(int i = 0; i < 10; ++i) {
         Z_Q<LOGQ> val(pt[bitReverse(i, LOGN - 1)]);
@@ -53,7 +53,8 @@ void CoeffToSlot_SlotToCoeff_test()
 	CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE>(ct,s,ct_cts);
     SlotToCoeff<LOGQ,LOGN, LOGDELTA_TILDE>(ct_cts[0], ct_cts[1],s,ct_out);
     HEAAN<LOGQ,N>::dec(ct_out,s,pt_out);
-    decode_log(pt_out,LOGDELTA +2*(LOGN-1)*LOGDELTA_TILDE,z_out);
+    const int D = LOGN == 10? 4 : LOGN-1;
+    decode_log(pt_out,LOGDELTA +2*D*LOGDELTA_TILDE,z_out);
     print("z", z);
     print("z_out", z_out);
 }
