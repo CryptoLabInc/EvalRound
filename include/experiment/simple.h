@@ -7,8 +7,8 @@
 
 #include <cstdint>
 
-constexpr int LOGDELTA = 20;
+constexpr int LOGDELTA = 50;
 constexpr uint64_t Delta = 1ULL << LOGDELTA;
-constexpr int LOGN = 10;
+constexpr int LOGN = 15;
 constexpr int N = 1 << LOGN;
 constexpr int K = 16;
