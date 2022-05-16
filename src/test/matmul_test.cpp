@@ -1,4 +1,4 @@
-#include "experiment/big.h"
+#include "experiment/rns_debug.h"
 
 #include "HEAAN/HEAAN.h"
 #include "HEAAN/HEAAN_matrix.h"

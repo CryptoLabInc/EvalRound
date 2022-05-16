@@ -2,7 +2,7 @@
 #include "HEAAN/HEAAN_bootstrap.h"
 #include "util/util.h"
 
-#include "experiment/big.h"
+#include "experiment/rns_debug.h"
 
 #include <iostream>
 
@@ -75,9 +75,9 @@ void CoeffToSlot_SlotToCoeff_test()
 	HEAAN<LOGQ,N>::enc(pt,s,ct);
 	
 	CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE>(ct,s,ct_cts);
-    SlotToCoeff<LOGQ,LOGN, LOGDELTA_TILDE>(ct_cts[0], ct_cts[1],s,ct_out);
+    SlotToCoeff<LOGQ,LOGN, LOGDELTA>(ct_cts[0], ct_cts[1],s,ct_out);
     HEAAN<LOGQ,N>::dec(ct_out,s,pt_out);
-    decode_log(pt_out,LOGDELTA +(LOGN-1)*LOGDELTA_TILDE,z_out);
+    decode_log(pt_out,LOGDELTA +(LOGN-1)/2*LOGDELTA_TILDE + (LOGN-1)/2*LOGDELTA,z_out);
     print("z", z);
     print("z_out", z_out);
 }

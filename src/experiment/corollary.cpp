@@ -1,4 +1,4 @@
-#include "experiment/big.h"
+#include "experiment/rns_target.h"
 
 int main()
 {
@@ -7,6 +7,8 @@ int main()
   SparseDiagonal<N/2, 3> U0r[LOGN-1];
   SparseDiagonal<N/2, 3> U0i[LOGN-1];
   R_Q<LOGQ, N> pt, pt_Uz;
+
+  const int D = LOGN-1; // number of matrices
 
   set_test_rounded_message(z, Delta);
 

@@ -1,5 +1,5 @@
 #include "HEAAN/HEAAN.h"
-#include "experiment/big.h"
+#include "experiment/rns_debug.h"
 
 int main(){	
 	Message<LOGN> z, z_sq_orig, z_sq;
