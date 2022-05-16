@@ -11,7 +11,7 @@ int main()
 
   set_test_message(z);
   encode(z, Delta, pt);
-  double expected = sqrt(K * N / 12.0) * norm(pt);
+  double expected = (K * N / 12.0) * square_sum(pt);
   std::cout << expected << std::endl;
   std::cout << std::endl;
   
@@ -28,7 +28,7 @@ int main()
       add(pt_conv, res, res);
     }
 
-    double measured = norm(res);
+    double measured = square_sum(res);
     std::cout << measured << std::endl;
   }
 }
