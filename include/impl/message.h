@@ -45,17 +45,17 @@ void matrix_vector_product(
     }
 }
 
-template <int LOGN>
+template <int LOGN, int S>
 void matrix_vector_product(
     const Message<LOGN> &z,
-    SparseDiagonal<(1<<(LOGN-1)),3> &Ar,
-	SparseDiagonal<(1<<(LOGN-1)),3> &Ai,
+    SparseDiagonal<(1<<(LOGN-1)),S> &Ar,
+	SparseDiagonal<(1<<(LOGN-1)),S> &Ai,
     Message<LOGN> &Az) {
     const int N = 1 << LOGN;
     for(int i = 0; i < N/2; ++i) {
         double sumr = 0, sumi = 0;
-        for(int k = 0; k < 3; ++k) {
-            if( Ar.zero[k]==false){
+        for(int k = 0; k < S; ++k) {
+            if(!Ar.zero[k] || !Ai.zero[k]){
                 int jr = (i+Ar.off[k]) % (N/2);
                 int ji = (i+Ai.off[k]) % (N/2);
                 sumr += Ar.vec[k][i] * z.r[jr] - Ai.vec[k][i] * z.i[ji];

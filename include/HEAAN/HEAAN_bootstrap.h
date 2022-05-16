@@ -53,7 +53,7 @@ void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
 	}
 
 	R_Q_square<LOGQ, N> U0ct;
-	serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, LOGN-1>(U0r, U0i, ct, s, U0ct);
+	grouped_serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, LOGN-1>(U0r, U0i, ct, s, U0ct);
 
 	R_Q_square<LOGQ, N> U0ct_conj;
 	int s_conj[N];
@@ -178,9 +178,9 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
 		is_init = true;
 	}
 
-	serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, LOGN-1>(U0r, U0i, ct0, skey, ct_);
+	grouped_serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, LOGN-1>(U0r, U0i, ct0, skey, ct_);
 	R_Q_square<LOGQ, N> ct2;
-	serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, LOGN-1>(iU0r, iU0i, ct1, skey, ct2);
+	grouped_serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, LOGN-1>(iU0r, iU0i, ct1, skey, ct2);
 	ct_ += ct2;
 }
 

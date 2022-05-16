@@ -162,21 +162,22 @@ void linear_transform( const SparseDiagonal<1 << (LOGN - 1),S>& Ar,
 	const int N = 1 << LOGN;
 	Act.setzero();
 	for (int s = 0; s < S; s++) {
-		if (Ar.zero[s] == false || Ai.zero[s] == false) {
-			R_Q<LOGQ, N> pt;
-			encode<LOGQ, LOGN>(Ar.vec[s],
-							Ai.vec[s], 1ULL << LOGDELTA, pt);
-			R_Q_square<LOGQ, N> ct_rot(ct);
-			if (Ar.off[s] != 0) {
-				R_Q_square<2*LOGQ, 1 << LOGN> rkey;
-				int skey_rot[N];
-				rot<N>(skey, skey_rot, Ar.off[s]);
-				HEAAN<LOGQ,N>::swkgen(skey_rot ,skey, rkey);
-				rot_ct<LOGQ, N>(ct, Ar.off[s], rkey, ct_rot);
-			}
-			ct_rot *= pt;
-			Act += ct_rot;
+		assert(Ar.off[s] == Ai.off[s]);
+		if(Ar.zero[s] && Ai.zero[s])
+			continue;
+		R_Q<LOGQ, N> pt;
+		encode<LOGQ, LOGN>(Ar.vec[s],
+						Ai.vec[s], 1ULL << LOGDELTA, pt);
+		R_Q_square<LOGQ, N> ct_rot(ct);
+		if (Ar.off[s] != 0) {
+			R_Q_square<2*LOGQ, 1 << LOGN> rkey;
+			int skey_rot[N];
+			rot<N>(skey, skey_rot, Ar.off[s]);
+			HEAAN<LOGQ,N>::swkgen(skey_rot ,skey, rkey);
+			rot_ct<LOGQ, N>(ct, Ar.off[s], rkey, ct_rot);
 		}
+		ct_rot *= pt;
+		Act += ct_rot;
 	}
 }
 
@@ -206,7 +207,7 @@ void grouped_serial_linear_transform( const SparseDiagonal<1 << (LOGN - 1),S> Ar
 	SparseDiagonal<1 << (LOGN - 1), S*S> Bi[D/2];
 
 	for(int i = 0; i < D/2; ++i) {
-		MatMul(Ar[2*i], Ai[2*i], Ar[2*i+1], Ai[2*i+1], Br[i], Bi[i]);
+		MatMul(Ar[2*i+1], Ai[2*i+1], Ar[2*i], Ai[2*i], Br[i], Bi[i]);
 	}
-	serial_linear_transform<LOGQ, LOGN, LOGDELTA, S, D/2>(Br, Bi, ct, skey, Act);
+	serial_linear_transform<LOGQ, LOGN, LOGDELTA, S*S, D/2>(Br, Bi, ct, skey, Act);
 }

@@ -77,8 +77,9 @@ struct SparseDiagonal {
 	//
 	void setzero() {
 		for (int s = 0; s < S; s++) {
-			zero[s] = true;
 			for (int i = 0; i < N; i++) vec[s][i] = 0;
+			zero[s] = true;
+			off[s] = 0; // for consistency
 		}
 	}
 	//
