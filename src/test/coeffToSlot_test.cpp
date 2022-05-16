@@ -21,9 +21,7 @@ set_random_message(z);
 
     CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE>(ct,s,ct_cts);
     HEAAN<LOGQ,N>::dec(ct_cts[0],s,pt_cts);
-    const bool Grouped_matmul = false;
-    const int D = Grouped_matmul? 4 : LOGN-1;
-    decode_log(pt_cts,LOGDELTA +D*LOGDELTA_TILDE,z_cts);
+    decode_log(pt_cts,LOGDELTA +(LOGN-1)*LOGDELTA_TILDE,z_cts);
 
     for(int i = 0; i < N/2; ++i) {
         Z_Q<LOGQ> valr(pt[bitReverse(i, LOGN - 1)]);
@@ -34,7 +32,7 @@ set_random_message(z);
         double valr_double = (double) valr[0];
         if(is_negative_r)
             valr_double *= -1;  
-        valr_double /= 2 * Delta;
+        valr_double /= Delta;
 
         bool is_negative_i =  vali.is_bigger_than_halfQ();
         if(is_negative_i)
@@ -42,7 +40,7 @@ set_random_message(z);
         double vali_double = (double) vali[0];
         if(is_negative_i)
             vali_double *= -1;  
-        vali_double /= 2 * Delta;
+        vali_double /= Delta;
 
         z_cts_exact.r[i] = valr_double;
         z_cts_exact.i[i] = vali_double;
@@ -72,8 +70,7 @@ void CoeffToSlot_SlotToCoeff_test()
 	CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE>(ct,s,ct_cts);
     SlotToCoeff<LOGQ,LOGN, LOGDELTA_TILDE>(ct_cts[0], ct_cts[1],s,ct_out);
     HEAAN<LOGQ,N>::dec(ct_out,s,pt_out);
-    const int D = LOGN == 10? 4 : LOGN-1;
-    decode_log(pt_out,LOGDELTA +2*D*LOGDELTA_TILDE,z_out);
+    decode_log(pt_out,LOGDELTA +2*(LOGN-1)*LOGDELTA_TILDE,z_out);
     print("z", z);
     print("z_out", z_out);
 }
@@ -81,4 +78,5 @@ void CoeffToSlot_SlotToCoeff_test()
 int main()
 {
     CoeffToSlot_test();
+    CoeffToSlot_SlotToCoeff_test();
 }

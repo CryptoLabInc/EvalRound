@@ -179,3 +179,34 @@ void linear_transform( const SparseDiagonal<1 << (LOGN - 1),S>& Ar,
 		}
 	}
 }
+
+template< int LOGQ, int LOGN, int LOGDELTA, int S, int D>
+void serial_linear_transform( const SparseDiagonal<1 << (LOGN - 1),S> Ar[D],
+					   	const SparseDiagonal<1 << (LOGN - 1),S> Ai[D],
+					   	const R_Q_square<  LOGQ, 1 << LOGN>& ct,
+						const int skey[1 << LOGN],
+						R_Q_square<  LOGQ, 1 << LOGN>& Act){
+	R_Q_square<LOGQ, 1 << LOGN> ct_temp;
+	Act = ct;
+	for(int d = 0; d < D; ++d) {
+		ct_temp = Act;
+		linear_transform<LOGQ, LOGN, LOGDELTA, S>(Ar[d], Ai[d], ct_temp, skey, Act);
+	} 
+}
+
+template< int LOGQ, int LOGN, int LOGDELTA, int S, int D>
+void grouped_serial_linear_transform( const SparseDiagonal<1 << (LOGN - 1),S> Ar[D],
+					   	const SparseDiagonal<1 << (LOGN - 1),S> Ai[D],
+					   	const R_Q_square<  LOGQ, 1 << LOGN>& ct,
+						const int skey[1 << LOGN],
+						R_Q_square<  LOGQ, 1 << LOGN>& Act){
+	// TODO(ksh) : implement this for all D
+	assert(D % 2 == 0);
+	SparseDiagonal<1 << (LOGN - 1), S*S> Br[D/2];
+	SparseDiagonal<1 << (LOGN - 1), S*S> Bi[D/2];
+
+	for(int i = 0; i < D/2; ++i) {
+		MatMul(Ar[2*i], Ai[2*i], Ar[2*i+1], Ai[2*i+1], Br[i], Bi[i]);
+	}
+	serial_linear_transform<LOGQ, LOGN, LOGDELTA, S, D/2>(Br, Bi, ct, skey, Act);
+}

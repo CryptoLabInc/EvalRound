@@ -45,6 +45,17 @@ struct SparseDiagonal {
 	double vec[S][N];
 	int    off[S];
 	bool  zero[S];
+
+	// copy operator
+	void operator=(const SparseDiagonal<N,S> &other) {
+		for(int s = 0; s < S; ++s) {
+			for(int i = 0; i < N; ++i) {
+				vec[s][i] = other.vec[s][i];
+			}
+			off[s] = other.off[s];
+			zero[s] = other.zero[s];
+		}
+	}
 	//
 	double get_element(int i, int j) const {
 		for (int s = 0; s < S; s++)

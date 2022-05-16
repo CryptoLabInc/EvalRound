@@ -52,43 +52,20 @@ void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
 		is_init = true;
 	}
 
-	R_Q_square<LOGQ, N> ct_res(ct), ct_temp;
-	if(!Grouped_matmul) {
-		for(int d = 0; d < LOGN - 1; ++d) {
-			ct_temp = ct_res;
-			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, s, ct_res);
-		} 
-	} else {
-		SparseDiagonal<(1<<9), 9> Ar[3];
-		SparseDiagonal<(1<<9), 9> Ai[3];
-		SparseDiagonal<(1<<9), 27> Br;
-		SparseDiagonal<(1<<9), 27> Bi;
-		MatMul(U0r[0], U0i[0], U0r[1], U0i[1], Ar[0], Ai[0]);
-		MatMul(U0r[2], U0i[2], U0r[3], U0i[3], Ar[1], Ai[1]);
-		MatMul(U0r[4], U0i[4], U0r[5], U0i[5], Ar[2], Ai[2]);
-		SparseDiagonal<(1<<9), 9> tempr, tempi;
-		MatMul(U0r[6], U0i[6], U0r[7], U0i[7], tempr, tempi);
-		MatMul(tempr, tempi, U0r[8], U0i[8], Br, Bi);
-		
-		for(int d = 0; d < 3; ++d) {
-			ct_temp = ct_res;
-			linear_transform<LOGQ, LOGN, LOGDELTA, 9>(Ar[d], Ai[d], ct_temp, s, ct_res);
-		} 
-		ct_temp = ct_res;
-		linear_transform<LOGQ, LOGN, LOGDELTA, 27>(Br, Bi, ct_temp, s, ct_res);
-	}
+	R_Q_square<LOGQ, N> U0ct;
+	serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, LOGN-1>(U0r, U0i, ct, s, U0ct);
 
+	R_Q_square<LOGQ, N> U0ct_conj;
 	int s_conj[N];
 	R_Q_square<2*LOGQ, 1 << LOGN> ckey;
 	conj<N>(s, s_conj);
 	HEAAN<LOGQ,N>::swkgen(s_conj, s, ckey);
-	R_Q_square<LOGQ, N> ct_conj;
-	conj(ct_res, ckey, ct_conj);
+	conj(U0ct, ckey, U0ct_conj);
 
 	R_Q<LOGQ,N> pti; pti.setzero();
 	pti[N/2][0] = 1; pti[N/2].negate();
-	ct_[0] = ct_res; ct_[0] +=ct_conj;
-	ct_[1] = ct_res; ct_[1] -=ct_conj; ct_[1]*=pti;
+	ct_[0] = U0ct; ct_[0] += U0ct_conj;
+	ct_[1] = U0ct; ct_[1] -= U0ct_conj; ct_[1]*=pti;
 }
 
 //---------------------------------------------
@@ -175,81 +152,35 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
 	static bool is_init = false;
 	static SparseDiagonal<N/2,3> U0r[LOGN-1];
     static SparseDiagonal<N/2,3> U0i[LOGN-1];
-	static SparseDiagonal<N/2,3> Uir;
-    static SparseDiagonal<N/2,3> Uii;
+	static SparseDiagonal<N/2,3> iU0r[LOGN-1];
+    static SparseDiagonal<N/2,3> iU0i[LOGN-1];
 
 	if(!is_init) {
-		splitU0NR<LOGN>(U0r, U0i);
-		for(int s = 0; s < 3; ++s) {
-			for(int i = 0; i < N/2; ++i) {
-				Uir.vec[s][i] = -U0i[0].vec[s][i];
-				Uii.vec[s][i] = U0r[0].vec[s][i];
-			}
-			Uir.off[s] = U0i[0].off[s];
-			Uii.off[s] = U0r[0].off[s];
-			Uir.zero[s] = U0i[0].zero[s];
-			Uii.zero[s] = U0r[0].zero[s];
+		SparseDiagonal<N/2,3> U0r_temp[LOGN-1];
+    	SparseDiagonal<N/2,3> U0i_temp[LOGN-1];
+
+		splitU0NR<LOGN>(U0r_temp, U0i_temp);
+		for(int i = 0; i < LOGN - 1; ++i) {
+			U0r[i] = U0r_temp[LOGN - 2 - i];
+			U0i[i] = U0i_temp[LOGN - 2 - i];
 		}
+
+		for(int i = 0; i < LOGN - 1; ++i) {
+			if(i == 0) {
+				iU0r[i] = U0i_temp[LOGN - 2 - i];
+				iU0r[i].negate();
+				iU0i[i] = U0r_temp[LOGN - 2 - i];
+			} else {
+				iU0r[i] = U0r_temp[LOGN - 2 - i];
+				iU0i[i] = U0i_temp[LOGN - 2 - i];
+			}
+		}		
 		is_init = true;
 	}
 
-    ct_ = ct0;
-
-	R_Q_square<LOGQ, N> ct_temp;
-	if(!Grouped_matmul) {
-		for(int d = LOGN-2; d >= 0; --d) {
-			ct_temp = ct_;
-			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, skey, ct_);
-		}
-	} else {
-		SparseDiagonal<(1<<9), 9> Ar[3];
-		SparseDiagonal<(1<<9), 9> Ai[3];
-		SparseDiagonal<(1<<9), 27> Br;
-		SparseDiagonal<(1<<9), 27> Bi;
-		SparseDiagonal<(1<<9), 9> tempr, tempi;
-		MatMul(U0r[8], U0i[8], U0r[7], U0i[7], tempr, tempi);
-		MatMul(tempr, tempi, U0r[6], U0i[6], Br, Bi);
-		MatMul(U0r[5], U0i[5], U0r[4], U0i[4], Ar[2], Ai[2]);
-		MatMul(U0r[3], U0i[3], U0r[2], U0i[2], Ar[1], Ai[1]);
-		MatMul(U0r[1], U0i[1], U0r[0], U0i[0], Ar[0], Ai[0]);
-
-		ct_temp = ct_;
-		linear_transform<LOGQ, LOGN, LOGDELTA, 27>(Br, Bi, ct_temp, skey, ct_);
-		for(int d = 2; d >= 0; --d) {
-			ct_temp = ct_;
-			linear_transform<LOGQ, LOGN, LOGDELTA, 9>(Ar[d], Ai[d], ct_temp, skey, ct_);
-		}
-	}
-
-	R_Q_square<LOGQ,N> ct2(ct1);
-	if(!Grouped_matmul) {
-		for(int d = LOGN-2; d >= 0; --d) {
-			ct_temp = ct2;
-			if(d != 0) {
-				linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, skey, ct2);
-			} else {
-				linear_transform<LOGQ, LOGN, LOGDELTA, 3>(Uir, Uii, ct_temp, skey, ct2);
-			}
-		}
-	} else {
-		SparseDiagonal<(1<<9), 9> Ar[3];
-		SparseDiagonal<(1<<9), 9> Ai[3];
-		SparseDiagonal<(1<<9), 27> Br;
-		SparseDiagonal<(1<<9), 27> Bi;
-		SparseDiagonal<(1<<9), 9> tempr, tempi;
-		MatMul(U0r[8], U0i[8], U0r[7], U0i[7], tempr, tempi);
-		MatMul(tempr, tempi, U0r[6], U0i[6], Br, Bi);
-		MatMul(U0r[5], U0i[5], U0r[4], U0i[4], Ar[2], Ai[2]);
-		MatMul(U0r[3], U0i[3], U0r[2], U0i[2], Ar[1], Ai[1]);
-		MatMul(U0r[1], U0i[1], Uir, Uii, Ar[0], Ai[0]);
-
-		ct_temp = ct2;
-		linear_transform<LOGQ, LOGN, LOGDELTA, 27>(Br, Bi, ct_temp, skey, ct2);
-		for(int d = 2; d >= 0; --d) {
-			ct_temp = ct2;
-			linear_transform<LOGQ, LOGN, LOGDELTA, 9>(Ar[d], Ai[d], ct_temp, skey, ct2);
-		}
-	}
+	serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, LOGN-1>(U0r, U0i, ct0, skey, ct_);
+	R_Q_square<LOGQ, N> ct2;
+	serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, LOGN-1>(iU0r, iU0i, ct1, skey, ct2);
 	ct_ += ct2;
 }
 
