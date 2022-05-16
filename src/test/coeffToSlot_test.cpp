@@ -19,7 +19,7 @@ void CoeffToSlot_test()
     encode(z,Delta,pt);
     HEAAN<LOGQ,N>::enc(pt,s,ct);
 
-    CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE>(ct,s,ct_cts);
+    CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE, G>(ct,s,ct_cts);
     for(int i = 0; i < 2; ++i) {
         HEAAN<LOGQ,N>::dec(ct_cts[i],s,pt_cts[i]);
         decode_log(pt_cts[i],LOGDELTA +(LOGN-1)/2*LOGDELTA_TILDE,z_cts[i]);
@@ -74,8 +74,8 @@ void CoeffToSlot_SlotToCoeff_test()
     encode(z,Delta,pt);
 	HEAAN<LOGQ,N>::enc(pt,s,ct);
 	
-	CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE>(ct,s,ct_cts);
-    SlotToCoeff<LOGQ,LOGN, LOGDELTA>(ct_cts[0], ct_cts[1],s,ct_out);
+	CoeffToSlot<LOGQ,LOGN, LOGDELTA_TILDE, G>(ct,s,ct_cts);
+    SlotToCoeff<LOGQ,LOGN, LOGDELTA, G>(ct_cts[0], ct_cts[1],s,ct_out);
     HEAAN<LOGQ,N>::dec(ct_out,s,pt_out);
     decode_log(pt_out,LOGDELTA +(LOGN-1)/2*LOGDELTA_TILDE + (LOGN-1)/2*LOGDELTA,z_out);
     print("z", z);

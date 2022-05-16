@@ -15,3 +15,4 @@ constexpr int N = 1 << LOGN;
 
 constexpr int K = 24; // max number of periods of sine function to approximate on EvalMod
 constexpr int H = 128; // hamming weight of secret key
+constexpr int G = 4; // number of grouped multiplication of encoding matrix
