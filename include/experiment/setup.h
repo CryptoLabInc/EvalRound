@@ -4,12 +4,14 @@
 #include "HEAAN/R_Q.h"
 #include "HEAAN/DFT.h"
 
+#include <cmath>
 #include <random>
 
 namespace {
     static std::random_device rd;
     static std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dist(-1.0, 1.0);
+    double range = 1. / sqrt(2);
+    std::uniform_real_distribution<> dist(-range, range);
 }
 
 template <class Iter>
