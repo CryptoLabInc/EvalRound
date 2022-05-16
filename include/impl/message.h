@@ -105,6 +105,16 @@ double norm(const Message<LOGN> &z){
     return sqrt(square_sum(z));
 }
 
+template<int LOGN>
+double sup_norm(const Message<LOGN> &z){
+    double max = 0;
+    for(int i =0 ; i < (1 << (LOGN - 1)); ++i) {
+        double abs = sqrt(z.r[i] * z.r[i] + z.i[i] * z.i[i]);
+        max = abs > max ? abs : max;
+    }
+    return max;
+}
+
 template <int LOGN>
 void print(const std::string name, const Message<LOGN> &z){
 	std::cout << "Message " << name << std::endl;

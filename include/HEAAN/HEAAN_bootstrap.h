@@ -34,6 +34,7 @@ template<int LOGQ, int LOGN, int LOGDELTA>
 void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
 					const int s[1 << LOGN],
 					R_Q_square<  LOGQ,1<<LOGN> ct_[2]){
+	const bool Grouped_matmul = false;
 	const int N = 1 << LOGN;
 	static bool is_init = false;
 	static SparseDiagonal<N/2,3> U0r[LOGN-1];
@@ -52,7 +53,7 @@ void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
 	}
 
 	R_Q_square<LOGQ, N> ct_res(ct), ct_temp;
-	if(LOGN != 10) {
+	if(!Grouped_matmul) {
 		for(int d = 0; d < LOGN - 1; ++d) {
 			ct_temp = ct_res;
 			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, s, ct_res);
@@ -168,6 +169,8 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
 				  const R_Q_square<  LOGQ,1<<LOGN>&  ct1,
 				  const int skey[1<<LOGN],
 					    R_Q_square<  LOGQ,1<<LOGN>& ct_ ){
+	const bool Grouped_matmul = false;
+	
 	const int N = 1 << LOGN;
 	static bool is_init = false;
 	static SparseDiagonal<N/2,3> U0r[LOGN-1];
@@ -193,7 +196,7 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
     ct_ = ct0;
 
 	R_Q_square<LOGQ, N> ct_temp;
-	if(LOGN != 10) {
+	if(!Grouped_matmul) {
 		for(int d = LOGN-2; d >= 0; --d) {
 			ct_temp = ct_;
 			linear_transform<LOGQ, LOGN, LOGDELTA, 3>(U0r[d], U0i[d], ct_temp, skey, ct_);
@@ -204,9 +207,7 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
 		SparseDiagonal<(1<<9), 27> Br;
 		SparseDiagonal<(1<<9), 27> Bi;
 		SparseDiagonal<(1<<9), 9> tempr, tempi;
-		std::cout << "mult temp" << std::endl;
 		MatMul(U0r[8], U0i[8], U0r[7], U0i[7], tempr, tempi);
-		std::cout << "mult B" << std::endl;
 		MatMul(tempr, tempi, U0r[6], U0i[6], Br, Bi);
 		MatMul(U0r[5], U0i[5], U0r[4], U0i[4], Ar[2], Ai[2]);
 		MatMul(U0r[3], U0i[3], U0r[2], U0i[2], Ar[1], Ai[1]);
@@ -221,7 +222,7 @@ void SlotToCoeff( const R_Q_square<  LOGQ,1<<LOGN>&  ct0,
 	}
 
 	R_Q_square<LOGQ,N> ct2(ct1);
-	if(LOGN != 10) {
+	if(!Grouped_matmul) {
 		for(int d = LOGN-2; d >= 0; --d) {
 			ct_temp = ct2;
 			if(d != 0) {
