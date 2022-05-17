@@ -218,6 +218,8 @@ void split_U0( double Ar[LOGN][1<<(LOGN-1)][1<<(LOGN-1)],
 	}
 }
 
+// Rescale by the size of q should not be performed at the beginning of EvalMod_Kx.
+/*
 template<int LOGQ, int N, int LOGq, int LOGDELTA>
 void EvalMod_K4( const R_Q_square<  LOGQ,N>& ct,
 				  const R_Q_square<2*(LOGQ-LOGq-2         ),N>& evk1,
@@ -227,7 +229,7 @@ void EvalMod_K4( const R_Q_square<  LOGQ,N>& ct,
 			      const R_Q_square<2*(LOGQ-LOGq-2-4*LOGDELTA),N>& evk5,
 						R_Q_square<  (LOGQ-LOGq-2-5*LOGDELTA),N>& p    )
 {	R_Q_square<LOGQ-LOGq-2,N> ct1;
-	RS<LOGQ,LOGQ-LOGq-2,N>(ct,ct1);
+	RS<LOGQ,LOGQ-LOGq-2,N>(ct,ct1); // Why rescale?
 	ct1.print();
 	const double u[32] = { 0.000000000000,0.140829338704,0.000000000000,-0.071956680803,
 						   0.000000000000,0.314734688318,0.000000000000,-0.614678201819,
@@ -278,3 +280,4 @@ void EvalMod_K3( const R_Q_square<  LOGQ,N>& ct,
 	p.print();
 	p *= 1ULL<<(LOGq);
 }
+*/
