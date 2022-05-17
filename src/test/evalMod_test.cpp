@@ -50,7 +50,7 @@ void EvalMod_test()
 
 	R_Q<LOGQ-12*LOGDELTA_boot,N> pt_out;
     HEAAN<LOGQ-12*LOGDELTA_boot,N>::dec(ct_out,s,pt_out);
-	decode_log(pt_out, LOGDELTA, z_out);
+	decode_log(pt_out, LOGDELTA_boot, z_out);
 	print("z", z);
 	print("z_out", z_out);
 }

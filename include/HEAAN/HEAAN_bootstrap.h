@@ -395,11 +395,11 @@ void EvalMod( const R_Q_square<LOGQ, N>& ct,
 	temp3[0][0]+=six;
 	R_Q_square<LOGQ-11*LOGDELTA,N> ct5;
 	RS<LOGQ-10*LOGDELTA,LOGQ-11*LOGDELTA,N>(temp3,ct5);
-	// ct6 = (1/6) * x
-	temp3=ct4; temp3 *= ((1ULL<<LOGDELTA) / 6);
+	// ct6 = (1/12pi) * x
+	temp3=ct4; temp3 *= static_cast<uint64_t>((1ULL<<LOGDELTA) / (12 * PI));
 	R_Q_square<LOGQ-11*LOGDELTA,N> ct6;
 	RS<LOGQ-10*LOGDELTA,LOGQ-11*LOGDELTA,N>(temp3,ct6);
-	// ct7 = x + (1/6) * x^3
+	// ct7 = (1/2pi) * (x + (1/6) * x^3)
 	R_Q_square<LOGQ-11*LOGDELTA,N> ct7; 
 	Mul<LOGQ-11*LOGDELTA,N>(ct5,ct6,evk11,ct7);
 	RS<LOGQ-11*LOGDELTA,LOGQ-12*LOGDELTA,N>(ct7,p);	    
