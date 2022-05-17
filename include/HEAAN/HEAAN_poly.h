@@ -414,7 +414,7 @@ void eval_poly_deg63( const double u[64],
 }
 
 template< int LOGQ, int N, int LOGDELTA >
-void eval_poly_deg127( const double u[128],
+void eval_poly_deg127(const double u[128],
 					 const R_Q_square<   LOGQ            ,N>&   ct,
 					 const R_Q_square<2* LOGQ            ,N>&  evk1,
 					 const R_Q_square<2*(LOGQ-  LOGDELTA),N>& evk2,

@@ -39,6 +39,15 @@ void set_random_message(Message<LOGN> &z) {
 }
 
 template <int LOGN>
+void set_evalmod_message(Message<LOGN> &z) {
+    const int N = 1 << LOGN;
+	for(int i = 0; i < N/2; i++) {
+	    z.r[i] = i % 3;
+		z.i[i] = 0;
+	}
+}
+
+template <int LOGN>
 void set_test_rounded_message(Message<LOGN> &z, uint64_t Delta) {
     set_test_message(z);
     SimplePlaintext<LOGN> pt;
