@@ -9,7 +9,7 @@ constexpr int LOGDELTA = 60; // log delta used for operations except c2s
 constexpr uint64_t Delta = 1ULL << LOGDELTA;
 constexpr int LOGDELTA_TILDE = 30; // log delta only for c2s
 constexpr uint64_t Delta_tilde = 1ULL << LOGDELTA;
-constexpr int LOGQ = 3000; // max bit of a plaintext slot
+constexpr int LOGQ = 2900; // max bit of a plaintext slot
 constexpr int LOGN = 17;
 constexpr int N = 1 << LOGN;
 
