@@ -94,3 +94,10 @@ void R_Q<LOGQ, N>::setzero(){
 	for(int i=0;i<N;i++)
 		coeff[i].setzero();
 }
+
+template<int LOGQfrom, int LOGQto, int N>
+void resize(const R_Q<LOGQfrom, N> &Afrom, R_Q<LOGQto, N> &Ato) {
+	for(int i = 0; i < N; ++i) {
+		resize(Afrom.coeff[i], Ato.coeff[i]);
+	}
+}
