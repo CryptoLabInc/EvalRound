@@ -20,7 +20,7 @@ struct R_Q_square{
 	   void setzero(){ data[0].setzero(); data[1].setzero();}
 };
 //-----------------------------------------------------------
-//  Ãâ·Â
+//  ï¿½ï¿½ï¿½
 //-----------------------------------------------------------
 template <int LOGQ, int N>
 void R_Q_square <LOGQ, N>::print()const{
@@ -30,7 +30,7 @@ void R_Q_square <LOGQ, N>::print()const{
 	printf("]\n");
 }
 //-----------------------------------------------------------
-// ±âº» operations
+// ï¿½âº» operations
 //-----------------------------------------------------------
 template<int LOGQ, int N>
 void R_Q_square <LOGQ,N> :: operator += (const R_Q_square<LOGQ,N>& B){
@@ -59,3 +59,9 @@ void R_Q_square <LOGQ,N> :: operator *= (uint64_t a){
 	data[1]*=a;
 }
 
+template<int LOGQfrom, int LOGQto, int N>
+void resize(const R_Q_square<LOGQfrom, N> &Afrom, R_Q_square<LOGQto, N> &Ato) {
+	for(int i = 0; i < 2; ++i) {
+		resize(Afrom.data[i], Ato.data[i]);
+	}
+}

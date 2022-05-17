@@ -69,18 +69,18 @@ void linear_transform_test() {
     R_Q_square<LOGQ,N> ct, ct_ser, ct_gr2, ct_gr4;
     encode(z,Delta,pt);
     HEAAN<LOGQ,N>::enc(pt,s,ct);
-	serial_linear_transform<LOGQ, LOGN, LOGDELTA_TILDE, 3, 8>(U0r, U0i, ct, s, ct_ser);
-	grouped_serial_linear_transform<LOGQ, LOGN, LOGDELTA_TILDE, 3, 8, 2>(U0r, U0i, ct, s, ct_gr2);
-	grouped_serial_linear_transform<LOGQ, LOGN, LOGDELTA_TILDE, 3, 8, 4>(U0r, U0i, ct, s, ct_gr4);
+	serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, 8>(U0r, U0i, ct, s, ct_ser);
+	grouped_serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, 8, 2>(U0r, U0i, ct, s, ct_gr2);
+	grouped_serial_linear_transform<LOGQ, LOGN, LOGDELTA, 3, 8, 4>(U0r, U0i, ct, s, ct_gr4);
 
 	R_Q<LOGQ, N> pt_ser, pt_gr2, pt_gr4;
 	Message<LOGN> z_ser, z_gr2, z_gr4;
     HEAAN<LOGQ,N>::dec(ct_ser, s, pt_ser);
-	decode_log(pt_ser, LOGDELTA+8*LOGDELTA_TILDE, z_ser);
+	decode_log(pt_ser, LOGDELTA+8*LOGDELTA, z_ser);
 	HEAAN<LOGQ,N>::dec(ct_gr2, s, pt_gr2);
-    decode_log(pt_gr2,LOGDELTA+4*LOGDELTA_TILDE,z_gr2);
+    decode_log(pt_gr2,LOGDELTA+4*LOGDELTA,z_gr2);
 	HEAAN<LOGQ,N>::dec(ct_gr4, s, pt_gr4);
-    decode_log(pt_gr4,LOGDELTA+2*LOGDELTA_TILDE,z_gr4);
+    decode_log(pt_gr4,LOGDELTA+2*LOGDELTA,z_gr4);
 	print("serial linear transformed", z_ser);
 	print("grouped by 2 serial linear transformed", z_gr2);
 	print("grouped by 4 serial linear transformed", z_gr4);

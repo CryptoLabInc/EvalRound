@@ -113,11 +113,12 @@ void mod_raise(const R_Q<LOGQfr,N>& ptfr,
 template< int LOGQfr, int LOGQto, int N >
 void mod_raise(const R_Q_square<LOGQfr,N>& ctfr,
 					 R_Q_square<LOGQto,N>& ctto){
-	R_Q<LOGQto, N> pt0, pt1;
+	/*R_Q<LOGQto, N> pt0, pt1;
     mod_raise<LOGQfr, LOGQto, N>(ctfr[0], pt0);
 	ctto[0] = pt0;
 	mod_raise<LOGQfr, LOGQto, N>(ctfr[1], pt1);
-	ctto[1] = pt1;
+	ctto[1] = pt1;*/
+	resize(ctfr, ctto);
 }
 
 template< int LOGQ, int N >
