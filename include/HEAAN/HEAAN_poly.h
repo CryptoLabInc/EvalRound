@@ -3,7 +3,7 @@
 #include "HEAAN.h"
 
 template< int LOGQ, int N, int LOGDELTA >
-void eval_poly_deg3( const double c[4],
+void eval_poly_deg3( const double u[4],
 					 const R_Q_square<   LOGQ         ,N>&   ct,
 					 const R_Q_square<2* LOGQ         ,N>&  evk1,
 					 const R_Q_square<2*(LOGQ-LOGDELTA),N>& evk2,
@@ -12,7 +12,7 @@ void eval_poly_deg3( const double c[4],
 	R_Q<LOGQ,N> L0[4];
 	for(int n=0;n<4;n++){
 		L0[n].setzero();
-		L0[n][0][0]=uint64_t(c[n]*(1ULL<<LOGDELTA));
+		L0[n][0][0]=uint64_t(u[n]*(1ULL<<LOGDELTA)); // What if u[n] * (1ULL<<LOGDELTA) exceeds 64 bit?
 		if(n%2==0)
 			L0[n][0]*=1ULL<<LOGDELTA;
 	}
@@ -22,7 +22,7 @@ void eval_poly_deg3( const double c[4],
 	
 	for(int n=0; n<2; n++){
 		R_Q_square<LOGQ,N> temp; temp=T1; 
-		temp    *=L0[2*n+1];
+		temp    *=L0[2*n+1]; // Why perform constant multiplication with plaintext multiplication ...
 		temp[0] +=L0[2*n  ];
 		RS<LOGQ,LOGQ-LOGDELTA,N>(temp,L1[n]);
 	}
@@ -41,7 +41,7 @@ void eval_poly_deg3( const double c[4],
 }
 
 template< int LOGQ, int N, int LOGDELTA >
-void eval_poly_deg7( const double c[8],
+void eval_poly_deg7( const double u[8],
 					 const R_Q_square<   LOGQ            ,N>&   ct,
 					 const R_Q_square<2* LOGQ            ,N>&  evk1,
 					 const R_Q_square<2*(LOGQ-  LOGDELTA),N>& evk2,
@@ -51,7 +51,7 @@ void eval_poly_deg7( const double c[8],
 	R_Q<LOGQ,N> L0[8];
 	for(int n=0;n<8;n++){
 		L0[n].setzero();
-		L0[n][0][0]=uint64_t(c[n]*(1ULL<<LOGDELTA));
+		L0[n][0][0]=uint64_t(u[n]*(1ULL<<LOGDELTA));
 		if(n%2==0)
 			L0[n][0]*=1ULL<<LOGDELTA;
 	}
@@ -103,7 +103,7 @@ void eval_poly_deg7( const double c[8],
 }
 
 template< int LOGQ, int N, int LOGDELTA >
-void eval_poly_deg15( const double c[16],
+void eval_poly_deg15( const double u[16],
 					 const R_Q_square<   LOGQ            ,N>&   ct,
 					 const R_Q_square<2* LOGQ            ,N>&  evk1,
 					 const R_Q_square<2*(LOGQ-  LOGDELTA),N>& evk2,
@@ -114,7 +114,7 @@ void eval_poly_deg15( const double c[16],
 	R_Q<LOGQ,N> L0[16];
 	for(int n=0;n<16;n++){
 		L0[n].setzero();
-		L0[n][0][0]=uint64_t(c[n]*(1ULL<<LOGDELTA));
+		L0[n][0][0]=uint64_t(u[n]*(1ULL<<LOGDELTA));
 		if(n%2==0)
 			L0[n][0]*=1ULL<<LOGDELTA;
 	}
@@ -184,7 +184,7 @@ void eval_poly_deg15( const double c[16],
 
 
 template< int LOGQ, int N, int LOGDELTA >
-void eval_poly_deg31( const double c[32],
+void eval_poly_deg31( const double u[32],
 					 const R_Q_square<   LOGQ            ,N>&   ct,
 					 const R_Q_square<2* LOGQ            ,N>&  evk1,
 					 const R_Q_square<2*(LOGQ-  LOGDELTA),N>& evk2,
@@ -196,10 +196,10 @@ void eval_poly_deg31( const double c[32],
 	R_Q<LOGQ,N> L0[32];
 	for(int n=0;n<32;n++){
 		L0[n].setzero();
-		L0[n][0][0]=uint64_t(fabs(c[n])*(1ULL<<LOGDELTA));
+		L0[n][0][0]=uint64_t(fabs(u[n])*(1ULL<<LOGDELTA));
 		if(n%2==0)
 			L0[n][0]*=1ULL<<LOGDELTA;
-		if(c[n]<0) L0[n][0].negate();
+		if(u[n]<0) L0[n][0].negate();
 	}
 	L0[0].print_unsigned();
 	L0[1].print_unsigned();
@@ -294,7 +294,7 @@ void eval_poly_deg31( const double c[32],
 
 
 template< int LOGQ, int N, int LOGDELTA >
-void eval_poly_deg63( const double c[64],
+void eval_poly_deg63( const double u[64],
 					 const R_Q_square<   LOGQ            ,N>&   ct,
 					 const R_Q_square<2* LOGQ            ,N>&  evk1,
 					 const R_Q_square<2*(LOGQ-  LOGDELTA),N>& evk2,
@@ -307,7 +307,7 @@ void eval_poly_deg63( const double c[64],
 	R_Q<LOGQ,N> L0[64];
 	for(int n=0;n<64;n++){
 		L0[n].setzero();
-		L0[n][0][0]=uint64_t(c[n]*(1ULL<<LOGDELTA));
+		L0[n][0][0]=uint64_t(u[n]*(1ULL<<LOGDELTA));
 		if(n%2==0)
 			L0[n][0]*=1ULL<<LOGDELTA;
 	}
@@ -414,7 +414,7 @@ void eval_poly_deg63( const double c[64],
 }
 
 template< int LOGQ, int N, int LOGDELTA >
-void eval_poly_deg127( const double c[128],
+void eval_poly_deg127( const double u[128],
 					 const R_Q_square<   LOGQ            ,N>&   ct,
 					 const R_Q_square<2* LOGQ            ,N>&  evk1,
 					 const R_Q_square<2*(LOGQ-  LOGDELTA),N>& evk2,
@@ -428,7 +428,7 @@ void eval_poly_deg127( const double c[128],
 	R_Q<LOGQ,N> L0[128];
 	for(int n=0;n<128;n++){
 		L0[n].setzero();
-		L0[n][0][0]=uint64_t(c[n]*(1ULL<<LOGDELTA));
+		L0[n][0][0]=uint64_t(u[n]*(1ULL<<LOGDELTA));
 		if(n%2==0)
 			L0[n][0]*=1ULL<<LOGDELTA;
 	}
