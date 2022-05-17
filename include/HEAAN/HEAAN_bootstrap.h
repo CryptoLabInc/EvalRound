@@ -219,7 +219,7 @@ void split_U0( double Ar[LOGN][1<<(LOGN-1)][1<<(LOGN-1)],
 }
 
 template<int LOGQ, int N, int LOGq, int LOGDELTA>
-void EvalSine_K4( const R_Q_square<  LOGQ,N>& ct,
+void EvalMod_K4( const R_Q_square<  LOGQ,N>& ct,
 				  const R_Q_square<2*(LOGQ-LOGq-2         ),N>& evk1,
 				  const R_Q_square<2*(LOGQ-LOGq-2-  LOGDELTA),N>& evk2,
 				  const R_Q_square<2*(LOGQ-LOGq-2-2*LOGDELTA),N>& evk3,
@@ -244,7 +244,7 @@ void EvalSine_K4( const R_Q_square<  LOGQ,N>& ct,
 
 
 template<int LOGQ, int N, int LOGq, int LOGDELTA>
-void EvalSine_K2( const R_Q_square<  LOGQ,N>& ct,
+void EvalMod_K2( const R_Q_square<  LOGQ,N>& ct,
 				  const R_Q_square<2*(LOGQ-LOGq-1         ),N>& evk1,
 				  const R_Q_square<2*(LOGQ-LOGq-1-  LOGDELTA),N>& evk2,
 				  const R_Q_square<2*(LOGQ-LOGq-1-2*LOGDELTA),N>& evk3,
@@ -261,7 +261,7 @@ void EvalSine_K2( const R_Q_square<  LOGQ,N>& ct,
 }
 
 template<int LOGQ, int N, int LOGq, int LOGDELTA>
-void EvalSine_K3( const R_Q_square<  LOGQ,N>& ct,
+void EvalMod_K3( const R_Q_square<  LOGQ,N>& ct,
 				  const R_Q_square<2*(LOGQ-LOGq-  LOGDELTA),N>& evk1,
 				  const R_Q_square<2*(LOGQ-LOGq-2*LOGDELTA),N>& evk2,
 				  const R_Q_square<2*(LOGQ-LOGq-3*LOGDELTA),N>& evk3,
