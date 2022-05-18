@@ -307,9 +307,10 @@ void eval_poly_deg63( const double u[64],
 	R_Q<LOGQ,N> L0[64];
 	for(int n=0;n<64;n++){
 		L0[n].setzero();
-		L0[n][0][0]=uint64_t(u[n]*(1ULL<<LOGDELTA));
+		L0[n][0][0]=uint64_t(fabs(u[n])*(1ULL<<LOGDELTA));
 		if(n%2==0)
 			L0[n][0]*=1ULL<<LOGDELTA;
+		if(u[n]<0) L0[n][0].negate();
 	}
 	// level one
 	const R_Q_square<LOGQ,N>& T1=ct;
@@ -428,9 +429,10 @@ void eval_poly_deg127(const double u[128],
 	R_Q<LOGQ,N> L0[128];
 	for(int n=0;n<128;n++){
 		L0[n].setzero();
-		L0[n][0][0]=uint64_t(u[n]*(1ULL<<LOGDELTA));
+		L0[n][0][0]=uint64_t(fabs(u[n])*(1ULL<<LOGDELTA));
 		if(n%2==0)
 			L0[n][0]*=1ULL<<LOGDELTA;
+		if(u[n]<0) L0[n][0].negate();
 	}
 	// level one
 	const R_Q_square<LOGQ,N>& T1=ct;
