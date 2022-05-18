@@ -17,7 +17,7 @@ int main()
     Message<LOGN> z_amb;
     encode(z,Delta,pt_q);
   HEAAN<LOGq,N>::enc(pt_q,s,ct_q);
-    resize(ct_q, ct_Q); // size down to Rq -> RQ
+    resize(ct_q, ct_Q); // size up to Rq -> RQ
     HEAAN<LOGQ,N>::dec(ct_Q,s, pt_Q);
     decode(pt_Q, Delta, z_amb);
 
