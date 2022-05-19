@@ -49,6 +49,7 @@ struct Z_Q {
 	//-----------------------------------------------------------
 	void print_unsigned()const;
 	bool is_bigger_than_halfQ()const;
+	int max_valid_digit() const;
 };
 
 //-----------------------------------------------------------
@@ -61,6 +62,8 @@ void shift_right( const Z_Q<LOGQfr>& A,
 	int r=(LOGQfr-LOGQto)%64;
 	for(int i=0;i<(LOGQto+63)/64;i++)
 		B[i]=A[i+q];
+	if(r == 0)
+		return;
 	uint64_t Bextra=0;
 	if((LOGQto+r+63)/64 != (LOGQto+63)/64)
 		Bextra = A[(LOGQto+63)/64+q];
@@ -79,6 +82,8 @@ void shift_left ( const Z_Q<LOGQfr>& A,
 	int r=(LOGQto-LOGQfr)%64;
 	for(int i=0;i<(LOGQfr+63)/64;i++)
 		B[i+q]=A[i];
+	if(r == 0)
+		return;
 	for(int i=0;i<q;i++) B[i]=0;
 	uint64_t Bextra=0;
 	for(int i=0;i<(LOGQfr+63)/64;i++){
@@ -285,4 +290,14 @@ void resize(const Z_Q<LOGQfrom> &Afrom, Z_Q<LOGQto> &Ato) {
 		for(int i = 0; i < min(Afrom.get_length(), Ato.get_length()); ++i)
 			Ato.data[i] = Afrom.data[i];
 	}
+}
+
+template<int LOGQ>
+int Z_Q<LOGQ>::max_valid_digit() const {
+	uint64_t invalid_digit = is_bigger_than_halfQ() ? 0xFFFFFFFFULL : 0;
+	for(int i = (LOGQ+63)/64 - 1; i >= 0; --i) {
+		if(data[i] != invalid_digit)
+			return i;
+	}
+	return -1;
 }
