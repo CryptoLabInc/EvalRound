@@ -1,4 +1,4 @@
-#include "experiment/rns_debug.h"
+#include "experiment/big.h"
 #include "HEAAN/advanced/conv.h"
 
 #include <iostream>
