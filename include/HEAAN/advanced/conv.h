@@ -181,7 +181,7 @@ void conv( const R_Q<LOGQ,N>& A,
         0x1000000011340001ULL,
         0xfffffffee8c0001ULL
     };
-    const int L = (LOGQ + 17 + 59) / 60;
+    const int L = (2*LOGQ + 17 + 59) / 60;
 	static CONV<L, LOGQ, N> *theConv = nullptr;
     static bool theConv_initialized = false;
     if(theConv_initialized == false) {
