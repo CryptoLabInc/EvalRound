@@ -11,6 +11,7 @@ add_executable(coeffToSlot_test src/test/coeffToSlot_test.cpp)
 add_executable(matmul_test src/test/matmul_test.cpp)
 add_executable(evalMod_test src/test/evalMod_test.cpp)
 add_executable(bootstrap_test src/test/bootstrap_test.cpp)
+add_executable(evalqI_test src/test/evalqI_test.cpp)
 
 add_executable(lemma1 src/experiment/lemma1.cpp)
 add_executable(lemma2 src/experiment/lemma2.cpp)
