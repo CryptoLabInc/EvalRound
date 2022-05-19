@@ -30,29 +30,6 @@ void EvalMod_test()
 	print("z_out", z_out);
 }
 
-/*
-void CoeffToSlot_SlotToCoeff_test()
-{
-    int s[N];
-    HEAAN<LOGQ,N>::keygen(H,s);
-    
-    Message<LOGN> z, z_out;
-	set_random_message(z);
-
-    R_Q<LOGQ, N> pt, pt_out;
-    R_Q_square<LOGQ,N> ct, ct_cts[2], ct_out;
-    encode(z,Delta,pt);
-	HEAAN<LOGQ,N>::enc(pt,s,ct);
-	
-	CoeffToSlot<LOGQ,LOGN, LOGDELTA_boot_tilde, G>(ct,s,ct_cts);
-    SlotToCoeff<LOGQ,LOGN, LOGDELTA_boot, G>(ct_cts[0], ct_cts[1],s,ct_out);
-    HEAAN<LOGQ,N>::dec(ct_out,s,pt_out);
-    decode_log(pt_out,LOGDELTA +(LOGN-1)/G*LOGDELTA_boot_tilde + (LOGN-1)/G*LOGDELTA_boot,z_out);
-    print("z", z);
-    print("z_out", z_out);
-}
-*/
-
 int main()
 {
 	EvalMod_test();
