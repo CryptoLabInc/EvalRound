@@ -26,9 +26,20 @@ void set_test_message(Message<LOGN> &z) {
     const int N = 1 << LOGN;
     for(int i = 0; i < N/2; ++i) {
         double x = (double) (i) / (N/2) * PI;
-        z.r[i] = cos(x) / sqrt(2);
-        z.i[i] = sin(x) / sqrt(2);
+        z.r[i] = cos(x);
+        z.i[i] = sin(x);
     }
+}
+
+template <int LOGN>
+void print_max_error(const Message<LOGN> &z, const Message<LOGN> &z_out) {
+    const int N = 1 << LOGN;
+	double max_err_real = 0.0, max_err_imag = 0.0;
+	for(int i = 0; i < N/2; ++i) {
+		max_err_real = std::max(max_err_real, std::fabs(z.r[i]-z_out.r[i]));
+		max_err_imag = std::max(max_err_imag, std::fabs(z.i[i]-z_out.i[i]));
+	}
+	std::cout << "LOG2 MAX ERROR (REAL, IMAG) = [" << std::log2(max_err_real) << ", " << std::log2(max_err_imag) << "]" << std::endl;
 }
 
 template <int LOGN>
