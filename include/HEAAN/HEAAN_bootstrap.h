@@ -218,8 +218,148 @@ void split_U0( double Ar[LOGN][1<<(LOGN-1)][1<<(LOGN-1)],
 	}
 }
 
+template<int LOGQ, int N, int LOGDELTA, int K>
+void EvalMod (const R_Q_square<LOGQ, N>& ct, const int s[N], R_Q_square<LOGQ-12*LOGDELTA,N>& p) {
+    int s_sq[N];
+	conv<N>(s, s, s_sq);
+
+	R_Q_square<2*(LOGQ-   LOGDELTA),N> evk1;
+    R_Q_square<2*(LOGQ- 2*LOGDELTA),N> evk2;
+    R_Q_square<2*(LOGQ- 3*LOGDELTA),N> evk3;
+    R_Q_square<2*(LOGQ- 4*LOGDELTA),N> evk4;
+    R_Q_square<2*(LOGQ- 5*LOGDELTA),N> evk5;
+    R_Q_square<2*(LOGQ- 6*LOGDELTA),N> evk6;
+    R_Q_square<2*(LOGQ- 7*LOGDELTA),N> evk7;
+    R_Q_square<2*(LOGQ- 8*LOGDELTA),N> evk8;
+    R_Q_square<2*(LOGQ- 9*LOGDELTA),N> evk9;
+    R_Q_square<2*(LOGQ-10*LOGDELTA),N> evk10;
+    R_Q_square<2*(LOGQ-11*LOGDELTA),N> evk11;
+
+	HEAAN<LOGQ-   LOGDELTA,N>::swkgen(s_sq,s,evk1);
+    HEAAN<LOGQ- 2*LOGDELTA,N>::swkgen(s_sq,s,evk2);
+    HEAAN<LOGQ- 3*LOGDELTA,N>::swkgen(s_sq,s,evk3);
+    HEAAN<LOGQ- 4*LOGDELTA,N>::swkgen(s_sq,s,evk4);
+    HEAAN<LOGQ- 5*LOGDELTA,N>::swkgen(s_sq,s,evk5);
+    HEAAN<LOGQ- 6*LOGDELTA,N>::swkgen(s_sq,s,evk6);
+    HEAAN<LOGQ- 7*LOGDELTA,N>::swkgen(s_sq,s,evk7);
+    HEAAN<LOGQ- 8*LOGDELTA,N>::swkgen(s_sq,s,evk8);
+    HEAAN<LOGQ- 9*LOGDELTA,N>::swkgen(s_sq,s,evk9);
+    HEAAN<LOGQ-10*LOGDELTA,N>::swkgen(s_sq,s,evk10);
+    HEAAN<LOGQ-11*LOGDELTA,N>::swkgen(s_sq,s,evk11);
+
+	EvalMod<LOGQ,N,LOGDELTA,K>(ct,evk1,evk2,evk3,evk4,evk5,evk6,evk7,evk8,evk9,evk10,evk11,p);
+}
+
+template<int LOGQ, int N, int LOGDELTA, int K>
+void EvalMod( const R_Q_square<LOGQ, N>& ct,
+		      const R_Q_square<2*(LOGQ-   LOGDELTA), N>& evk1,  // poly
+		      const R_Q_square<2*(LOGQ- 2*LOGDELTA), N>& evk2,  // poly
+		      const R_Q_square<2*(LOGQ- 3*LOGDELTA), N>& evk3,  // poly
+		      const R_Q_square<2*(LOGQ- 4*LOGDELTA), N>& evk4,  // poly
+		      const R_Q_square<2*(LOGQ- 5*LOGDELTA), N>& evk5,  // poly
+		      const R_Q_square<2*(LOGQ- 6*LOGDELTA), N>& evk6,  // double angle
+		      const R_Q_square<2*(LOGQ- 7*LOGDELTA), N>& evk7,  // double angle
+		      const R_Q_square<2*(LOGQ- 8*LOGDELTA), N>& evk8,  // double angle
+		      const R_Q_square<2*(LOGQ- 9*LOGDELTA), N>& evk9,  // double angle
+		      const R_Q_square<2*(LOGQ-10*LOGDELTA), N>& evk10, // arcsine
+		      const R_Q_square<2*(LOGQ-11*LOGDELTA), N>& evk11, // arcsine
+			        R_Q_square<  (LOGQ-12*LOGDELTA), N>& p    )
+{
+   	// ct1 = ct * (1/K)
+    R_Q_square<LOGQ,N> ct_copy=ct; ct_copy*=uint64_t((1ULL<<LOGDELTA)/static_cast<double>(K));
+	R_Q_square<LOGQ-LOGDELTA,N> ct1;
+	RS<LOGQ,LOGQ-LOGDELTA,N>(ct_copy, ct1);
+
+    // shift : ct1 -= (1/(4K))	
+	Z_Q<LOGQ-LOGDELTA> qtK; qtK.setzero(); qtK[0]=((1ULL<<LOGDELTA)/static_cast<double>(4 * K));
+	ct1[0][0] -= qtK;
+	
+	// Evaluate cos(3 * pi * t) for t in [-1, 1]
+    const double u[32] {
+-0.18121145350892778,
+0.00000000000000176,
+-0.51003675488366396,
+-0.00000000000000206,
+-0.62436800964507644,
+-0.00000000000000028,
+0.17069002507116071,
+0.00000000000000187,
+0.64387933774156236,
+0.00000000000000155,
+-0.60946403046665876,
+-0.00000000000000439,
+0.16023104261940782,
+-0.00000000000000053,
+-0.05094267475677791,
+0.00000000000000128,
+0.00145283705186850,
+0.00000000000000268,
+-0.00024484541895481,
+-0.00000000000000037,
+0.00001620811709676,
+-0.00000000000000323,
+-0.00000171679432516,
+0.00000000000000197,
+0.00000003753839882,
+0.00000000000000263,
+-0.00000000274617457,
+0.00000000000000504,
+0.00000000008565582,
+0.00000000000001545,
+-0.00000000000460528,
+-0.00000000000002388};
+	R_Q_square<LOGQ-6*LOGDELTA,N> ct2;
+	eval_poly_deg31<LOGQ-LOGDELTA,N,LOGDELTA>(u,ct1,evk1,evk2,evk3,evk4,evk5,ct2);
+
+	// double angle 1
+	R_Q_square<LOGQ-6*LOGDELTA,N> temp1; Mul<LOGQ-6*LOGDELTA,N>(ct2,ct2,evk6,temp1); temp1*=2;
+    Z_Q<LOGQ-6*LOGDELTA> one1; one1.setzero(); one1[0]=1ULL<<LOGDELTA; one1*=1ULL<<LOGDELTA;
+    temp1[0][0]-=one1;
+	R_Q_square<LOGQ-7*LOGDELTA,N> ct3;
+	RS<LOGQ-6*LOGDELTA,LOGQ-7*LOGDELTA,N>(temp1, ct3);
+	
+	// double angle 2
+	R_Q_square<LOGQ-7*LOGDELTA,N> temp2; Mul<LOGQ-7*LOGDELTA,N>(ct3,ct3,evk7,temp2); temp2*=2;
+    Z_Q<LOGQ-7*LOGDELTA> one2; one2.setzero(); one2[0]=1ULL<<LOGDELTA; one2*=1ULL<<LOGDELTA;
+    temp2[0][0]-=one2;
+	R_Q_square<LOGQ-8*LOGDELTA,N> ct4;
+	RS<LOGQ-7*LOGDELTA,LOGQ-8*LOGDELTA,N>(temp2, ct4);
+
+	// double angle 3
+	R_Q_square<LOGQ-8*LOGDELTA,N> temp3; Mul<LOGQ-8*LOGDELTA,N>(ct4,ct4,evk8,temp3); temp3*=2;
+    Z_Q<LOGQ-8*LOGDELTA> one3; one3.setzero(); one3[0]=1ULL<<LOGDELTA; one3*=1ULL<<LOGDELTA;
+    temp3[0][0]-=one3;
+	R_Q_square<LOGQ-9*LOGDELTA,N> ct5;
+	RS<LOGQ-8*LOGDELTA,LOGQ-9*LOGDELTA,N>(temp3, ct5);
+
+	// double angle 4
+	R_Q_square<LOGQ-9*LOGDELTA,N> temp4; Mul<LOGQ-9*LOGDELTA,N>(ct5,ct5,evk9,temp4); temp4*=2;
+    Z_Q<LOGQ-9*LOGDELTA> one4; one4.setzero(); one4[0]=1ULL<<LOGDELTA; one4*=1ULL<<LOGDELTA;
+    temp4[0][0]-=one4;
+	R_Q_square<LOGQ-10*LOGDELTA,N> ct6;
+	RS<LOGQ-9*LOGDELTA,LOGQ-10*LOGDELTA,N>(temp4, ct6);
+
+	// arcsine of degree 3
+	// ct7 = x^2 + 6
+	R_Q_square<LOGQ-10*LOGDELTA,N> temp5; Mul<LOGQ-10*LOGDELTA,N>(ct6,ct6,evk10,temp5);
+	Z_Q<LOGQ-10*LOGDELTA> six; six.setzero(); six[0]=(1ULL<<LOGDELTA)*6; six*=1ULL<<LOGDELTA;
+	temp5[0][0]+=six;
+	R_Q_square<LOGQ-11*LOGDELTA,N> ct7;
+	RS<LOGQ-10*LOGDELTA,LOGQ-11*LOGDELTA,N>(temp5,ct7);
+	// ct8 = (1/12pi) * x
+	temp5=ct6; temp5 *= static_cast<uint64_t>((1ULL<<LOGDELTA) / (12 * PI));
+	R_Q_square<LOGQ-11*LOGDELTA,N> ct8;
+	RS<LOGQ-10*LOGDELTA,LOGQ-11*LOGDELTA,N>(temp5,ct8);
+	// ct9 = (1/2pi) * (x + (1/6) * x^3)
+	R_Q_square<LOGQ-11*LOGDELTA,N> ct9; 
+	Mul<LOGQ-11*LOGDELTA,N>(ct7,ct8,evk11,ct9);
+	RS<LOGQ-11*LOGDELTA,LOGQ-12*LOGDELTA,N>(ct9,p);	    
+}
+
+// Rescale by the size of q should not be performed at the beginning of EvalMod_Kx.
+/*
 template<int LOGQ, int N, int LOGq, int LOGDELTA>
-void EvalSine_K4( const R_Q_square<  LOGQ,N>& ct,
+void EvalMod_K4( const R_Q_square<  LOGQ,N>& ct,
 				  const R_Q_square<2*(LOGQ-LOGq-2         ),N>& evk1,
 				  const R_Q_square<2*(LOGQ-LOGq-2-  LOGDELTA),N>& evk2,
 				  const R_Q_square<2*(LOGQ-LOGq-2-2*LOGDELTA),N>& evk3,
@@ -227,7 +367,7 @@ void EvalSine_K4( const R_Q_square<  LOGQ,N>& ct,
 			      const R_Q_square<2*(LOGQ-LOGq-2-4*LOGDELTA),N>& evk5,
 						R_Q_square<  (LOGQ-LOGq-2-5*LOGDELTA),N>& p    )
 {	R_Q_square<LOGQ-LOGq-2,N> ct1;
-	RS<LOGQ,LOGQ-LOGq-2,N>(ct,ct1);
+	RS<LOGQ,LOGQ-LOGq-2,N>(ct,ct1); // Why rescale?
 	ct1.print();
 	const double u[32] = { 0.000000000000,0.140829338704,0.000000000000,-0.071956680803,
 						   0.000000000000,0.314734688318,0.000000000000,-0.614678201819,
@@ -244,7 +384,7 @@ void EvalSine_K4( const R_Q_square<  LOGQ,N>& ct,
 
 
 template<int LOGQ, int N, int LOGq, int LOGDELTA>
-void EvalSine_K2( const R_Q_square<  LOGQ,N>& ct,
+void EvalMod_K2( const R_Q_square<  LOGQ,N>& ct,
 				  const R_Q_square<2*(LOGQ-LOGq-1         ),N>& evk1,
 				  const R_Q_square<2*(LOGQ-LOGq-1-  LOGDELTA),N>& evk2,
 				  const R_Q_square<2*(LOGQ-LOGq-1-2*LOGDELTA),N>& evk3,
@@ -261,7 +401,7 @@ void EvalSine_K2( const R_Q_square<  LOGQ,N>& ct,
 }
 
 template<int LOGQ, int N, int LOGq, int LOGDELTA>
-void EvalSine_K3( const R_Q_square<  LOGQ,N>& ct,
+void EvalMod_K3( const R_Q_square<  LOGQ,N>& ct,
 				  const R_Q_square<2*(LOGQ-LOGq-  LOGDELTA),N>& evk1,
 				  const R_Q_square<2*(LOGQ-LOGq-2*LOGDELTA),N>& evk2,
 				  const R_Q_square<2*(LOGQ-LOGq-3*LOGDELTA),N>& evk3,
@@ -278,3 +418,4 @@ void EvalSine_K3( const R_Q_square<  LOGQ,N>& ct,
 	p.print();
 	p *= 1ULL<<(LOGq);
 }
+*/
