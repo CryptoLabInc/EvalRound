@@ -16,3 +16,6 @@ add_executable(lemma1 src/experiment/lemma1.cpp)
 add_executable(lemma2 src/experiment/lemma2.cpp)
 add_executable(theorem1 src/experiment/theorem1.cpp)
 add_executable(corollary src/experiment/corollary.cpp)
+
+add_executable(measure_sup_norm_ratio src/experiment/measure_sup_norm_ratio.cpp)
+add_executable(measure_mod_raise_size src/experiment/measure_mod_raise_size.cpp)

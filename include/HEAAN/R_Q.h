@@ -101,3 +101,4 @@ void resize(const R_Q<LOGQfrom, N> &Afrom, R_Q<LOGQto, N> &Ato) {
 		resize(Afrom.coeff[i], Ato.coeff[i]);
 	}
 }
+
