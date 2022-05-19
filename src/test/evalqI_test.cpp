@@ -23,6 +23,7 @@ void evalqI_test()
 	R_Q_square<LOGQ,N> ct_modraise;
 	mod_raise<LOGq,LOGQ,N>(ct,ct_modraise);
 
+	go();
 	// CoeffToSlot
 	R_Q_square<LOGQ,N> ct_cts[2];
 	CoeffToSlot<LOGQ,LOGN,LOGDELTA_boot_tilde,G>(ct_modraise,s,ct_cts);
@@ -30,26 +31,32 @@ void evalqI_test()
 	R_Q_square<LOGQ_after_cts,N> ct_ctsrs[2];
 	for(int i=0;i<2;i++)
 	    RS<LOGQ,LOGQ_after_cts,N>(ct_cts[i],ct_ctsrs[i]);
+	stop("cts");
 
+	go();
 	// EvalMod
 	const int LOGQ_after_evalmod = LOGQ_after_cts - 12*LOGDELTA_boot;
 	R_Q_square<LOGQ_after_evalmod,N> ct_evalmod[2];
 	for(int i=0;i<2;i++)
 	    EvalMod<LOGQ_after_cts,N,LOGDELTA_boot,K>(ct_ctsrs[i],s,ct_evalmod[i]);
-
+	
 	// EvalqI
 	R_Q_square<LOGQ_after_evalmod,N> ct_evalqI[2];
 	for(int i = 0; i < 2; i++) {
 		resize(ct_ctsrs[i], ct_evalqI[i]);
 		ct_evalqI[i] -= ct_evalmod[i];
 	}
+	stop("evalqI");
+	
+	go();
 	// SlotToCoeff
 	const int LOGQ_after_stc = LOGQ_after_evalmod - (LOGN-1)/G*LOGDELTA_boot;
     R_Q_square<LOGQ_after_evalmod,N> ct_stc;
 	R_Q_square<LOGQ_after_stc,N> ct_qI;
 	SlotToCoeff<LOGQ_after_evalmod,LOGN,LOGDELTA_boot,G>(ct_evalqI[0],ct_evalqI[1],s,ct_stc);
 	RS<LOGQ_after_evalmod,LOGQ_after_stc,N>(ct_stc, ct_qI);
-
+	stop("stc");
+	
 	// Sub
 	R_Q_square<LOGQ_after_stc,N> ct_boot;
 	resize(ct_modraise, ct_boot);

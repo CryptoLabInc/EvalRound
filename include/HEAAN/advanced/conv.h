@@ -36,6 +36,7 @@ void CONV<L, LOGQ, N>::conv( const R_Q<LOGQ,N>& A,
     icrt_polynomial(A, A_rns);
     icrt_polynomial(B, B_rns);
 
+    #pragma omp parallel for
     for(int i = 0; i < L; ++i) {
         ntt[i]->ntt(A_rns[i]);
         ntt[i]->ntt(B_rns[i]);
@@ -50,6 +51,7 @@ void CONV<L, LOGQ, N>::conv( const R_Q<LOGQ,N>& A,
 
 template<int L, int LOGQ, int N>
 void CONV<L, LOGQ, N>::icrt_polynomial(const R_Q<LOGQ, N>& A, uint64_t A_rns[L][N]) const {
+    #pragma omp parallel for
     for(int i = 0; i < N; ++i) {
         uint64_t Ai_rns[L];
         crt.icrt(A[i], Ai_rns);
@@ -61,6 +63,7 @@ void CONV<L, LOGQ, N>::icrt_polynomial(const R_Q<LOGQ, N>& A, uint64_t A_rns[L][
 
 template<int L, int LOGQ, int N>
 void CONV<L, LOGQ, N>::crt_polynomial(const uint64_t A_rns[L][N], R_Q<LOGQ, N> &A) const {
+    #pragma omp parallel for
     for(int i = 0; i < N; ++i) {
         uint64_t Ai_rns[L];
         for(int j = 0; j < L; ++j) {
