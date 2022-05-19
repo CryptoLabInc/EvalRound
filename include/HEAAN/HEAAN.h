@@ -104,10 +104,7 @@ void RS( const R_Q_square<LOGQfr,N>& ct_fr,
 template< int LOGQfr, int LOGQto, int N >
 void mod_raise(const R_Q<LOGQfr,N>& ptfr,
 					 R_Q<LOGQto,N>& ptto){
-	for(int i=0;i<N             ;i++)
-	for(int j=0;j<(LOGQto+63)/64;j++)
-		if(j<(LOGQfr+63)/64) ptto[i][j]=ptfr[i][j];
-		else                 ptto[i][j]=0;
+	resize(ptfr, ptto);
 }
 
 template< int LOGQfr, int LOGQto, int N >

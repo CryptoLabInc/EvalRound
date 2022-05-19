@@ -9,7 +9,7 @@
 
 constexpr int LOGDELTA = 50;
 constexpr uint64_t Delta = 1ULL << LOGDELTA;
-constexpr int LOGQ = 641; // max bit of a plaintext slot
+constexpr int LOGQ = 640; // max bit of a plaintext slot
 constexpr int LOGN = 9;
 constexpr int N = 1 << LOGN;
 
