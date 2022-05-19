@@ -8,7 +8,7 @@
 #include <cstdint>
 
 constexpr int LOGq = 60; // base modulus size
-constexpr int LOGQ = 1000; // max bit of a plaintext slot
+constexpr int LOGQ = 1299; // max bit of a plaintext slot
 constexpr int LOGN = 9;
 constexpr int N = 1 << LOGN;
 

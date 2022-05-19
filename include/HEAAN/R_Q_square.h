@@ -65,3 +65,4 @@ void resize(const R_Q_square<LOGQfrom, N> &Afrom, R_Q_square<LOGQto, N> &Ato) {
 		resize(Afrom.data[i], Ato.data[i]);
 	}
 }
+
