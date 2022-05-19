@@ -4,6 +4,9 @@
 #include <cstdint>
 #include <set>
 
+#include <chrono>
+#include <string>
+
 #define PI 3.1415926535897932384626433
 
 inline int log(int N) {
@@ -44,4 +47,18 @@ void print_array(const double A[N]) {
     for(int i = 0; i < min(N, 10); ++i)
         std::cout << A[i] << " ";
     std::cout << std::endl;
+}
+
+#include <chrono>
+
+std::chrono::steady_clock::time_point begin;
+std::chrono::steady_clock::time_point end;
+
+void go() {
+    begin = std::chrono::steady_clock::now();
+}
+
+void stop(std::string name) {
+    end = std::chrono::steady_clock::now();
+    std::cout << name << " : " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[s]" << std::endl;
 }
