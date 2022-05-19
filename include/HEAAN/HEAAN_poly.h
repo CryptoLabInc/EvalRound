@@ -201,22 +201,15 @@ void eval_poly_deg31( const double u[32],
 			L0[n][0]*=1ULL<<LOGDELTA;
 		if(u[n]<0) L0[n][0].negate();
 	}
-	L0[0].print_unsigned();
-	L0[1].print_unsigned();
-	L0[2].print_unsigned();
-	L0[3].print_unsigned();
 	// level one
 	const R_Q_square<LOGQ,N>& T1=ct;
 		  R_Q_square<LOGQ-LOGDELTA  ,N> L1[16];
-	T1.print();
 	for(int n=0; n<16; n++){
 		R_Q_square<LOGQ,N> temp; temp=T1; 
 		temp    *=L0[2*n+1];
 		temp[0] +=L0[2*n  ];
 		RS<LOGQ,LOGQ-LOGDELTA,N>(temp,L1[n]);
 	}
-	L1[0].print();
-	L1[1].print();
 	//level two
 	R_Q_square<LOGQ-LOGDELTA,N> T2;
 	{ R_Q_square<LOGQ,N> temp; Mul<LOGQ,N>(T1,T1,evk1,temp); temp*=2;
@@ -224,7 +217,6 @@ void eval_poly_deg31( const double u[32],
 	  temp[0][0]-=one;
 	  RS<LOGQ, LOGQ-LOGDELTA,N>(temp,T2);
 	}
-	T2.print();
 	R_Q_square<LOGQ-LOGDELTA*2,N> L2[8];
 	
 	for(int n=0; n<8; n++){
@@ -233,7 +225,6 @@ void eval_poly_deg31( const double u[32],
 		L1[2*n]*=1ULL<<LOGDELTA; temp+=L1[2*n];
 		RS<LOGQ-LOGDELTA,LOGQ-LOGDELTA*2,N>(temp,L2[n]);
 	}
-	L2[0].print();
 	//level three
 	R_Q_square<LOGQ-LOGDELTA*2,N> T4;
 	{ 
@@ -252,7 +243,6 @@ void eval_poly_deg31( const double u[32],
 		RS<LOGQ-LOGDELTA*2, LOGQ-LOGDELTA*3, N>(temp,L3[n]);
 		
 	}
-	L3[0].print();
 	//level four
 	R_Q_square<LOGQ-LOGDELTA*3,N> T8;
 	{ 
@@ -271,7 +261,6 @@ void eval_poly_deg31( const double u[32],
 		RS<LOGQ-LOGDELTA*3, LOGQ-LOGDELTA*4, N>(temp,L4[n]);
 		
 	}
-	L4[0].print();
 	
 	//level five
 	R_Q_square<LOGQ-LOGDELTA*4,N> T16;

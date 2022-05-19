@@ -219,14 +219,46 @@ void split_U0( double Ar[LOGN][1<<(LOGN-1)][1<<(LOGN-1)],
 }
 
 template<int LOGQ, int N, int LOGDELTA, int K>
+void EvalMod (const R_Q_square<LOGQ, N>& ct, const int s[N], R_Q_square<LOGQ-12*LOGDELTA,N>& p) {
+    int s_sq[N];
+	conv<N>(s, s, s_sq);
+
+	R_Q_square<2*(LOGQ-   LOGDELTA),N> evk1;
+    R_Q_square<2*(LOGQ- 2*LOGDELTA),N> evk2;
+    R_Q_square<2*(LOGQ- 3*LOGDELTA),N> evk3;
+    R_Q_square<2*(LOGQ- 4*LOGDELTA),N> evk4;
+    R_Q_square<2*(LOGQ- 5*LOGDELTA),N> evk5;
+    R_Q_square<2*(LOGQ- 6*LOGDELTA),N> evk6;
+    R_Q_square<2*(LOGQ- 7*LOGDELTA),N> evk7;
+    R_Q_square<2*(LOGQ- 8*LOGDELTA),N> evk8;
+    R_Q_square<2*(LOGQ- 9*LOGDELTA),N> evk9;
+    R_Q_square<2*(LOGQ-10*LOGDELTA),N> evk10;
+    R_Q_square<2*(LOGQ-11*LOGDELTA),N> evk11;
+
+	HEAAN<LOGQ-   LOGDELTA,N>::swkgen(s_sq,s,evk1);
+    HEAAN<LOGQ- 2*LOGDELTA,N>::swkgen(s_sq,s,evk2);
+    HEAAN<LOGQ- 3*LOGDELTA,N>::swkgen(s_sq,s,evk3);
+    HEAAN<LOGQ- 4*LOGDELTA,N>::swkgen(s_sq,s,evk4);
+    HEAAN<LOGQ- 5*LOGDELTA,N>::swkgen(s_sq,s,evk5);
+    HEAAN<LOGQ- 6*LOGDELTA,N>::swkgen(s_sq,s,evk6);
+    HEAAN<LOGQ- 7*LOGDELTA,N>::swkgen(s_sq,s,evk7);
+    HEAAN<LOGQ- 8*LOGDELTA,N>::swkgen(s_sq,s,evk8);
+    HEAAN<LOGQ- 9*LOGDELTA,N>::swkgen(s_sq,s,evk9);
+    HEAAN<LOGQ-10*LOGDELTA,N>::swkgen(s_sq,s,evk10);
+    HEAAN<LOGQ-11*LOGDELTA,N>::swkgen(s_sq,s,evk11);
+
+	EvalMod<LOGQ,N,LOGDELTA,K>(ct,evk1,evk2,evk3,evk4,evk5,evk6,evk7,evk8,evk9,evk10,evk11,p);
+}
+
+template<int LOGQ, int N, int LOGDELTA, int K>
 void EvalMod( const R_Q_square<LOGQ, N>& ct,
 		      const R_Q_square<2*(LOGQ-   LOGDELTA), N>& evk1,  // poly
 		      const R_Q_square<2*(LOGQ- 2*LOGDELTA), N>& evk2,  // poly
 		      const R_Q_square<2*(LOGQ- 3*LOGDELTA), N>& evk3,  // poly
 		      const R_Q_square<2*(LOGQ- 4*LOGDELTA), N>& evk4,  // poly
 		      const R_Q_square<2*(LOGQ- 5*LOGDELTA), N>& evk5,  // poly
-		      const R_Q_square<2*(LOGQ- 6*LOGDELTA), N>& evk6,  // poly
-		      const R_Q_square<2*(LOGQ- 7*LOGDELTA), N>& evk7,  // poly
+		      const R_Q_square<2*(LOGQ- 6*LOGDELTA), N>& evk6,  // double angle
+		      const R_Q_square<2*(LOGQ- 7*LOGDELTA), N>& evk7,  // double angle
 		      const R_Q_square<2*(LOGQ- 8*LOGDELTA), N>& evk8,  // double angle
 		      const R_Q_square<2*(LOGQ- 9*LOGDELTA), N>& evk9,  // double angle
 		      const R_Q_square<2*(LOGQ-10*LOGDELTA), N>& evk10, // arcsine
