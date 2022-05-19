@@ -49,6 +49,7 @@ struct Z_Q {
 	//-----------------------------------------------------------
 	void print_unsigned()const;
 	bool is_bigger_than_halfQ()const;
+	int max_valid_digit() const;
 };
 
 //-----------------------------------------------------------
@@ -285,4 +286,14 @@ void resize(const Z_Q<LOGQfrom> &Afrom, Z_Q<LOGQto> &Ato) {
 		for(int i = 0; i < min(Afrom.get_length(), Ato.get_length()); ++i)
 			Ato.data[i] = Afrom.data[i];
 	}
+}
+
+template<int LOGQ>
+int Z_Q<LOGQ>::max_valid_digit() const {
+	uint64_t invalid_digit = is_bigger_than_halfQ() ? 0xFFFFFFFFULL : 0;
+	for(int i = (LOGQ+63)/64 - 1; i >= 0; --i) {
+		if(data[i] != invalid_digit)
+			return i;
+	}
+	return -1;
 }

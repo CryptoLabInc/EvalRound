@@ -179,13 +179,14 @@ void decode_log( const R_Q<LOGQ, 1<<LOGN >& pt, int LOGDELTA, double zr[1 << (LO
 	double m[N];
 	uint64_t alpha=1; alpha<<=32;
 	double beta = (double)alpha; beta=beta*beta;
-	int scale_diff = 64 * ((LOGQ+63)/64 - 1) - LOGDELTA;
 	for(int i=0; i<N; i++){
 		Z_Q<LOGQ> abs_pti(pt[i]);
 		if(pt[i].is_bigger_than_halfQ())
 			abs_pti.negate();
+		int d =abs_pti.max_valid_digit();
+		int scale_diff = 64*d - LOGDELTA;
 		m[i]=0;
-		for(int j=0; j<(LOGQ+63)/64; j++)
+		for(int j=0; j<= d; j++)
 			m[i] = m[i] / beta + abs_pti[j];
 		m[i] = ldexp(m[i], scale_diff);
 		if(pt[i].is_bigger_than_halfQ())
