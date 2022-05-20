@@ -15,7 +15,7 @@ void rot( const int s[N], int s_rot[N] ){
 }
 
 template<int N>
-void rot( const int s[N], int s_rot[N], const int r){
+void rot_old( const int s[N], int s_rot[N], const int r){
 	for(int i = 0; i < N; ++i)
 		s_rot[i] = s[i];
 	if(r == 0)
@@ -31,7 +31,7 @@ void rot( const int s[N], int s_rot[N], const int r){
 }
 
 template<int N>
-void rot_new( const int s[N], int s_rot[N], const int r){
+void rot( const int s[N], int s_rot[N], const int r){
 	// pow = (5^r) % (2*N)
 	int pow = 1;
 	for(int i = 0; i < r; ++i) {
