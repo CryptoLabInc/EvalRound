@@ -51,14 +51,20 @@ void print_array(const double A[N]) {
 
 #include <chrono>
 
-std::chrono::steady_clock::time_point begin;
-std::chrono::steady_clock::time_point end;
+class Timer {
+    public:
+        Timer(std::string name) {
+            name_ = name;
+            begin_ = std::chrono::steady_clock::now();
+        }
 
-void go() {
-    begin = std::chrono::steady_clock::now();
-}
+        void stop() {
+            end_ = std::chrono::steady_clock::now();
+            std::cout << name_ << " : " << std::chrono::duration_cast<std::chrono::seconds>(end_ - begin_).count() << "[s]" << std::endl;
+        }
 
-void stop(std::string name) {
-    end = std::chrono::steady_clock::now();
-    std::cout << name << " : " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << "[s]" << std::endl;
-}
+    private:
+        std::string name_;
+        std::chrono::steady_clock::time_point begin_;
+        std::chrono::steady_clock::time_point end_;
+};
