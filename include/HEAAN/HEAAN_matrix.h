@@ -3,6 +3,8 @@
 #include "HEAAN.h"
 #include "DFT.h"
 
+#include "util/util.h"
+
 template<int N>
 void rot( const int s[N], int s_rot[N] ){
 	for(int i=0; i<N; i++){
@@ -13,16 +15,14 @@ void rot( const int s[N], int s_rot[N] ){
 }
 
 template<int N>
-void rot( const int s[N], int s_rot[N], const int r){
-	if(r == 0) {
-		for(int i = 0; i < N; ++i)
-			s_rot[i] = s[i];
-			return;
-	}
+void rot_old( const int s[N], int s_rot[N], const int r){
+	for(int i = 0; i < N; ++i)
+		s_rot[i] = s[i];
+	if(r == 0)
+		return;
 
 	int s_tmp[N];
-	rot<N>(s, s_rot);
-	for(int i = 1; i < r; ++i) {
+	for(int i = 0; i < r; ++i) {
 		for(int j = 0; j < N; ++j) {
 			s_tmp[j] = s_rot[j];
 		}
@@ -30,24 +30,38 @@ void rot( const int s[N], int s_rot[N], const int r){
 	}
 }
 
-template<int LOGQ, int N>
-void rot( const R_Q<LOGQ,N>& pt, 
-				R_Q<LOGQ,N>& pt_rot ){
-	for(int i=0; i<N; i++){
-		int q = (5*i)/N;
-		int r = (5*i)%N;
-		pt_rot[r] = pt[i];
-		if(q%2==1) pt_rot[r].negate();
+template<int N>
+void rot( const int s[N], int s_rot[N], const int r){
+	// pow = (5^r) % (2*N)
+	int pow = 1;
+	for(int i = 0; i < r; ++i) {
+		pow = (5 * pow) % (2*N);
+	}
+	int j = 0;
+	for(int i = 0; i < N; ++i, j = (j + pow) % (2*N)) {
+		if(j < N)
+			s_rot[j] = s[i];
+		else
+			s_rot[j-N] = -s[i];
 	}
 }
 
 template<int LOGQ, int N>
-void rot_ct( const R_Q_square<  LOGQ,N>& ct,
-			 const R_Q_square<2*LOGQ,N>& rkey,
-			   	   R_Q_square<  LOGQ,N>&ct_rot ){
-	rot<LOGQ,N>(ct[0],ct_rot[0]);
-	rot<LOGQ,N>(ct[1],ct_rot[1]);
-	HEAAN<LOGQ,N>::ks(rkey,ct_rot);
+void rot( const R_Q<LOGQ,N>& pt, 
+				R_Q<LOGQ,N>& pt_rot, const int r = 1){
+	int pow = 1;
+	for(int i = 0; i < r; ++i) {
+		pow = (5 * pow) % (2*N);
+	}
+	int j = 0;
+	for(int i=0; i<N; i++, j = (j + pow) % (2*N)){
+		if(j < N)
+			pt_rot[j] = pt[i];
+		else {
+			pt_rot[j-N] = pt[i];
+			pt_rot[j-N].negate();
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------
@@ -57,11 +71,8 @@ template<int LOGQ, int N>
 void rot_ct(const R_Q_square<  LOGQ, N>& ct, int off,
 	        const R_Q_square<2*LOGQ, N>& rkey,
 	              R_Q_square<  LOGQ, N>& ct_rot) {
-	R_Q<LOGQ, N> temp; ct_rot = ct;
-	for (int i = 0; i < off; i++) {
-		rot<LOGQ, N>(ct_rot[0], temp); ct_rot[0] = temp;
-		rot<LOGQ, N>(ct_rot[1], temp); ct_rot[1] = temp;
-	}
+	rot<LOGQ, N>(ct[0], ct_rot[0], off);
+	rot<LOGQ, N>(ct[1], ct_rot[1], off);
 	HEAAN<LOGQ, N>::ks(rkey, ct_rot);
 }
 
