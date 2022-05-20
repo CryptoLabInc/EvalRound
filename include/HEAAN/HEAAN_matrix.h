@@ -3,6 +3,8 @@
 #include "HEAAN.h"
 #include "DFT.h"
 
+#include "util/util.h"
+
 template<int N>
 void rot( const int s[N], int s_rot[N] ){
 	for(int i=0; i<N; i++){
@@ -14,19 +16,33 @@ void rot( const int s[N], int s_rot[N] ){
 
 template<int N>
 void rot( const int s[N], int s_rot[N], const int r){
-	if(r == 0) {
-		for(int i = 0; i < N; ++i)
-			s_rot[i] = s[i];
-			return;
-	}
+	for(int i = 0; i < N; ++i)
+		s_rot[i] = s[i];
+	if(r == 0)
+		return;
 
 	int s_tmp[N];
-	rot<N>(s, s_rot);
-	for(int i = 1; i < r; ++i) {
+	for(int i = 0; i < r; ++i) {
 		for(int j = 0; j < N; ++j) {
 			s_tmp[j] = s_rot[j];
 		}
 		rot<N>(s_tmp, s_rot);
+	}
+}
+
+template<int N>
+void rot_new( const int s[N], int s_rot[N], const int r){
+	// pow = (5^r) % (2*N)
+	int pow = 1;
+	for(int i = 0; i < r; ++i) {
+		pow = (5 * pow) % (2*N);
+	}
+	for(int i = 0; i < N; ++i) {
+		int r = (pow*i)%(2*N);
+		if(r < N)
+			s_rot[r] = s[i];
+		else
+			s_rot[r-N] = -s[i];
 	}
 }
 
@@ -58,11 +74,15 @@ void rot_ct(const R_Q_square<  LOGQ, N>& ct, int off,
 	        const R_Q_square<2*LOGQ, N>& rkey,
 	              R_Q_square<  LOGQ, N>& ct_rot) {
 	R_Q<LOGQ, N> temp; ct_rot = ct;
+	Timer t1("rot");
 	for (int i = 0; i < off; i++) {
 		rot<LOGQ, N>(ct_rot[0], temp); ct_rot[0] = temp;
 		rot<LOGQ, N>(ct_rot[1], temp); ct_rot[1] = temp;
 	}
+	t1.stop();
+	Timer t3("ks");
 	HEAAN<LOGQ, N>::ks(rkey, ct_rot);
+	t3.stop();
 }
 
 template<int N>
@@ -161,24 +181,36 @@ void linear_transform( const SparseDiagonal<1 << (LOGN - 1),S>& Ar,
 							 R_Q_square<  LOGQ, 1 << LOGN>& Act ){
 	const int N = 1 << LOGN;
 	Act.setzero();
+	Timer t("lin transform");
 	for (int s = 0; s < S; s++) {
 		assert(Ar.off[s] == Ai.off[s]);
 		if(Ar.zero[s] && Ai.zero[s])
 			continue;
+		Timer t("a diagonal");
 		R_Q<LOGQ, N> pt;
 		encode<LOGQ, LOGN>(Ar.vec[s],
 						Ai.vec[s], 1ULL << LOGDELTA, pt);
 		R_Q_square<LOGQ, N> ct_rot(ct);
 		if (Ar.off[s] != 0) {
+			Timer t1("rot key gen");
 			R_Q_square<2*LOGQ, 1 << LOGN> rkey;
 			int skey_rot[N];
+			Timer t1_1("rot");
 			rot<N>(skey, skey_rot, Ar.off[s]);
+			t1_1.stop();
+			Timer t1_2("swkgen");
 			HEAAN<LOGQ,N>::swkgen(skey_rot ,skey, rkey);
+			t1_2.stop();
+			t1.stop();
+			Timer t2("rot_ct");
 			rot_ct<LOGQ, N>(ct, Ar.off[s], rkey, ct_rot);
+			t2.stop();
 		}
 		ct_rot *= pt;
 		Act += ct_rot;
+		t.stop();
 	}
+	t.stop();
 }
 
 template< int LOGQ, int LOGN, int LOGDELTA, int S, int D>
