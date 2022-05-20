@@ -37,33 +37,31 @@ void rot( const int s[N], int s_rot[N], const int r){
 	for(int i = 0; i < r; ++i) {
 		pow = (5 * pow) % (2*N);
 	}
-	for(int i = 0; i < N; ++i) {
-		int r = (pow*i)%(2*N);
-		if(r < N)
-			s_rot[r] = s[i];
+	int j = 0;
+	for(int i = 0; i < N; ++i, j = (j + pow) % (2*N)) {
+		if(j < N)
+			s_rot[j] = s[i];
 		else
-			s_rot[r-N] = -s[i];
+			s_rot[j-N] = -s[i];
 	}
 }
 
 template<int LOGQ, int N>
 void rot( const R_Q<LOGQ,N>& pt, 
-				R_Q<LOGQ,N>& pt_rot ){
-	for(int i=0; i<N; i++){
-		int q = (5*i)/N;
-		int r = (5*i)%N;
-		pt_rot[r] = pt[i];
-		if(q%2==1) pt_rot[r].negate();
+				R_Q<LOGQ,N>& pt_rot, const int r = 1){
+	int pow = 1;
+	for(int i = 0; i < r; ++i) {
+		pow = (5 * pow) % (2*N);
 	}
-}
-
-template<int LOGQ, int N>
-void rot_ct( const R_Q_square<  LOGQ,N>& ct,
-			 const R_Q_square<2*LOGQ,N>& rkey,
-			   	   R_Q_square<  LOGQ,N>&ct_rot ){
-	rot<LOGQ,N>(ct[0],ct_rot[0]);
-	rot<LOGQ,N>(ct[1],ct_rot[1]);
-	HEAAN<LOGQ,N>::ks(rkey,ct_rot);
+	int j = 0;
+	for(int i=0; i<N; i++, j = (j + pow) % (2*N)){
+		if(j < N)
+			pt_rot[j] = pt[i];
+		else {
+			pt_rot[j-N] = pt[i];
+			pt_rot[j-N].negate();
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------
@@ -73,12 +71,9 @@ template<int LOGQ, int N>
 void rot_ct(const R_Q_square<  LOGQ, N>& ct, int off,
 	        const R_Q_square<2*LOGQ, N>& rkey,
 	              R_Q_square<  LOGQ, N>& ct_rot) {
-	R_Q<LOGQ, N> temp; ct_rot = ct;
 	Timer t1("rot");
-	for (int i = 0; i < off; i++) {
-		rot<LOGQ, N>(ct_rot[0], temp); ct_rot[0] = temp;
-		rot<LOGQ, N>(ct_rot[1], temp); ct_rot[1] = temp;
-	}
+	rot<LOGQ, N>(ct[0], ct_rot[0], off);
+	rot<LOGQ, N>(ct[1], ct_rot[1], off);
 	t1.stop();
 	Timer t3("ks");
 	HEAAN<LOGQ, N>::ks(rkey, ct_rot);
