@@ -220,7 +220,6 @@ void split_U0( double Ar[LOGN][1<<(LOGN-1)][1<<(LOGN-1)],
 
 template<int LOGQ, int N, int LOGDELTA, int K>
 void EvalMod (const R_Q_square<LOGQ, N>& ct, const int s[N], R_Q_square<LOGQ-12*LOGDELTA,N>& p) {
-	std::cout << "EvalMod preprocessing" << std::endl;
     int s_sq[N];
 	conv<N>(s, s, s_sq);
 
@@ -276,7 +275,6 @@ void EvalMod( const R_Q_square<LOGQ, N>& ct,
 	ct1[0][0] -= qtK;
 	
 	// Evaluate cos(3 * pi * t) for t in [-1, 1]
-	std::cout << "eval cos (3 pi t)" << std::endl;
     const double u[32] {
 -0.18121145350892778,
 0.00000000000000176,
@@ -314,7 +312,6 @@ void EvalMod( const R_Q_square<LOGQ, N>& ct,
 	eval_poly_deg31<LOGQ-LOGDELTA,N,LOGDELTA>(u,ct1,evk1,evk2,evk3,evk4,evk5,ct2);
 
 	// double angle 1
-	std::cout << "double angle 1" << std::endl;
 	R_Q_square<LOGQ-6*LOGDELTA,N> temp1; Mul<LOGQ-6*LOGDELTA,N>(ct2,ct2,evk6,temp1); temp1*=2;
     Z_Q<LOGQ-6*LOGDELTA> one1; one1.setzero(); one1[0]=1ULL<<LOGDELTA; one1*=1ULL<<LOGDELTA;
     temp1[0][0]-=one1;
@@ -322,7 +319,6 @@ void EvalMod( const R_Q_square<LOGQ, N>& ct,
 	RS<LOGQ-6*LOGDELTA,LOGQ-7*LOGDELTA,N>(temp1, ct3);
 	
 	// double angle 2
-	std::cout << "double angle 2" << std::endl;
 	R_Q_square<LOGQ-7*LOGDELTA,N> temp2; Mul<LOGQ-7*LOGDELTA,N>(ct3,ct3,evk7,temp2); temp2*=2;
     Z_Q<LOGQ-7*LOGDELTA> one2; one2.setzero(); one2[0]=1ULL<<LOGDELTA; one2*=1ULL<<LOGDELTA;
     temp2[0][0]-=one2;
@@ -330,7 +326,6 @@ void EvalMod( const R_Q_square<LOGQ, N>& ct,
 	RS<LOGQ-7*LOGDELTA,LOGQ-8*LOGDELTA,N>(temp2, ct4);
 
 	// double angle 3
-	std::cout << "double angle 3" << std::endl;
 	R_Q_square<LOGQ-8*LOGDELTA,N> temp3; Mul<LOGQ-8*LOGDELTA,N>(ct4,ct4,evk8,temp3); temp3*=2;
     Z_Q<LOGQ-8*LOGDELTA> one3; one3.setzero(); one3[0]=1ULL<<LOGDELTA; one3*=1ULL<<LOGDELTA;
     temp3[0][0]-=one3;
@@ -338,7 +333,6 @@ void EvalMod( const R_Q_square<LOGQ, N>& ct,
 	RS<LOGQ-8*LOGDELTA,LOGQ-9*LOGDELTA,N>(temp3, ct5);
 
 	// double angle 4
-	std::cout << "double angle 4" << std::endl;
 	R_Q_square<LOGQ-9*LOGDELTA,N> temp4; Mul<LOGQ-9*LOGDELTA,N>(ct5,ct5,evk9,temp4); temp4*=2;
     Z_Q<LOGQ-9*LOGDELTA> one4; one4.setzero(); one4[0]=1ULL<<LOGDELTA; one4*=1ULL<<LOGDELTA;
     temp4[0][0]-=one4;
@@ -347,7 +341,6 @@ void EvalMod( const R_Q_square<LOGQ, N>& ct,
 
 	// arcsine of degree 3
 	// ct7 = x^2 + 6
-	std::cout << "arcsine" << std::endl;
 	R_Q_square<LOGQ-10*LOGDELTA,N> temp5; Mul<LOGQ-10*LOGDELTA,N>(ct6,ct6,evk10,temp5);
 	Z_Q<LOGQ-10*LOGDELTA> six; six.setzero(); six[0]=(1ULL<<LOGDELTA)*6; six*=1ULL<<LOGDELTA;
 	temp5[0][0]+=six;

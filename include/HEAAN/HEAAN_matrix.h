@@ -201,7 +201,6 @@ void serial_linear_transform( const SparseDiagonal<1 << (LOGN - 1),S> Ar[D],
 	R_Q_square<LOGQ, 1 << LOGN> ct_temp;
 	Act = ct;
 	for(int d = 0; d < D; ++d) {
-		std::cout << "linear transform on " << d << "th matrix" << std::endl;
 		ct_temp = Act;
 		linear_transform<LOGQ, LOGN, LOGDELTA, S>(Ar[d], Ai[d], ct_temp, skey, Act);
 	} 
