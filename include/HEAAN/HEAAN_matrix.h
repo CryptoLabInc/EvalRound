@@ -172,12 +172,10 @@ void linear_transform( const SparseDiagonal<1 << (LOGN - 1),S>& Ar,
 							 R_Q_square<  LOGQ, 1 << LOGN>& Act ){
 	const int N = 1 << LOGN;
 	Act.setzero();
-	Timer t("lin transform");
 	for (int s = 0; s < S; s++) {
 		assert(Ar.off[s] == Ai.off[s]);
 		if(Ar.zero[s] && Ai.zero[s])
 			continue;
-		Timer t("a diagonal");
 		R_Q<LOGQ, N> pt;
 		encode<LOGQ, LOGN>(Ar.vec[s],
 						Ai.vec[s], 1ULL << LOGDELTA, pt);
@@ -191,9 +189,7 @@ void linear_transform( const SparseDiagonal<1 << (LOGN - 1),S>& Ar,
 		}
 		ct_rot *= pt;
 		Act += ct_rot;
-		t.stop();
 	}
-	t.stop();
 }
 
 template< int LOGQ, int LOGN, int LOGDELTA, int S, int D>
