@@ -71,13 +71,9 @@ template<int LOGQ, int N>
 void rot_ct(const R_Q_square<  LOGQ, N>& ct, int off,
 	        const R_Q_square<2*LOGQ, N>& rkey,
 	              R_Q_square<  LOGQ, N>& ct_rot) {
-	Timer t1("rot");
 	rot<LOGQ, N>(ct[0], ct_rot[0], off);
 	rot<LOGQ, N>(ct[1], ct_rot[1], off);
-	t1.stop();
-	Timer t3("ks");
 	HEAAN<LOGQ, N>::ks(rkey, ct_rot);
-	t3.stop();
 }
 
 template<int N>
@@ -187,19 +183,11 @@ void linear_transform( const SparseDiagonal<1 << (LOGN - 1),S>& Ar,
 						Ai.vec[s], 1ULL << LOGDELTA, pt);
 		R_Q_square<LOGQ, N> ct_rot(ct);
 		if (Ar.off[s] != 0) {
-			Timer t1("rot key gen");
 			R_Q_square<2*LOGQ, 1 << LOGN> rkey;
 			int skey_rot[N];
-			Timer t1_1("rot");
 			rot<N>(skey, skey_rot, Ar.off[s]);
-			t1_1.stop();
-			Timer t1_2("swkgen");
 			HEAAN<LOGQ,N>::swkgen(skey_rot ,skey, rkey);
-			t1_2.stop();
-			t1.stop();
-			Timer t2("rot_ct");
 			rot_ct<LOGQ, N>(ct, Ar.off[s], rkey, ct_rot);
-			t2.stop();
 		}
 		ct_rot *= pt;
 		Act += ct_rot;
