@@ -28,6 +28,7 @@ struct R_Q{
 template< int LOGQ, int N >
 void conv( const int s[N],
 	       const R_Q<LOGQ,N>& A, R_Q<LOGQ,N>& C ){
+	#pragma omp parallel for
 	for(int i=0;i<N;i++){
 		C[i].setzero(); const Z_Q<LOGQ>* temp;
 		for(int k=0;k<N;k++){
