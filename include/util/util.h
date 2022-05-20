@@ -56,11 +56,12 @@ class Timer {
         Timer(std::string name) {
             name_ = name;
             begin_ = std::chrono::steady_clock::now();
+            std::cout << name_ << " start" << std::endl;
         }
 
         void stop() {
             end_ = std::chrono::steady_clock::now();
-            std::cout << name_ << " : " << std::chrono::duration_cast<std::chrono::seconds>(end_ - begin_).count() << "[s]" << std::endl;
+            std::cout << name_ << " : " << std::chrono::duration_cast<std::chrono::milliseconds>(end_ - begin_).count() << "[ms]" << std::endl;
         }
 
     private:
