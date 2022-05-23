@@ -45,8 +45,8 @@ void CoeffToSlot (	const R_Q_square<  LOGQ,1<<LOGN>& ct,
 			U0r[n].transpose();
 			U0i[n].transpose();
 			U0i[n].negate();
-			U0r[n] *= (n == 0) ? 0.25 : 0.5;
-			U0i[n] *= (n == 0) ? 0.25 : 0.5;
+			U0r[n] *= 1 / pow(N, 1.0 / (LOGN - 1));
+			U0i[n] *= 1 / pow(N, 1.0 / (LOGN - 1));
 		}
 		is_init = true;
 	}
