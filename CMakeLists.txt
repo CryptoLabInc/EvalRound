@@ -25,6 +25,9 @@ add_executable(lemma1 src/experiment/lemma1.cpp)
 add_executable(lemma2 src/experiment/lemma2.cpp)
 add_executable(theorem1 src/experiment/theorem1.cpp)
 add_executable(corollary src/experiment/corollary.cpp)
-
 add_executable(measure_sup_norm_ratio src/experiment/measure_sup_norm_ratio.cpp)
 add_executable(measure_mod_raise_size src/experiment/measure_mod_raise_size.cpp)
+
+add_executable(error_analysis src/example/error_analysis.cpp)
+add_executable(delta_tilde_design src/example/delta_tilde_design.cpp)
+add_executable(check_sup_norm src/example/check_sup_norm.cpp)
