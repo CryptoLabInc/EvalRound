@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HEAAN/matrix.h"
+#include "HEAAN/DFT.h"
 #include "util/util.h"
 
 #include <iostream>
@@ -122,4 +123,52 @@ void print(const std::string name, const Message<LOGN> &z){
 		std::cout << "(" << z.r[i] << ", " << z.i[i] << ") ";
 	}
 	std::cout << std::endl;
+}
+
+template <int LOGN>
+void conj(const Message<LOGN> &z1, Message<LOGN> &z2) {
+    for(int i = 0; i < (1 << (LOGN - 1)); ++i) {
+        z2.r[i] = z1.r[i];
+        z2.i[i] = -z1.i[i];
+    }
+}
+
+template<int LOGN, int LOGDELTA, int G = 1>
+void CoeffToSlot (const Message<LOGN>& z,
+					Message<LOGN> z_[2]){
+	const int N = 1 << LOGN;
+	static bool is_init = false;
+	static SparseDiagonal<N/2,3> U0r[LOGN-1];
+    static SparseDiagonal<N/2,3> U0i[LOGN-1];
+
+	if(!is_init) {
+		splitU0NR<LOGN>(U0r, U0i);
+    	for (int n = 0; n < LOGN - 1; n++) {
+			U0r[n].transpose();
+			U0i[n].transpose();
+			U0i[n].negate();
+			U0r[n] *= 1 / pow(N, 1.0 / (LOGN - 1));
+			U0i[n] *= 1 / pow(N, 1.0 / (LOGN - 1));
+		}
+		is_init = true;
+	}
+
+    Message <LOGN> z1, U0z;
+    z1 = z;
+    for(int d = 0; d < LOGN - 1; ++d) {
+		U0z = z1;
+        matrix_vector_product<LOGN, 3>(U0z, U0r[d], U0i[d], z1);
+	}
+
+    Message<LOGN> zi;
+    for(int i = 0; i < (1 << (LOGN - 1)); ++i) {
+        zi.r[i] = 0;
+        zi.i[i] = 1;
+    }
+
+    Message <LOGN> z2;
+    conj(z1, z2);
+    add(z1, z2, z_[0]);
+    sub(z1, z2, z_[1]);
+    mult(z_[1], zi, z_[1]);
 }
