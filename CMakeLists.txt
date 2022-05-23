@@ -29,3 +29,4 @@ add_executable(measure_sup_norm_ratio src/experiment/measure_sup_norm_ratio.cpp)
 add_executable(measure_mod_raise_size src/experiment/measure_mod_raise_size.cpp)
 
 add_executable(error_analysis src/example/error_analysis.cpp)
+add_executable(delta_tilde_design src/example/delta_tilde_design.cpp)
