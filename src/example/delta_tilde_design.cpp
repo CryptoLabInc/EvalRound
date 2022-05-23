@@ -10,7 +10,7 @@ int main()
     int D = (LOGN - 1) / G;
     int Diag = pow(3, G);
 
-    double C1 = D * sqrt((H+1) * Diag) / 24 * pow(2, 1.0 / (2*D));
+    double C1 = D * sqrt((H+1) * Diag) / 24 * pow(2, 1.0 / (2*D)) * sqrt(2);
     std::cout << "C1 : " << C1 << std::endl;
 
     // Step 1. Empirically get C2

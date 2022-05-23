@@ -12,7 +12,7 @@ int main()
     int D = (LOGN - 1) / G;
     int Diag = pow(3, G);
 
-    double C1 = D * sqrt((H+1) * Diag) / 24 * pow(2, 1.0 / (2*D));
+    double C1 = D * sqrt((H+1) * Diag) / 24 * pow(2, 1.0 / (2*D)) * sqrt(2);
     std::cout << "C1 : " << C1 << std::endl;
 
     // Step 2. Measure norm(z_amb)
@@ -95,7 +95,7 @@ int main()
         double z_amb_norm_expected = sqrt(N/2) / Delta * sqrt((H+1.0)/12*q*q*N);
         double p_U0 = sqrt(Diag*N / 12.0) / Delta_boot_tilde;
         double U0_norm = pow(sqrt(2) / pow(N, 1.0 / (LOGN - 1)), G);
-        double e_norm_expected = z_amb_norm_expected * p_U0 * D * pow(U0_norm, D - 1);
+        double e_norm_expected = z_amb_norm_expected * p_U0 * D * pow(U0_norm, D - 1) * sqrt(2);
         std::cout << "norm(e) expected (sanity check) : " << e_norm_expected << std::endl;
     }
 }
