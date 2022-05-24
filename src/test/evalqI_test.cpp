@@ -68,6 +68,21 @@ void evalqI_test()
 	print("z", z);
 	print("z_out", z_out);
 	print_max_error<LOGN>(z,z_out);
+
+	R_Q<LOGQ_after_stc, N> e;
+	resize(pt, e);
+	e -= pt_out;
+
+	double e_per_Delta_sup_norm = 0;
+    for(int i = 0; i < N; ++i) {
+        Z_Q<LOGQ_after_stc> val = e[i];
+		if(val.is_bigger_than_halfQ())
+            val.negate();
+        double val_abs_double = (double) (val[0]) / Delta;
+
+        e_per_Delta_sup_norm = val_abs_double > e_per_Delta_sup_norm ? val_abs_double : e_per_Delta_sup_norm;
+    }
+	std::cout << "LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : " << std::log2(e_per_Delta_sup_norm) << std::endl;
 }
 
 int main()
