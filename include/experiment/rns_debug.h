@@ -16,7 +16,7 @@ constexpr int LOGDELTA = 50; // log delta used for mult
 constexpr uint64_t Delta = 1ULL << LOGDELTA;
 constexpr int LOGDELTA_boot = LOGq; // log delta for bootstrap
 constexpr uint64_t Delta_boot = 1ULL << LOGDELTA_boot;
-constexpr int LOGDELTA_boot_tilde = 25; // log delta for c2s
+constexpr int LOGDELTA_boot_tilde = 22; // log delta for c2s
 constexpr uint64_t Delta_boot_tilde = 1ULL << LOGDELTA_boot_tilde;
 
 constexpr int K = 24; // max number of periods of sine function to approximate on EvalMod
