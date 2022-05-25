@@ -1,0 +1,60 @@
+BOOTSTRAP TEST
+LOGN : 9
+LOGDELTA_boot_tilde : 60
+LOG2 MAX ERROR (REAL, IMAG) = [-25.9061, -25.6131]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -27.2862
+EVALQI TEST
+LOGN : 9
+LOGDELTA_boot_tilde : 60
+LOG2 MAX ERROR (REAL, IMAG) = [-25.4832, -25.8478]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -26.8051
+BOOTSTRAP TEST
+LOGN : 9
+LOGDELTA_boot_tilde : 28
+LOG2 MAX ERROR (REAL, IMAG) = [-5.43146, -5.48865]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -9.59841
+EVALQI TEST
+LOGN : 9
+LOGDELTA_boot_tilde : 28
+LOG2 MAX ERROR (REAL, IMAG) = [-24.4355, -25.1203]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -25.0783
+BOOTSTRAP TEST
+LOGN : 9
+LOGDELTA_boot_tilde : 22
+LOG2 MAX ERROR (REAL, IMAG) = [0.614932, 1.14978]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -3.44076
+EVALQI TEST
+LOGN : 9
+LOGDELTA_boot_tilde : 22
+LOG2 MAX ERROR (REAL, IMAG) = [-27.1636, -25.937]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -31.0507
+BOOTSTRAP TEST
+LOGN : 17
+LOGDELTA_boot_tilde : 60
+LOG2 MAX ERROR (REAL, IMAG) = [-13.2872, -13.5553]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -18.2751
+EVALQI TEST
+LOGN : 17
+LOGDELTA_boot_tilde : 60
+LOG2 MAX ERROR (REAL, IMAG) = [-13.4092, -13.134]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -16.3499
+BOOTSTRAP TEST
+LOGN : 17
+LOGDELTA_boot_tilde : 34
+LOG2 MAX ERROR (REAL, IMAG) = [-0.742032, -0.874361]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -9.01616
+EVALQI TEST
+LOGN : 17
+LOGDELTA_boot_tilde : 34
+LOG2 MAX ERROR (REAL, IMAG) = [-20.0138, -18.0252]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -23.5536
+BOOTSTRAP TEST
+LOGN : 17
+LOGDELTA_boot_tilde : 28
+LOG2 MAX ERROR (REAL, IMAG) = [5.09595, 5.38858]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -3.02294
+EVALQI TEST
+LOGN : 17
+LOGDELTA_boot_tilde : 28
+LOG2 MAX ERROR (REAL, IMAG) = [-13.1918, -13.5051]
+LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -15.5868
