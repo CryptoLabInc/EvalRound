@@ -30,9 +30,9 @@ int main()
         }
         theorem1_const += p_A[i] * norm_const;
     }
-    double e_norm_expected = z_amb_norm_expected * theorem1_const * sqrt(2);
+    double e_norm_expected = z_amb_norm_expected * theorem1_const * 2;
 
-    std::cout << e_norm_expected * 5 / sqrt(N/2) << std::endl;
+    std::cout << e_norm_expected * 5 / sqrt(N) << std::endl;
     double eps = pow(2.0, -15);
     std::cout << eps * (1 << (LOGq - LOGDELTA)) / 2 << std::endl;
 }
