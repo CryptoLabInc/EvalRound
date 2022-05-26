@@ -158,5 +158,5 @@ int main()
     bootstrap_test<9, 22, 2>(); evalqI_test<9,22,2>();
     bootstrap_test<17, 60, 4>(); evalqI_test<17,60,4>();
    	bootstrap_test<17, 34, 4>(); evalqI_test<17,34,4>();
-    bootstrap_test<17, 28, 4>(); evalqI_test<17,28,4>();
+    bootstrap_test<17, 29, 4>(); evalqI_test<17,29,4>();
 }
