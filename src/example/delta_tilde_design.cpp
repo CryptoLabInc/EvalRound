@@ -10,7 +10,7 @@ int main()
     int D = (LOGN - 1) / G;
     int Diag = pow(3, G);
 
-    double C1 = D * sqrt((H+1) * Diag) / 24 * pow(2, 1.0 / (2*D)) * sqrt(2);
+    double C1 = D * sqrt((H+1) * Diag) / 12.0 * pow(2, 1.0 / (2*D));
     std::cout << "C1 : " << C1 << std::endl;
 
     // Step 1. Empirically get C2
@@ -37,8 +37,10 @@ int main()
         max_sup_norm_ratio = ratio > max_sup_norm_ratio ? ratio : max_sup_norm_ratio;
 	}
 
-    double C2 = ceil(max_sup_norm_ratio);
+    double C2_empirical = ceil(max_sup_norm_ratio);
+    double C2 = 5;
     std::cout << "max sup_norm / avg_norm ratio : " << max_sup_norm_ratio << std::endl;
+    std::cout << "C2(empirical) : " << C2_empirical << std::endl;
     std::cout << "C2 : " << C2 << std::endl;
 
     // Step 2. Compute Delta given value \simeq rounding error
