@@ -1,7 +1,6 @@
 #include "experiment/rns_debug.h"
 
-#include "HEAAN/HEAAN.h"
-#include "HEAAN/HEAAN_matrix.h"
+#include "HEAAN/linear_transform.h"
 
 bool isEqual(double a, double b) {
 	if(a == 0)

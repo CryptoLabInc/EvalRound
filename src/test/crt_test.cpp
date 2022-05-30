@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "HEAAN/advanced/crt.h"
+#include "HEAAN/arith/conv/crt.h"
 
 int main(){
     const int L = 5;

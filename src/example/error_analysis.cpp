@@ -1,9 +1,7 @@
+#include "HEAAN/bootstrap.h"
 #include "experiment/rns_debug.h"
-#include "HEAAN/HEAAN.h"
-#include "HEAAN/HEAAN_bootstrap.h"
 
 #include <iostream>
-#include <cmath>
 
 int main()
 {

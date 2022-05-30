@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HEAAN.h"
+#include "core.h"
 
 template< int LOGQ, int N, int LOGDELTA >
 void eval_poly_deg3( const double u[4],

@@ -1,4 +1,3 @@
-
 #include "experiment/simple.h"
 
 #include <iostream>

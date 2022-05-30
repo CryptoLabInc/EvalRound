@@ -25,24 +25,7 @@ struct R_Q{
 // negative-wrapped convolution
 //-----------------------------------------------------------
 
-template< int LOGQ, int N >
-void conv( const int s[N],
-	       const R_Q<LOGQ,N>& A, R_Q<LOGQ,N>& C ){
-	#pragma omp parallel for
-	for(int i=0;i<N;i++){
-		C[i].setzero(); const Z_Q<LOGQ>* temp;
-		for(int k=0;k<N;k++){
-			if( s[k]!=0 ){
-				bool sign=s[k]==1;
-				if(k<=i) temp=&A[  i-k]; 
-				else    {temp=&A[N+i-k]; sign=!sign;}
-			
-				if(sign) C[i]+=*temp;
-				else     C[i]-=*temp;
-			}
-		}
-	}
-}
+
 //-----------------------------------------------------------
 //
 //

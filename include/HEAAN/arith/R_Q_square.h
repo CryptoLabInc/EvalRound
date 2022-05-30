@@ -1,5 +1,6 @@
 #pragma once                
-#include "R_Q.h"            
+#include "R_Q.h"  
+#include "conv.h"          
 //----------------------------------------------
 // This is an implementation of the ring (+,-,*)
 // R_Q^2[x]/x^N+1

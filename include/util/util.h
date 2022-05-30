@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cstdint>
+#include <cstdlib>
 #include <set>
 
 #include <chrono>
@@ -28,6 +29,14 @@ inline uint32_t bitReverse32(uint32_t x) {
 
 inline uint32_t bitReverse(uint32_t x, int digits) {
     return bitReverse32(x) >> (32 - digits);
+}
+
+uint64_t rand_uint64(void){
+	uint64_t r =0;
+	for( int i=0; i<64; i+=15 /*30*/){
+		  r = r*((uint64_t)RAND_MAX + 1) + rand();
+  }
+  return r;
 }
 
 template<class T>

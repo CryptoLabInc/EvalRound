@@ -35,19 +35,6 @@ void idft( const double zr[N/2],
 	}
 }
 
-template<int N>
-void get_U0( double U0r[N/2][N/2],
-			 double U0i[N/2][N/2]){
-	int fivei=1;
-	for(int i=0;i<N/2;i++,fivei=(fivei*5)%(2*N)){
-		int fivei_k=0;
-		for(int k=0;k<N/2;k++,fivei_k=(fivei_k+fivei)%(2*N)){
-			U0r[i][k]=cos(PI/N*fivei_k);
-			U0i[i][k]=sin(PI/N*fivei_k);
-		}
-	}
-}
-
 //------------------------------------------------------------------------------------------
 //
 // When N=16, U0NR matrix is decomposed into the product of three 8x8 complex matrices.
@@ -150,9 +137,8 @@ void fft(
   double zi[1 << (LOGN - 1)]){
 	const int N = 1 << LOGN;
 	double mNR[N];
-	const int shift = 32 - (LOGN - 1);
 	for(uint32_t i = 0; i < N/2; ++i) {
-		uint32_t i_NR = bitReverse32(i) >> shift;
+		uint32_t i_NR = bitReverse(i, LOGN - 1);
 		mNR[i_NR] = m[i];
 		mNR[i_NR+N/2] = m[i+N/2];
 	}
@@ -165,9 +151,8 @@ void ifft( const double zr[1 << (LOGN - 1)],
 	const int N = 1 << LOGN;
 	double mNR[N];
 	ifftNR<LOGN>(zr, zi, mNR);
-	const int shift = 32 - (LOGN - 1);
 	for(uint32_t i = 0; i < N/2; ++i) {
-		uint32_t i_NR = bitReverse32(i) >> shift;
+		uint32_t i_NR = bitReverse(i, LOGN - 1);
 		m[i] = mNR[i_NR];
 		m[i+N/2] = mNR[i_NR+N/2];
 	}

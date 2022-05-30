@@ -1,79 +1,35 @@
 #pragma once
 
-#include "crt.h"
-#include "ntt.h"
-#include "mod.h"
+#include "conv/conv.h"
 
-#include <memory>
-
-template<int L, int LOGQ, int N>
-struct CONV{
-    CRT<L, LOGQ> crt;
-    std::unique_ptr<NTT<N>> ntt[L];
-
-    CONV(const uint64_t q[L]);
-
-    void conv( const R_Q<LOGQ,N>& A,
-	       const R_Q<LOGQ,N>& B, R_Q<LOGQ,N>& C ) const;
-
-    private:
-        void icrt_polynomial(const R_Q<LOGQ, N>& A, uint64_t A_rns[L][N]) const;
-        void crt_polynomial(const uint64_t A_rns[L][N], R_Q<LOGQ, N> &A) const;
-};
-
-template<int L, int LOGQ, int N>
-CONV<L, LOGQ, N>::CONV(const uint64_t q[L]) : crt{q} {
-    for(int i = 0; i < L; ++i) {
-        ntt[i] = std::make_unique<NTT<N>>(q[i]);
-    }
+template<int N>
+void conv( const int s1[N],
+		   const int s2[N], int s3[N]){
+	for(int i=0; i<N; i++){
+		s3[i]=0;
+		for(int k=0;   k<=i; k++) s3[i] += s1[k]*s2[i-k];
+		for(int k=i+1; k< N; k++) s3[i] -= s1[k]*s2[i+N-k];
+	}
 }
 
-template<int L, int LOGQ, int N>
-void CONV<L, LOGQ, N>::conv( const R_Q<LOGQ,N>& A,
-	       const R_Q<LOGQ,N>& B, R_Q<LOGQ,N>& C ) const {
-    uint64_t A_rns[L][N], B_rns[L][N], C_rns[L][N];
-
-    icrt_polynomial(A, A_rns);
-    icrt_polynomial(B, B_rns);
-
-    #pragma omp parallel for
-    for(int i = 0; i < L; ++i) {
-        ntt[i]->ntt(A_rns[i]);
-        ntt[i]->ntt(B_rns[i]);
-        for(int j = 0; j < N; ++j) {
-            C_rns[i][j] = mul_mod(A_rns[i][j], B_rns[i][j] , ntt[i]->q);
-        }
-        ntt[i]->intt(C_rns[i]);
-    }
-
-    crt_polynomial(C_rns, C);
+template< int LOGQ, int N >
+void conv( const int s[N],
+	       const R_Q<LOGQ,N>& A, R_Q<LOGQ,N>& C ){
+	#pragma omp parallel for
+	for(int i=0;i<N;i++){
+		C[i].setzero(); const Z_Q<LOGQ>* temp;
+		for(int k=0;k<N;k++){
+			if( s[k]!=0 ){
+				bool sign=s[k]==1;
+				if(k<=i) temp=&A[  i-k]; 
+				else    {temp=&A[N+i-k]; sign=!sign;}
+			
+				if(sign) C[i]+=*temp;
+				else     C[i]-=*temp;
+			}
+		}
+	}
 }
-
-template<int L, int LOGQ, int N>
-void CONV<L, LOGQ, N>::icrt_polynomial(const R_Q<LOGQ, N>& A, uint64_t A_rns[L][N]) const {
-    #pragma omp parallel for
-    for(int i = 0; i < N; ++i) {
-        uint64_t Ai_rns[L];
-        crt.icrt(A[i], Ai_rns);
-        for(int j = 0; j < L; ++j){
-            A_rns[j][i] = Ai_rns[j];
-        }
-    }
-}
-
-template<int L, int LOGQ, int N>
-void CONV<L, LOGQ, N>::crt_polynomial(const uint64_t A_rns[L][N], R_Q<LOGQ, N> &A) const {
-    #pragma omp parallel for
-    for(int i = 0; i < N; ++i) {
-        uint64_t Ai_rns[L];
-        for(int j = 0; j < L; ++j) {
-            Ai_rns[j] = A_rns[j][i];
-        }
-        crt.crt(Ai_rns, A[i]);
-    }
-}
-
-
 
 template< int LOGQ, int N >
 void conv( const R_Q<LOGQ,N>& A,

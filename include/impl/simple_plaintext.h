@@ -1,7 +1,7 @@
 #pragma once
 
 #include "message.h"
-#include "HEAAN/DFT.h"
+#include "HEAAN/matrix/DFT.h"
 #include "util/util.h"
 
 #include <iostream>

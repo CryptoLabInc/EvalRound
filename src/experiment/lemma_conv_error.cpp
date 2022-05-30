@@ -1,10 +1,14 @@
-
 #include "experiment/simple.h"
 
 #include <iostream>
 
-int main()
+template<int LOGN>
+void measure_conv_error()
 {
+  std::cout << "Measuring error on convolution" << std::endl;
+  std::cout << "LOGN : " << LOGN << std::endl;
+  const int N = 1 << LOGN;
+
   // ||e * pt|| ~= sqrt(N/12) * ||pt||
   Message <LOGN> z;
   SimplePlaintext<LOGN> pt;
@@ -28,4 +32,9 @@ int main()
     double measured = square_sum(res);
     std::cout << measured << std::endl;
   }
+}
+
+int main()
+{
+  measure_conv_error<15>();
 }

@@ -1,6 +1,6 @@
-#include <iostream>
+#include "HEAAN/arith/conv/ntt.h"
 
-#include "HEAAN/advanced/ntt.h"
+#include <iostream>
 
 int main(){
     const int N = 1 << 10;

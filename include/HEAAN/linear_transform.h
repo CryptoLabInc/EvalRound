@@ -1,9 +1,7 @@
 #pragma once
 
-#include "HEAAN.h"
-#include "DFT.h"
-
-#include "util/util.h"
+#include "core.h"
+#include "endecode.h"
 
 template<int N>
 void rot( const int s[N], int s_rot[N] ){
@@ -11,22 +9,6 @@ void rot( const int s[N], int s_rot[N] ){
 		int q = (5*i)/N;
 		int r = (5*i)%N;
 		s_rot[r] = (q%2==0)?s[i]:-s[i];
-	}
-}
-
-template<int N>
-void rot_old( const int s[N], int s_rot[N], const int r){
-	for(int i = 0; i < N; ++i)
-		s_rot[i] = s[i];
-	if(r == 0)
-		return;
-
-	int s_tmp[N];
-	for(int i = 0; i < r; ++i) {
-		for(int j = 0; j < N; ++j) {
-			s_tmp[j] = s_rot[j];
-		}
-		rot<N>(s_tmp, s_rot);
 	}
 }
 
@@ -122,9 +104,7 @@ void linear_transform( const double Ar[1 << (LOGN - 1)][1 << (LOGN - 1)],
 	Act.setzero(); R_Q_square<LOGQ,N> ct_rot = ct;
 	for(int i=0; i<N/2; i++){
 		R_Q<LOGQ,N> pt;
-		encode<LOGQ, LOGN>(vr[i],vi[i], 1ULL<<LOGDELTA, pt);
-
-		
+		encode<LOGQ, LOGN>(vr[i],vi[i], 1ULL<<LOGDELTA, pt);		
 
 		R_Q_square<LOGQ,N> ct_rot_pt = ct_rot;
 		ct_rot_pt *= pt;

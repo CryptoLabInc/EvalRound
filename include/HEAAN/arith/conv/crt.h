@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HEAAN/Z_Q.h"
+#include "HEAAN/arith/Z_Q.h"
 #include "mod.h"
 
 namespace {

@@ -1,4 +1,5 @@
-#include "HEAAN/HEAAN.h"
+#include "HEAAN/endecode.h"
+#include "HEAAN/arith/conv.h"
 #include "experiment/big.h"
 
 int main(){	
