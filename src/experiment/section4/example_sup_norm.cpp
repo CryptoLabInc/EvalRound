@@ -3,6 +3,44 @@
 
 #include <iostream>
 
+const double C2 = 5;
+
+template<int LOGN>
+void check_sup_norm_bound(){
+    std::cout << "Check sup norm is bounded as expected" << std::endl;
+    std::cout << "LOGN : " << LOGN << std::endl;
+
+    const int N = 1 << LOGN;
+
+    double max_sup_norm_ratio = 0;
+	for(int r = 0; r < 100; ++r) {
+		Message<LOGN> z;
+		set_random_message(z);
+		R_Q<LOGQ, N> pt;
+		encode(z, Delta, pt);
+
+		double norm = 0, sup_norm = 0;
+		for(int i = 0; i < N; ++i) {
+			Z_Q<LOGQ> val = pt[i];
+			if(val.is_bigger_than_halfQ())
+				val.negate();
+			double val_abs_double = (double) val[0];
+			norm += val_abs_double * val_abs_double;
+			sup_norm = val_abs_double > sup_norm ? val_abs_double : sup_norm;
+		}
+		norm = sqrt(norm);
+
+        double sup_norm_ratio = sup_norm / (norm / sqrt(N));
+        max_sup_norm_ratio = sup_norm_ratio > max_sup_norm_ratio ? sup_norm_ratio : max_sup_norm_ratio;
+	}
+
+    double C2_empirical = ceil(max_sup_norm_ratio);
+    double C2 = 5;
+    std::cout << "max sup_norm / avg_norm ratio : " << max_sup_norm_ratio << std::endl;
+    std::cout << "C2(empirical) : " << C2_empirical << std::endl;
+    std::cout << "C2 : " << C2 << std::endl;
+}
+
 template<int LOGN, int LOGDELTA_boot_tilde, int G>
 void measure_sup_norm()
 {
@@ -51,7 +89,7 @@ void measure_sup_norm()
     }
     pt_per_Delta_norm = sqrt(pt_per_Delta_norm);
 
-    std::cout << "sup_norm(pt) bounded : " << pt_per_Delta_norm / sqrt(N) * 5 << std::endl;
+    std::cout << "sup_norm(pt) bounded : " << pt_per_Delta_norm / sqrt(N) * C2 << std::endl;
     std::cout << "sup_norm(pt) measured : " << pt_per_Delta_sup_norm << std::endl;
 
     Message<LOGN> z_cts[2], z_cts_exact[2], e[2];
@@ -86,12 +124,14 @@ void measure_sup_norm()
     double e_norm_measured = norm(e_whole);
     std::cout << "norm(rounding error) expected : " << e_norm_expected << std::endl;
     std::cout << "norm(rounding error) measured : " << e_norm_measured << std::endl;
-    std::cout << "sup_norm(rounding error) bounded : " << e_norm_expected / sqrt(N) * 5 << std::endl;
+    std::cout << "sup_norm(rounding error) bounded : " << e_norm_expected / sqrt(N) * C2 << std::endl;
     std::cout << "sup_norm(rounding error) measured : " << sup_norm(e_whole) << std::endl;
 }
 
 int main()
 {
+    check_sup_norm_bound<9>();
+    check_sup_norm_bound<17>();
     measure_sup_norm<9, 50, 2>();
     measure_sup_norm<17, 50, 4>();
 }
