@@ -1,8 +1,8 @@
-echo lemma1
-build/lemma1 >> data/log_lemma1
-echo lemma2
-build/lemma2 >> data/log_lemma2
-echo theorem1
-build/theorem1 >> data/log_theorem1
-echo corollary
-build/corollary >> data/log_corollary
+echo lemma_conv_error
+build/lemma_conv_error >> data/log_lemma1
+echo lemma_conv_sum_error
+build/lemma_conv_sum_error >> data/log_lemma2
+echo theorem_single_matmul
+build/theorem_single_matmul >> data/log_theorem1
+echo theorem_serial_matmul
+build/theorem_serial_matmul >> data/log_corollary
