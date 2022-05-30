@@ -1,12 +1,12 @@
 #include "HEAAN/bootstrap.h"
-#include "experiment/rns_debug.h"
+#include "experiment/rns.h"
 
 #include <iostream>
 
 template<int LOGN, int LOGDELTA_boot_tilde, int G>
-void bootstrap_test()
+void conventional_bootstrap_test()
 {
-    std::cout << "BOOTSTRAP TEST" << std::endl;
+    std::cout << "Measuring error on conventional bootstrap" << std::endl;
 	std::cout << "LOGN : " << LOGN << std::endl;
 	std::cout << "LOGDELTA_boot_tilde : " << LOGDELTA_boot_tilde << std::endl;
 
@@ -60,10 +60,8 @@ void bootstrap_test()
 
 	double e_per_Delta_sup_norm = 0;
     for(int i = 0; i < N; ++i) {
-        Z_Q<LOGQ_after_stc> val = e[i];
-		if(val.is_bigger_than_halfQ())
-            val.negate();
-        double val_abs_double = (double) (val[0]) / Delta;
+		double val = (double) e[i];
+		double val_abs_double = (double) std::abs(val) / Delta;
 
         e_per_Delta_sup_norm = val_abs_double > e_per_Delta_sup_norm ? val_abs_double : e_per_Delta_sup_norm;
     }
@@ -71,9 +69,9 @@ void bootstrap_test()
 }
 
 template<int LOGN, int LOGDELTA_boot_tilde, int G>
-void evalqI_test()
+void proposed_bootstrap_test()
 {
-    std::cout << "EVALQI TEST" << std::endl;
+    std::cout << "Measuring error on proposed bootstrap" << std::endl;
 	std::cout << "LOGN : " << LOGN << std::endl;
 	std::cout << "LOGDELTA_boot_tilde : " << LOGDELTA_boot_tilde << std::endl;
 
@@ -138,10 +136,8 @@ void evalqI_test()
 
 	double e_per_Delta_sup_norm = 0;
     for(int i = 0; i < N; ++i) {
-        Z_Q<LOGQ_after_stc> val = e[i];
-		if(val.is_bigger_than_halfQ())
-            val.negate();
-        double val_abs_double = (double) (val[0]) / Delta;
+    	double val = (double) e[i];
+		double val_abs_double = (double) std::abs(val) / Delta;
 
         e_per_Delta_sup_norm = val_abs_double > e_per_Delta_sup_norm ? val_abs_double : e_per_Delta_sup_norm;
     }
@@ -150,10 +146,8 @@ void evalqI_test()
 
 int main()
 {
-	bootstrap_test<9, 60, 2>(); evalqI_test<9,60,2>();
-   	bootstrap_test<9, 28, 2>(); evalqI_test<9,28,2>();
-    bootstrap_test<9, 22, 2>(); evalqI_test<9,22,2>();
-    bootstrap_test<17, 60, 4>(); evalqI_test<17,60,4>();
-   	bootstrap_test<17, 34, 4>(); evalqI_test<17,34,4>();
-    bootstrap_test<17, 29, 4>(); evalqI_test<17,29,4>();
+	conventional_bootstrap_test<9, 60, 2>(); proposed_bootstrap_test<9,60,2>();
+    conventional_bootstrap_test<9, 22, 2>(); proposed_bootstrap_test<9,22,2>();
+    conventional_bootstrap_test<17, 60, 4>(); proposed_bootstrap_test<17,60,4>();
+    conventional_bootstrap_test<17, 29, 4>(); proposed_bootstrap_test<17,29,4>();
 }
