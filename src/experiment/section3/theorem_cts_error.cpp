@@ -54,7 +54,7 @@ void measure_cts_error()
     R_Q<LOGQ, N> pt_cts[2];
     R_Q_square<LOGQ,N> ct_cts[2];
 
-    // do cts, gather splitted z_cts
+    // do cts
     CoeffToSlot<LOGQ,LOGN, LOGDELTA_boot_tilde, G>(ct,s,ct_cts);
     for(int i = 0; i < 2; ++i) {
         HEAAN<LOGQ,N>::dec(ct_cts[i],s,pt_cts[i]);
