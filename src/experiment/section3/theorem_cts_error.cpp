@@ -1,10 +1,18 @@
 #include "HEAAN/bootstrap.h"
-#include "experiment/rns_debug.h"
+#include "experiment/rns.h"
 
 #include <iostream>
 
-int main()
+template<int LOGN, int LOGDELTA_boot_tilde, int G>
+void measure_cts_error()
 {
+    std::cout << "Measuring coefftoslot error" << std::endl;
+	std::cout << "LOGN : " << LOGN << std::endl;
+	std::cout << "LOGDELTA_boot_tilde : " << LOGDELTA_boot_tilde << std::endl;
+    std::cout << "G : " << G << std::endl;
+
+    const int N = 1 << LOGN;
+    constexpr uint64_t Delta_boot_tilde = 1ULL << LOGDELTA_boot_tilde;
     // Step 1. Compute constants
     assert((LOGN - 1) % G == 0);
     int D = (LOGN - 1) / G;
@@ -55,33 +63,18 @@ int main()
 
     // compute desired z_cts
     for(int i = 0; i < N/2; ++i) {
-        Z_Q<LOGQ> valr(pt[bitReverse(i, LOGN - 1)]);
-        Z_Q<LOGQ> vali(pt[bitReverse(i, LOGN - 1) + N/2]);
-        bool is_negative_r =  valr.is_bigger_than_halfQ();
-        if(is_negative_r)
-            valr.negate();
-        double valr_double = (double) valr[0];
-        if(is_negative_r)
-            valr_double *= -1;  
-        valr_double /= Delta;
-
-        bool is_negative_i =  vali.is_bigger_than_halfQ();
-        if(is_negative_i)
-            vali.negate();
-        double vali_double = (double) vali[0];
-        if(is_negative_i)
-            vali_double *= -1;  
-        vali_double /= Delta;
-
-        z_cts_exact[0].r[i] = valr_double;
-        z_cts_exact[1].r[i] = vali_double;
+        double val_double = (double) pt[bitReverse(i, LOGN - 1)];
+        z_cts_exact[0].r[i] = val_double / Delta;
     }
+    for(int i = 0; i < N/2; ++i) {
+        double val_double = (double) pt[bitReverse(i, LOGN - 1) + N/2];
+        z_cts_exact[1].r[i] = val_double / Delta;
+    }
+
     for(int i = 0; i < 2; ++i)
         sub(z_cts[i], z_cts_exact[i], e[i]);
-    for(int i = 0; i < N; ++i) {
-        e_whole.r[i] = i < N/2 ? e[0].r[i] : e[1].r[i];
-        e_whole.i[i] = 0;
-    }
+
+    aggregate(e[0], e[1], e_whole);
 
     double e_norm_expected = C1 / (double) Delta_boot_tilde * pow(N, (1 + 1.0 / (2*D))) * (1 << (LOGq - LOGDELTA));
     double e_norm_measured = norm(e_whole);
@@ -97,4 +90,10 @@ int main()
         double e_norm_expected = z_amb_norm_expected * p_U0 * D * pow(U0_norm, D - 1) * 2;
         std::cout << "norm(e) expected (sanity check) : " << e_norm_expected << std::endl;
     }
+}
+
+int main()
+{
+    measure_cts_error<9, 50, 2>();
+    measure_cts_error<17, 50, 4>();
 }

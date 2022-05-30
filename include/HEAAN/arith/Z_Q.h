@@ -50,6 +50,7 @@ struct Z_Q {
 	void print_unsigned()const;
 	bool is_bigger_than_halfQ()const;
 	int max_valid_digit() const;
+	explicit operator double() const;
 };
 
 //-----------------------------------------------------------
@@ -290,6 +291,18 @@ void resize(const Z_Q<LOGQfrom> &Afrom, Z_Q<LOGQto> &Ato) {
 		for(int i = 0; i < min(Afrom.get_length(), Ato.get_length()); ++i)
 			Ato.data[i] = Afrom.data[i];
 	}
+}
+
+template<int LOGQ>
+Z_Q<LOGQ>::operator double() const {
+	Z_Q<LOGQ> val(*this);
+	bool is_negative =  val.is_bigger_than_halfQ();
+	if(is_negative)
+	    val.negate();
+	double result = (double) val[0];
+	if(is_negative)
+	    result *= -1;
+	return result;
 }
 
 template<int LOGQ>

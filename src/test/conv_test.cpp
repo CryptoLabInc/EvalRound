@@ -1,4 +1,4 @@
-#include "experiment/big.h"
+#include "experiment/test.h"
 #include "HEAAN/arith/conv.h"
 
 #include <iostream>

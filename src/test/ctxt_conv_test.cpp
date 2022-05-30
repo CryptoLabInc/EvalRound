@@ -1,8 +1,10 @@
 #include "HEAAN/endecode.h"
 #include "HEAAN/arith/conv.h"
-#include "experiment/big.h"
+#include "experiment/test.h"
 
-int main(){	
+template<int LOGN>
+void ctxt_conv_test(){	
+    const int N = 1 << LOGN;
 	Message<LOGN> z, z_sq_orig, z_sq;
 	set_random_message(z);
     mul(z, z, z_sq_orig);
@@ -23,4 +25,8 @@ int main(){
 
     print("z_sq_orig", z_sq_orig);
     print("z_sq", z_sq);
+}
+
+int main() {
+    ctxt_conv_test<9>();
 }

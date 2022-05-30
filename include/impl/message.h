@@ -124,3 +124,16 @@ void matrix_vector_product(
         Az.i[i] = sumi;
     }
 }
+
+template <int LOGN>
+void aggregate(
+    const Message<LOGN> &z1, 
+    const Message<LOGN> &z2,
+    Message<LOGN + 1> &z3
+){
+    const int N = 1 << LOGN;
+    for(int i = 0; i < N; ++i) {
+        z3.r[i] = i < N/2 ? z1.r[i] : z2.r[i];
+        z3.i[i] = i < N/2 ? z1.i[i] : z2.i[i];
+    }
+}
