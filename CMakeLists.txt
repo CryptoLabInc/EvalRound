@@ -21,7 +21,7 @@ add_executable(bootstrap_test src/test/bootstrap_test.cpp)
 add_executable(evalqI_test src/test/evalqI_test.cpp)
 
 add_executable(lemma_conv_error src/experiment/lemma_conv_error.cpp)
-add_executable(lemma_ src/experiment/lemma2.cpp)
+add_executable(lemma_conv_sum_error src/experiment/lemma_conv_sum_error.cpp)
 add_executable(theorem1 src/experiment/theorem1.cpp)
 add_executable(corollary src/experiment/corollary.cpp)
 add_executable(conclusion src/experiment/conclusion.cpp)

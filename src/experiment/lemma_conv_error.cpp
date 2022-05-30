@@ -1,4 +1,4 @@
-#include "experiment/simple.h"
+#include "experiment/section3.h"
 
 #include <iostream>
 
@@ -37,4 +37,5 @@ void measure_conv_error()
 int main()
 {
   measure_conv_error<15>();
+  measure_conv_error<16>();
 }

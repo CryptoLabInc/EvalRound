@@ -1,5 +1,5 @@
 #include "HEAAN/matrix/DFT.h"
-#include "experiment/simple.h"
+#include "experiment/test.h"
 
 void ifft_test(){
     Message<LOGN> z;
