@@ -1,25 +1,31 @@
 #include "HEAAN/bootstrap.h"
-#include "experiment/rns_debug.h"
+#include "experiment/rns.h"
 
 #include <iostream>
 
+template<int LOGN>
 void measure_b_evalmod()
 {
+    std::cout << "Measuring error bound of evalmod result" << std::endl;
+    std::cout << "LOGN : " << LOGN << std::endl;
+
+    const int N = 1 << LOGN;
+
     int s[N], s_sq[N];
     HEAAN<LOGQ,N>::keygen(H,s);
 
-    Message<LOGN> z, z_res;
+    Message<LOGN> z, z_evalmod_exact;
 
-    int eps_num = N / 2 / 49 / 2;
+    int eps_num = (N / 2 / 49 - 1) / 2;
     double q_per_Delta = pow(2, 10);
-	for(int i = 0; i < 49*2*eps_num; ++i) {
-        double val = (i%(2*eps_num) - eps_num) / (double) eps_num;
-        int I = q_per_Delta * ((i / (2*eps_num)) - 24);
-        z.r[i] = val + I;
-        z.i[i] = 0;
-        z_res.r[i] = val;
-        z_res.i[i] = 0;
-	}
+    int idx = 0;
+    for(int i = -24; i <= 24; ++i) {
+        for(int j = -eps_num; j <= eps_num; ++j) {
+            z.r[idx] = i * q_per_Delta + j / (double) eps_num;
+            z_evalmod_exact.r[idx] = j / (double) eps_num;
+            idx++;
+        }
+    }
 
     R_Q<LOGQ, N> pt;
     R_Q_square<LOGQ, N> ct;
@@ -38,22 +44,16 @@ void measure_b_evalmod()
 	decode_log(pt_evalmod,LOGDELTA,z_evalmod);
 
     Message<LOGN> e;
-    sub(z_res, z_evalmod, e);
-    print("z", z);
-    print("z_res", z_res);
-    print("z_evalmod", z_evalmod);
-    print("e", e);
+    sub(z_evalmod_exact, z_evalmod, e);
     
-    Message<LOGN> er, ez;
     for(int i = 0; i < N/2; ++i) {
-        er.r[i] = e.r[i];
-        ez.i[i] = e.i[i];
+        e.i[i] = 0;
     }
     std::cout << "sup_norm : " << sup_norm(e) << std::endl;
-    std::cout << "sup_norm : " << sup_norm(er) << " " << sup_norm(ez) << std::endl;
 }
 
 int main()
 {
-	measure_b_evalmod();
+	measure_b_evalmod<9>();
+    measure_b_evalmod<17>();
 }
