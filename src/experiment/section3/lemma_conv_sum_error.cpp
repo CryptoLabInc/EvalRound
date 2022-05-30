@@ -9,20 +9,20 @@ void measure_conv_sum_error()
   std::cout << "LOGN : " << LOGN << std::endl;
   const int N = 1 << LOGN;
 
-  // || \sigma_k e * pt || ~= sqrt( K N /  12) * || pt||
+  // || \sigma_k e * pt || ~= sqrt( Diag N /  12) * || pt||
   Message <LOGN> z;
   SimplePlaintext<LOGN> pt;
 
   set_test_message(z);
   encode(z, Delta, pt);
-  double expected = (K * N / 12.0) * square_sum(pt);
+  double expected = (Diag * N / 12.0) * square_sum(pt);
   std::cout << expected << std::endl;
   std::cout << std::endl;
   
   for(int r = 0; r < 100; ++r) {
     Message <LOGN> V;
     SimplePlaintext<LOGN> pt_v_raw, pt_v, pt_rot, pt_conv, e, res;
-    for(int k = 0; k < K; ++k) {
+    for(int k = 0; k < Diag; ++k) {
       set_random_message(V);
       encode_raw(V, Delta, pt_v_raw);
       encode(V, Delta, pt_v);

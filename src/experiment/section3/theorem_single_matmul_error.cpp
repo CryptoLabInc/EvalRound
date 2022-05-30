@@ -1,10 +1,14 @@
-
-#include "experiment/big.h"
+#include "experiment/section3.h"
 
 #include <iostream>
 
-int main()
+template <int LOGN>
+void measure_single_matmul_error()
 {
+  std::cout << "Measuring error on single matmul" << std::endl;
+  std::cout << "LOGN : " << LOGN << std::endl;
+  const int N = 1 << LOGN;
+  
   // ||Az - \widetilde{Az} || ~= sqrt(DiagN / 12) * (1 / Delta_A) * ||z||
   Message<LOGN> z;
   R_Q<LOGQ, N> pt;
@@ -36,4 +40,10 @@ int main()
     double measured = norm(e);
     std::cout << measured << std::endl;
   }
+}
+
+int main()
+{
+  measure_single_matmul_error<15>();
+  measure_single_matmul_error<16>();
 }

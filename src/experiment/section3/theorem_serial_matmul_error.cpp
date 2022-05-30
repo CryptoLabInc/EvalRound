@@ -1,9 +1,14 @@
-#include "experiment/big.h"
+#include "experiment/section3.h"
 
 #include <iostream>
 
-int main()
+template <int LOGN>
+void measure_serial_matmul_error()
 {
+  std::cout << "Measuring error on serial matmul" << std::endl;
+  std::cout << "LOGN : " << LOGN << std::endl;
+  const int N = 1 << LOGN;
+
   // ||Uz - \widetilde{Uz} || ~= sqrt(KN / 12) * (1 / Delta_A) * ||z|| * sqrt(D) * ||U_i||^{D-1}
   Message<LOGN> z, Uz, Uz_tilde, e;
   SparseDiagonal<N/2, 3> U0r[LOGN-1];
@@ -42,4 +47,10 @@ int main()
   sub(Uz, Uz_tilde, e);
   double measured = norm(e);
   std::cout << measured << std::endl;
+}
+
+int main()
+{
+  measure_serial_matmul_error<15>();
+  measure_serial_matmul_error<16>();
 }
