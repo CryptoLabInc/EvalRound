@@ -1,5 +1,5 @@
 #include "HEAAN/bootstrap.h"
-#include "experiment/rns_debug.h"
+#include "experiment/test.h"
 
 #include <iostream>
 
@@ -8,7 +8,7 @@ void CoeffToSlot_test()
     int s[N];
     HEAAN<LOGQ,N>::keygen(H,s);
    
-    Message<LOGN> z, z_cts[2], z_cts_res, z_cts_exact, e;
+    Message<LOGN> z, z_cts[2], z_cts_res, z_cts_exact;
     set_random_message(z);
 
     R_Q<LOGQ, N> pt, pt_cts[2];
@@ -49,13 +49,8 @@ void CoeffToSlot_test()
         z_cts_exact.i[i] = vali_double;
     }
 
-
-    sub(z_cts_res, z_cts_exact, e);
     print("z_cts_res", z_cts_res);
     print("z_cts_exact", z_cts_exact);
-    print("e", e);
-    std::cout << norm(e) << " " << norm(z) << " " << (norm(e) / norm(z)) << std::endl;
-    std::cout << sup_norm(z_cts_res) << " " << sup_norm(e) << std::endl;
 }
 
 void CoeffToSlot_SlotToCoeff_test()

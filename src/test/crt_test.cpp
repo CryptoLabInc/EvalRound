@@ -27,7 +27,7 @@ int main(){
     uint64_t a_rns_measured[L] = {0};
     crt.icrt(a, a_rns_measured);
     for(int i = 0; i < L; ++i)
-        std::cout << a_rns[i] << " " << a_rns_measured[i] << " ";
+        std::cout << a_rns[i] - a_rns_measured[i] << " ";
     std::cout << std::endl;
 
     Z_Q<LOGQ> a_measured;

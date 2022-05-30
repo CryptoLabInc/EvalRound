@@ -11,7 +11,6 @@ int main(){
         a[i] = i;
     }
     ntt.ntt(a);
-    print_array<N>(a);
     ntt.intt(a);
     print_array<N>(a);
 }

@@ -2,10 +2,8 @@
 #include "HEAAN/arith/conv.h"
 #include "experiment/test.h"
 
-template<int LOGN>
-void ctxt_conv_test(){	
-    const int N = 1 << LOGN;
-	Message<LOGN> z, z_sq_orig, z_sq;
+int main() {
+    Message<LOGN> z, z_sq_orig, z_sq;
 	set_random_message(z);
     mul(z, z, z_sq_orig);
 
@@ -25,8 +23,4 @@ void ctxt_conv_test(){
 
     print("z_sq_orig", z_sq_orig);
     print("z_sq", z_sq);
-}
-
-int main() {
-    ctxt_conv_test<9>();
 }

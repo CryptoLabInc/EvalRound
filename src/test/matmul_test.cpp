@@ -1,4 +1,4 @@
-#include "experiment/rns_debug.h"
+#include "experiment/test.h"
 
 #include "HEAAN/linear_transform.h"
 

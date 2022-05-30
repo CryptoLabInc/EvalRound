@@ -1,5 +1,5 @@
 #include "HEAAN/bootstrap.h"
-#include "experiment/rns_debug.h"
+#include "experiment/test.h"
 
 #include <iostream>
 
