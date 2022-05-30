@@ -4,15 +4,15 @@
 #include <iostream>
 
 template<int LOGN, int LOGDELTA_boot_tilde, int G>
-void measure_cts_error()
+void measure_sup_norm()
 {
-    std::cout << "Measuring coefftoslot error" << std::endl;
-	std::cout << "LOGN : " << LOGN << std::endl;
+    std::cout << "Measuring sup norm on cts input" << std::endl;
+    std::cout << "LOGN : " << LOGN << std::endl;
 	std::cout << "LOGDELTA_boot_tilde : " << LOGDELTA_boot_tilde << std::endl;
     std::cout << "G : " << G << std::endl;
     const int N = 1 << LOGN;
     const uint64_t Delta_boot_tilde = 1ULL << LOGDELTA_boot_tilde;
-
+    
     // Step 1. Compute constants
     assert((LOGN - 1) % G == 0);
     int D = (LOGN - 1) / G;
@@ -21,14 +21,13 @@ void measure_cts_error()
     double C1 = D * sqrt((H+1) * Diag) / 12.0 * pow(2, 1.0 / (2*D));
     std::cout << "C1 : " << C1 << std::endl;
 
-    // Step 2. Measure norm(z_amb)
+    // Step 2. Setup CoeffToSlot
     int s[N];
     HEAAN<LOGQ,N>::keygen(H,s);
 
     Message<LOGN> z;
     set_random_message(z);
 
-    // get z_amb
     R_Q<LOGq, N> pt_q;
     R_Q_square<LOGq,N> ct_q;
     R_Q_square<LOGQ,N> ct;
@@ -40,17 +39,23 @@ void measure_cts_error()
     HEAAN<LOGQ,N>::dec(ct,s, pt);
     decode(pt, Delta, z_amb);
 
-    // compare
-    double q = 1ULL << LOGq;
-    double z_amb_norm_expected = sqrt(N/2) / Delta * sqrt((H+1)/12*q*q*N);
-    double z_amb_norm_measured = norm(z_amb);
-    std::cout << "norm(z_amb) expected : " << z_amb_norm_expected << std::endl;
-    std::cout << "norm(z_amb) measured : " << z_amb_norm_measured << std::endl;
+    // estimate sup_norm of pt_q / Delta
+    double pt_per_Delta_norm = 0;
+    double pt_per_Delta_sup_norm = 0;
+    for(int i = 0; i < N; ++i) {
+        double val = (double) pt_q[i];
+        double val_abs_double = std::abs(val) / Delta;
 
+        pt_per_Delta_sup_norm = val_abs_double > pt_per_Delta_sup_norm ? val_abs_double : pt_per_Delta_sup_norm;
+        pt_per_Delta_norm += val_abs_double * val_abs_double;
+    }
+    pt_per_Delta_norm = sqrt(pt_per_Delta_norm);
 
-    // Step 3. Compare norm(rounding error of cts)
+    std::cout << "sup_norm(pt) bounded : " << pt_per_Delta_norm / sqrt(N) * 5 << std::endl;
+    std::cout << "sup_norm(pt) measured : " << pt_per_Delta_sup_norm << std::endl;
+
     Message<LOGN> z_cts[2], z_cts_exact[2], e[2];
-    Message<LOGN + 1> e_whole;
+    Message<LOGN+1> e_whole;
     R_Q<LOGQ, N> pt_cts[2];
     R_Q_square<LOGQ,N> ct_cts[2];
 
@@ -76,24 +81,17 @@ void measure_cts_error()
 
     aggregate(e[0], e[1], e_whole);
 
+    // estimate sup_norm of e
     double e_norm_expected = C1 / (double) Delta_boot_tilde * pow(N, (1 + 1.0 / (2*D))) * (1 << (LOGq - LOGDELTA));
     double e_norm_measured = norm(e_whole);
-    std::cout << "norm(e) expected : " << e_norm_expected << std::endl;
-    std::cout << "norm(e) measured : " << e_norm_measured << std::endl;
-
-    // sanity check
-    {
-        double q = 1ULL << LOGq;
-        double z_amb_norm_expected = sqrt(N/2) / Delta * sqrt((H+1.0)/12*q*q*N);
-        double p_U0 = sqrt(Diag*N / 12.0) / Delta_boot_tilde;
-        double U0_norm = pow(sqrt(2) / pow(N, 1.0 / (LOGN - 1)), G);
-        double e_norm_expected = z_amb_norm_expected * p_U0 * D * pow(U0_norm, D - 1) * 2;
-        std::cout << "norm(e) expected (sanity check) : " << e_norm_expected << std::endl;
-    }
+    std::cout << "norm(rounding error) expected : " << e_norm_expected << std::endl;
+    std::cout << "norm(rounding error) measured : " << e_norm_measured << std::endl;
+    std::cout << "sup_norm(rounding error) bounded : " << e_norm_expected / sqrt(N) * 5 << std::endl;
+    std::cout << "sup_norm(rounding error) measured : " << sup_norm(e_whole) << std::endl;
 }
 
 int main()
 {
-    measure_cts_error<9, 50, 2>();
-    measure_cts_error<17, 50, 4>();
+    measure_sup_norm<9, 50, 2>();
+    measure_sup_norm<17, 50, 4>();
 }

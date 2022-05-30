@@ -25,8 +25,8 @@ add_executable(lemma_conv_sum_error src/experiment/section3/lemma_conv_sum_error
 add_executable(theorem_single_matmul_error src/experiment/section3/theorem_single_matmul_error.cpp)
 add_executable(theorem_serial_matmul_error src/experiment/section3/theorem_serial_matmul_error.cpp)
 add_executable(theorem_cts_error src/experiment/section3/theorem_cts_error.cpp)
+add_executable(example_sup_norm src/experiment/section4/example_sup_norm.cpp)
 add_executable(conclusion src/experiment/conclusion.cpp)
 add_executable(measure_b_evalmod src/experiment/measure_b_evalmod.cpp)
 
 add_executable(delta_tilde_design src/example/delta_tilde_design.cpp)
-add_executable(check_sup_norm src/example/check_sup_norm.cpp)
