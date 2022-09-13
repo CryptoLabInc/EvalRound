@@ -59,20 +59,35 @@ struct Z_Q {
 template< int LOGQfr, int LOGQto>
 void shift_right( const Z_Q<LOGQfr>& A,
 	                    Z_Q<LOGQto>& B ){
+	if(LOGQfr == LOGQto) {
+		for (int i = 0; i < (LOGQto + 63) / 64; ++i)
+			B[i] = A[i];
+		return;
+	}
 	int q=(LOGQfr-LOGQto)/64;
 	int r=(LOGQfr-LOGQto)%64;
 	for(int i=0;i<(LOGQto+63)/64;i++)
 		B[i]=A[i+q];
-	if(r == 0)
+	if(r > 0) {
+		uint64_t Bextra=0;
+		if((LOGQto+r+63)/64 != (LOGQto+63)/64)
+			Bextra = A[(LOGQto+63)/64+q];
+		Bextra<<=64-r;
+		for(int i=(LOGQto+63)/64-1;i>=0;i--){
+			uint64_t temp=B[i]<<(64-r);
+			B[i]>>=r;
+			B[i]+=Bextra; Bextra=temp;
+		}
+	}
+	int idx = LOGQfr - LOGQto - 1;
+	bool c = ((uint64_t)0x1) & (A[idx / 64] >> (idx % 64));
+	if(c) {
+		Z_Q<LOGQto> C;
+		for (int i = 0; i < (LOGQto + 63) / 64; ++i)
+			C[i] = 0;
+		C[0] = 1;
+		B += C;
 		return;
-	uint64_t Bextra=0;
-	if((LOGQto+r+63)/64 != (LOGQto+63)/64)
-		Bextra = A[(LOGQto+63)/64+q];
-	Bextra<<=64-r;
-	for(int i=(LOGQto+63)/64-1;i>=0;i--){
-		uint64_t temp=B[i]<<(64-r);
-		B[i]>>=r;
-		B[i]+=Bextra; Bextra=temp;
 	}
 }
 
