@@ -203,6 +203,25 @@ void grouped2_serial_linear_transform( const SparseDiagonal<1 << (LOGN - 1),S> A
 }
 
 template< int LOGQ, int LOGN, int LOGDELTA, int S, int D>
+void grouped3_serial_linear_transform( const SparseDiagonal<1 << (LOGN - 1),S> Ar[D],
+					   	const SparseDiagonal<1 << (LOGN - 1),S> Ai[D],
+					   	const R_Q_square<  LOGQ, 1 << LOGN>& ct,
+						const int skey[1 << LOGN],
+						R_Q_square<  LOGQ, 1 << LOGN>& Act){
+	assert(D % 3 == 0);
+	SparseDiagonal<1 << (LOGN - 1), S*S> Br[D/3];
+	SparseDiagonal<1 << (LOGN - 1), S*S> Bi[D/3];
+	SparseDiagonal<1 << (LOGN - 1), S*S*S> Cr[D/3];
+	SparseDiagonal<1 << (LOGN - 1), S*S*S> Ci[D/3];
+
+	for(int i = 0; i < D/3; ++i) {
+		MatMul(Ar[3*i+1], Ai[3*i+1], Ar[3*i], Ai[3*i], Br[i], Bi[i]);
+		MatMul(Ar[3*i+2], Ai[3*i+2], Br[i], Bi[i], Cr[i], Ci[i]);
+	}
+	serial_linear_transform<LOGQ, LOGN, LOGDELTA, S*S*S, D/3>(Cr, Ci, ct, skey, Act);
+}
+
+template< int LOGQ, int LOGN, int LOGDELTA, int S, int D>
 void grouped4_serial_linear_transform( const SparseDiagonal<1 << (LOGN - 1),S> Ar[D],
 					   	const SparseDiagonal<1 << (LOGN - 1),S> Ai[D],
 					   	const R_Q_square<  LOGQ, 1 << LOGN>& ct,
@@ -234,6 +253,8 @@ void grouped_serial_linear_transform( const SparseDiagonal<1 << (LOGN - 1),S> Ar
 		serial_linear_transform<LOGQ, LOGN, LOGDELTA, S, D>(Ar, Ai, ct, skey, Act);
 	else if(G == 2)
 		grouped2_serial_linear_transform<LOGQ, LOGN, LOGDELTA, S, D>(Ar, Ai, ct, skey, Act);
+	else if(G == 3)
+		grouped3_serial_linear_transform<LOGQ, LOGN, LOGDELTA, S, D>(Ar, Ai, ct, skey, Act);
 	else if(G == 4)
 		grouped4_serial_linear_transform<LOGQ, LOGN, LOGDELTA, S, D>(Ar, Ai, ct, skey, Act);
 	else
