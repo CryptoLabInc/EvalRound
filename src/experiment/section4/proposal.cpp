@@ -66,7 +66,7 @@ void conventional_bootstrap_test()
 
         e_per_Delta_sup_norm = val_abs_double > e_per_Delta_sup_norm ? val_abs_double : e_per_Delta_sup_norm;
     }
-	std::cout << "LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : " << std::log2(e_per_Delta_sup_norm) << std::endl;
+	std::cout << "sup_norm(pt/Delta - pt_tilde/Delta) : " << e_per_Delta_sup_norm << std::endl;
 	std::cout << "Modulus consumed : " << (LOGQ - LOGQ_after_stc) << std::endl;
 }
 
@@ -144,14 +144,16 @@ void proposed_bootstrap_test()
 
         e_per_Delta_sup_norm = val_abs_double > e_per_Delta_sup_norm ? val_abs_double : e_per_Delta_sup_norm;
     }
-	std::cout << "LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : " << std::log2(e_per_Delta_sup_norm) << std::endl;
+	std::cout << "sup_norm(pt/Delta - pt_tilde/Delta) : " << e_per_Delta_sup_norm << std::endl;
 	std::cout << "Modulus consumed : " << (LOGQ - LOGQ_after_stc) << std::endl;
 }
 
 int main()
 {
-	conventional_bootstrap_test<9, 60, 50, 2>(); proposed_bootstrap_test<9, 60, 60, 2>();
     conventional_bootstrap_test<9, 22, 50, 2>(); proposed_bootstrap_test<9, 22, 60, 2>();
-    conventional_bootstrap_test<17, 60, 50, 4>(); proposed_bootstrap_test<17, 60, 60, 4>();
+	conventional_bootstrap_test<9, 60, 50, 2>(); proposed_bootstrap_test<9, 60, 60, 2>();
+	conventional_bootstrap_test<13, 25, 50, 3>(); proposed_bootstrap_test<13, 25, 60, 3>();
+	conventional_bootstrap_test<13, 60, 50, 3>(); proposed_bootstrap_test<13, 60, 60, 3>();
     conventional_bootstrap_test<17, 29, 50, 4>(); proposed_bootstrap_test<17, 29, 60, 4>();
+	conventional_bootstrap_test<17, 60, 50, 4>(); proposed_bootstrap_test<17, 60, 60, 4>();
 }

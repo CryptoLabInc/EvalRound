@@ -130,8 +130,10 @@ void measure_sup_norm()
 
 int main()
 {
-    check_sup_norm_bound<9>();
-    check_sup_norm_bound<17>();
+    //check_sup_norm_bound<9>();
+    //check_sup_norm_bound<13>();
+    //check_sup_norm_bound<17>();
     measure_sup_norm<9, 50, 2>();
-    measure_sup_norm<17, 50, 4>();
+    //measure_sup_norm<13, 50, 3>();
+    //measure_sup_norm<17, 50, 4>();
 }

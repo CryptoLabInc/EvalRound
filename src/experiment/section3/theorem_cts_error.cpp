@@ -95,5 +95,6 @@ void measure_cts_error()
 int main()
 {
     measure_cts_error<9, 50, 2>();
+    measure_cts_error<13, 50, 3>();
     measure_cts_error<17, 50, 4>();
 }
