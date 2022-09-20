@@ -19,6 +19,7 @@ add_executable(matmul_test src/test/matmul_test.cpp)
 add_executable(evalMod_test src/test/evalMod_test.cpp)
 add_executable(bootstrap_test src/test/bootstrap_test.cpp)
 add_executable(evalqI_test src/test/evalqI_test.cpp)
+add_executable(end_to_end_test src/test/end_to_end_test.cpp)
 
 add_executable(lemma_conv_error src/experiment/section3/lemma_conv_error.cpp)
 add_executable(lemma_conv_sum_error src/experiment/section3/lemma_conv_sum_error.cpp)
