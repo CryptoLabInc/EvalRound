@@ -41,5 +41,6 @@ void design_delta_tilde()
 int main()
 {
     design_delta_tilde<9, 2>();
+    design_delta_tilde<13, 3>();
     design_delta_tilde<17, 4>();
 }

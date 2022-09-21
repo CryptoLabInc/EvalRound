@@ -55,5 +55,6 @@ void measure_b_evalmod()
 int main()
 {
 	measure_b_evalmod<9>();
+    measure_b_evalmod<13>();
     measure_b_evalmod<17>();
 }
