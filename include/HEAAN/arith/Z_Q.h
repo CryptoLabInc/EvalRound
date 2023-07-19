@@ -290,7 +290,6 @@ bool Z_Q<LOGQ>::is_bigger_than_halfQ()const{
 
 
 // convert to big integer of different size
-// assume the value of Afrom fit in Ato
 template<int LOGQfrom, int LOGQto>
 void resize(const Z_Q<LOGQfrom> &Afrom, Z_Q<LOGQto> &Ato) {
 	bool is_negative = Afrom.is_bigger_than_halfQ();
@@ -306,6 +305,7 @@ void resize(const Z_Q<LOGQfrom> &Afrom, Z_Q<LOGQto> &Ato) {
 		for(int i = 0; i < min(Afrom.get_length(), Ato.get_length()); ++i)
 			Ato.data[i] = Afrom.data[i];
 	}
+	Ato.remove_clutter();
 }
 
 template<int LOGQ>
