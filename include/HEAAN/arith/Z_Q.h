@@ -98,9 +98,9 @@ void shift_left ( const Z_Q<LOGQfr>& A,
 	int r=(LOGQto-LOGQfr)%64;
 	for(int i=0;i<(LOGQfr+63)/64;i++)
 		B[i+q]=A[i];
+	for(int i=0;i<q;i++) B[i]=0;
 	if(r == 0)
 		return;
-	for(int i=0;i<q;i++) B[i]=0;
 	uint64_t Bextra=0;
 	for(int i=0;i<(LOGQfr+63)/64;i++){
 		uint64_t temp=B[i+q]>>(64-r);
