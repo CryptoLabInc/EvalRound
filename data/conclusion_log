@@ -1,60 +1,84 @@
-BOOTSTRAP TEST
+Measuring error on conventional bootstrap
 LOGN : 9
-LOGDELTA_boot_tilde : 60
-LOG2 MAX ERROR (REAL, IMAG) = [-25.9061, -25.6131]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -27.2862
-EVALQI TEST
+LOGDELTA_cts : 22
+LOGDELTA_stc : 50
+LOG2 MAX ERROR (REAL, IMAG) = [0.809167, 1.1189]
+sup_norm(pt/Delta - pt_tilde/Delta) : 0.107788
+Modulus consumed : 1008
+Measuring error on proposed bootstrap
 LOGN : 9
-LOGDELTA_boot_tilde : 60
-LOG2 MAX ERROR (REAL, IMAG) = [-25.4832, -25.8478]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -26.8051
-BOOTSTRAP TEST
+LOGDELTA_cts : 22
+LOGDELTA_stc : 60
+LOG2 MAX ERROR (REAL, IMAG) = [-27.4537, -26.4358]
+sup_norm(pt/Delta - pt_tilde/Delta) : 4.34595e-10
+Modulus consumed : 1048
+Measuring error on conventional bootstrap
 LOGN : 9
-LOGDELTA_boot_tilde : 28
-LOG2 MAX ERROR (REAL, IMAG) = [-5.43146, -5.48865]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -9.59841
-EVALQI TEST
+LOGDELTA_cts : 60
+LOGDELTA_stc : 50
+LOG2 MAX ERROR (REAL, IMAG) = [-27.1513, -26.4042]
+sup_norm(pt/Delta - pt_tilde/Delta) : 4.76954e-10
+Modulus consumed : 1160
+Measuring error on proposed bootstrap
 LOGN : 9
-LOGDELTA_boot_tilde : 28
-LOG2 MAX ERROR (REAL, IMAG) = [-24.4355, -25.1203]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -25.0783
-BOOTSTRAP TEST
-LOGN : 9
-LOGDELTA_boot_tilde : 22
-LOG2 MAX ERROR (REAL, IMAG) = [0.614932, 1.14978]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -3.44076
-EVALQI TEST
-LOGN : 9
-LOGDELTA_boot_tilde : 22
-LOG2 MAX ERROR (REAL, IMAG) = [-27.1636, -25.937]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -31.0507
-BOOTSTRAP TEST
+LOGDELTA_cts : 60
+LOGDELTA_stc : 60
+LOG2 MAX ERROR (REAL, IMAG) = [-27.5646, -26.4102]
+sup_norm(pt/Delta - pt_tilde/Delta) : 4.45247e-10
+Modulus consumed : 1200
+Measuring error on conventional bootstrap
+LOGN : 13
+LOGDELTA_cts : 25
+LOGDELTA_stc : 50
+LOG2 MAX ERROR (REAL, IMAG) = [3.02859, 2.92519]
+sup_norm(pt/Delta - pt_tilde/Delta) : 0.11448
+Modulus consumed : 1020
+Measuring error on proposed bootstrap
+LOGN : 13
+LOGDELTA_cts : 25
+LOGDELTA_stc : 60
+LOG2 MAX ERROR (REAL, IMAG) = [-24.804, -22.1482]
+sup_norm(pt/Delta - pt_tilde/Delta) : 1.06925e-09
+Modulus consumed : 1060
+Measuring error on conventional bootstrap
+LOGN : 13
+LOGDELTA_cts : 60
+LOGDELTA_stc : 50
+LOG2 MAX ERROR (REAL, IMAG) = [-24.68, -22.2095]
+sup_norm(pt/Delta - pt_tilde/Delta) : 8.45963e-10
+Modulus consumed : 1160
+Measuring error on proposed bootstrap
+LOGN : 13
+LOGDELTA_cts : 60
+LOGDELTA_stc : 60
+LOG2 MAX ERROR (REAL, IMAG) = [-24.6785, -22.2978]
+sup_norm(pt/Delta - pt_tilde/Delta) : 1.06366e-09
+Modulus consumed : 1200
+Measuring error on conventional bootstrap
 LOGN : 17
-LOGDELTA_boot_tilde : 60
-LOG2 MAX ERROR (REAL, IMAG) = [-13.2872, -13.5553]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -18.2751
-EVALQI TEST
+LOGDELTA_cts : 29
+LOGDELTA_stc : 50
+LOG2 MAX ERROR (REAL, IMAG) = [4.2335, 4.27347]
+sup_norm(pt/Delta - pt_tilde/Delta) : 0.0590859
+Modulus consumed : 1036
+Measuring error on proposed bootstrap
 LOGN : 17
-LOGDELTA_boot_tilde : 60
-LOG2 MAX ERROR (REAL, IMAG) = [-13.4092, -13.134]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -16.3499
-BOOTSTRAP TEST
+LOGDELTA_cts : 29
+LOGDELTA_stc : 60
+LOG2 MAX ERROR (REAL, IMAG) = [-21.2358, -18.233]
+sup_norm(pt/Delta - pt_tilde/Delta) : 1.09791e-08
+Modulus consumed : 1076
+Measuring error on conventional bootstrap
 LOGN : 17
-LOGDELTA_boot_tilde : 34
-LOG2 MAX ERROR (REAL, IMAG) = [-0.742032, -0.874361]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -9.01616
-EVALQI TEST
+LOGDELTA_cts : 60
+LOGDELTA_stc : 50
+LOG2 MAX ERROR (REAL, IMAG) = [-21.2884, -18.1447]
+sup_norm(pt/Delta - pt_tilde/Delta) : 1.3277e-08
+Modulus consumed : 1160
+Measuring error on proposed bootstrap
 LOGN : 17
-LOGDELTA_boot_tilde : 34
-LOG2 MAX ERROR (REAL, IMAG) = [-20.0138, -18.0252]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -23.5536
-BOOTSTRAP TEST
-LOGN : 17
-LOGDELTA_boot_tilde : 28
-LOG2 MAX ERROR (REAL, IMAG) = [5.09595, 5.38858]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -3.02294
-EVALQI TEST
-LOGN : 17
-LOGDELTA_boot_tilde : 28
-LOG2 MAX ERROR (REAL, IMAG) = [-13.1918, -13.5051]
-LOG2 sup_norm(pt/Delta - pt_tilde/Delta) : -15.5868
+LOGDELTA_cts : 60
+LOGDELTA_stc : 60
+LOG2 MAX ERROR (REAL, IMAG) = [-19.7927, -18.2572]
+sup_norm(pt/Delta - pt_tilde/Delta) : 5.21364e-08
+Modulus consumed : 1200
